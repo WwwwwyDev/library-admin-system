@@ -9,10 +9,13 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
+  created() {
+    console.log(this.$store.state.user.name)
+  },
   computed: {
-    ...mapGetters([
-      'name'
-    ])
+    ...mapGetters({
+      name: "name"
+    })
   }
 }
 </script>

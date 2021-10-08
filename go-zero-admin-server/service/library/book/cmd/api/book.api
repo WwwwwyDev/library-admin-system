@@ -48,8 +48,6 @@ type (
 	middleware: Cors
 )
 service book-api {
-	@handler getBookByName
-	get /bookName/:name (GetBookByNameReq) returns (Reply)
 	@handler getBooks
 	get /book (GetBooksReq) returns (Reply)
 	@handler addBook

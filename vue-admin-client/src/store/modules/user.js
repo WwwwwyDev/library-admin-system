@@ -6,7 +6,7 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
   }
 }
 
@@ -94,4 +94,3 @@ export default {
   mutations,
   actions
 }
-

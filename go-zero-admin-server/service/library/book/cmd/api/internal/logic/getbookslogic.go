@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
 
@@ -30,11 +31,12 @@ func (l *GetBooksLogic) GetBooks(req types.GetBooksReq) (*types.Reply, error) {
 	page := req.Page
 	limit := req.Limit
 	if page <=0 || limit <=0{
-		return nil, errorx.NewCodeError(code.ParameterError,"")
+		return nil, errorx.NewCodeError(code.ParameterError,"参数非法")
 	}
 	books, total, err := l.svcCtx.BookModel.GetBooks(page, limit)
+	fmt.Println(books)
 	if err != nil {
 		return nil,err
 	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"books": books}, Msg: "ok"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"books": books, "total": total}, Msg: "ok"}, nil
 }
