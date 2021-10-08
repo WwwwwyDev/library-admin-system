@@ -2,9 +2,9 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
+	"go-zero-admin-server/service/library/book/model"
 
 	"go-zero-admin-server/service/library/book/cmd/api/internal/svc"
 	"go-zero-admin-server/service/library/book/cmd/api/internal/types"
@@ -33,10 +33,13 @@ func (l *GetBooksLogic) GetBooks(req types.GetBooksReq) (*types.Reply, error) {
 	if page <=0 || limit <=0{
 		return nil, errorx.NewCodeError(code.ParameterError,"参数非法")
 	}
-	books, total, err := l.svcCtx.BookModel.GetBooks(page, limit)
-	fmt.Println(books)
+	books, total, err := l.svcCtx.BookModel.GetBooks(page, limit,&model.Book{Name: req.Name,Author: req.Author})
 	if err != nil {
 		return nil,err
 	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"books": books, "total": total}, Msg: "ok"}, nil
+	booksHandle := make([]types.BookData,0)
+	for _, e := range books {
+		booksHandle = append(booksHandle, types.BookData{ID:e.ID,Name:e.Name,Image:e.Image,Author: e.Author,Info: e.Info})
+	}
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"books": booksHandle, "total": total}, Msg: "ok"}, nil
 }

@@ -9,7 +9,8 @@ type (
 		GetBookByName(name string) ([]Book, error)
 		GetBookByID(id uint) (*Book, error)
 		GetBooks(page int, limit int, bookS *Book) ([]Book, int64, error)
-		IsExistBook(id uint) (bool, error)
+		IsExistBookByID(id uint) (bool, error)
+		IsExistBookByName(name string) (bool, error)
 		AddBook(book *Book) error
 		UpdateBook(book *Book) error
 		DelBook(book *Book) error
@@ -21,7 +22,7 @@ type (
 
 	Book struct {
 		gorm.Model
-		Name       string   `json:"name" gorm:"type:varchar(191);comment:图书名;not null"` //图书名
+		Name       string   `json:"name" gorm:"type:varchar(191);comment:图书名;not null;unique"` //图书名
 		Image      string   `json:"image"  gorm:"type:varchar(191);comment:图书图片"`       //图书图片
 		Author     string   `json:"author" gorm:"type:varchar(191);comment:图书作者"`       //图书作者
 		Info       string   `json:"info"  gorm:"type:varchar(1000);comment:图书信息"`       //图书信息
@@ -33,7 +34,7 @@ func NewBookModel(conn *gorm.DB) BookModel {
 	//如果没有表则自动构建表
 	conn.AutoMigrate(&Book{})
 	return &defaultBookModel{
-		conn:  conn.Debug(),
+		conn:  conn,
 	}
 }
 
@@ -55,9 +56,21 @@ func (d defaultBookModel) GetBookByID(id uint) (*Book, error) {
 	return book, nil
 }
 
-func (d defaultBookModel) IsExistBook(id uint) (bool, error){
+func (d defaultBookModel) IsExistBookByID(id uint) (bool, error){
 	var total int64
 	err := d.conn.Model(&Book{}).Where("id = ?", id).Count(&total).Error
+	if err != nil {
+		return false, err
+	}
+	if total == 0{
+		return false, nil
+	}
+	return true,nil
+}
+
+func (d defaultBookModel) IsExistBookByName(name string) (bool, error){
+	var total int64
+	err := d.conn.Model(&Book{}).Where("name = ?", name).Count(&total).Error
 	if err != nil {
 		return false, err
 	}

@@ -26,12 +26,12 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPut,
-					Path:    "/book",
+					Path:    "/book/:id",
 					Handler: updateBookHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodDelete,
-					Path:    "/book",
+					Path:    "/book/:id",
 					Handler: deleteBookHandler(serverCtx),
 				},
 			}...,

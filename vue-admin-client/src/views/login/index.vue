@@ -38,9 +38,21 @@
   import {
     validUsername
   } from '@/utils/validate'
-
+import request from '@/utils/request'
   export default {
     name: 'Login',
+    created() {
+      request({
+        url: 'http://127.0.0.1:8888/book',
+        method: 'GET',
+        params: {
+          page:1,
+          limit:10
+        }
+      }).then(response => {
+        console.log(response)
+      })
+    },
     data() {
       const validateUsername = (rule, value, callback) => {
         if (!validUsername(value)) {
