@@ -1,0 +1,61 @@
+syntax = "v1"
+
+import "reply.api"
+
+info(
+	title: "book"
+	desc: "show book service"
+	author: "wuwenyi"
+	email: "773323518@qq.com"
+	version: "v1.0"
+)
+
+type (
+	GetBooksReq {
+		Page  int `form:"page,default=1"`
+		Limit int `form:"limit,default=10"`
+	}
+	GetBookByNameReq {
+		Name string `path:"name"`
+	}
+	AddBookReq {
+		Name   string `form:"name"`
+		Image  string `form:"image"`
+		Author string `form:"author"`
+		Info   string `form:"info"`
+	}
+	UpdateBookReq {
+		ID     uint   `path:"id"`
+		Name   string `form:"name"`
+		Image  string `form:"image"`
+		Author string `form:"author"`
+		Info   string `form:"info"`
+	}
+	DeleteBookReq {
+		ID uint `path:"id"`
+	}
+
+	BookData {
+		Id     uint   `json:"id"`
+		Name   string `json:"name"`
+		Image  string `json:"image"`
+		Author string `json:"author"`
+		Info   string `json:"info"`
+		IsLend bool   `json:"isLend"`
+	}
+)
+@server(
+	middleware: Cors
+)
+service book-api {
+	@handler getBookByName
+	get /bookName/:name (GetBookByNameReq) returns (Reply)
+	@handler getBooks
+	get /book (GetBooksReq) returns (Reply)
+	@handler addBook
+	post /book (AddBookReq) returns (Reply)
+	@handler updateBook
+	put /book (UpdateBookReq) returns (Reply)
+	@handler deleteBook
+	delete /book (DeleteBookReq) returns (Reply)
+}
