@@ -43,6 +43,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    console.log(res)
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
@@ -73,6 +74,9 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
+    if(error.message === "Network Error"){
+      error.message = "网络错误"
+    }
     Message({
       message: error.message,
       type: 'error',

@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package user;
+
+message IDReq {
+    uint64 ID = 1;
+}
+
+message UsernameReq {
+    string username = 1;
+}
+
+message Role {
+    uint64 ID = 1;
+    string name = 2;
+    string info = 3;
+}
+
+message UserReply {
+    uint64 ID = 1;
+    string username = 2;
+    string salt = 3;
+    string info = 4;
+    repeated Role roles = 5;
+}
+
+service userRpc {
+    rpc getUserById(IDReq) returns(UserReply);
+    rpc getUserByUsername(UsernameReq) returns(UserReply);
+}

@@ -1,0 +1,12 @@
+Name: user.rpc
+ListenOn: 127.0.0.1:8080
+Postgresql:
+  User: postgres
+  Password: wwy123456
+  Host: 81.70.8.101
+  Port: 5432
+  Name: admin_user
+Etcd:
+  Hosts:
+  - 81.70.8.101:2379
+  Key: user.rpc
