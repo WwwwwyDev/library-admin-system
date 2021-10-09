@@ -1,0 +1,9 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8888
+Postgresql:
+  User: postgres
+  Password: wwy123456
+  Host: 81.70.8.101
+  Port: 5432
+  Name: admin_user

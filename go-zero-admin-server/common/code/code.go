@@ -6,4 +6,5 @@ const (
 	ParameterError = 10001  //参数非法
 	RepeatError = 10002  //数据重复
 	NoFoundError = 10003  //数据不存在
+	NoChangeError = 10004  //无法修改的数据
 )

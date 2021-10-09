@@ -6,7 +6,7 @@ import (
 
 type (
 	BookModel interface {
-		GetBookByName(name string) ([]Book, error)
+		GetBookByName(name string) (*Book, error)
 		GetBookByID(id uint) (*Book, error)
 		GetBooks(page int, limit int, bookS *Book) ([]Book, int64, error)
 		IsExistBookByID(id uint) (bool, error)
@@ -38,13 +38,13 @@ func NewBookModel(conn *gorm.DB) BookModel {
 	}
 }
 
-func (d defaultBookModel) GetBookByName(name string) ([]Book, error) {
-	var books []Book
-	err := d.conn.Model(&Book{}).Preload("Type").Where("name like ?", "%"+name+"%").Find(&books).Error
+func (d defaultBookModel) GetBookByName(name string) (*Book, error) {
+	var book *Book
+	err := d.conn.Model(&Book{}).Preload("Type").Where("name = ?", name).First(&book).Error
 	if err != nil {
 		return nil, err
 	}
-	return books, nil
+	return book, nil
 }
 
 func (d defaultBookModel) GetBookByID(id uint) (*Book, error) {

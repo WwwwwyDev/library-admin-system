@@ -7,7 +7,7 @@ info(
 	desc: "show book service"
 	author: "wuwenyi"
 	email: "773323518@qq.com"
-	version: "v1.0"
+	version: "dev"
 )
 
 type (
