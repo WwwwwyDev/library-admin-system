@@ -4,9 +4,6 @@ import (
 	"context"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
-	"go-zero-admin-server/service/library/book/model"
-	"gorm.io/gorm"
-
 	"go-zero-admin-server/service/library/book/cmd/api/internal/svc"
 	"go-zero-admin-server/service/library/book/cmd/api/internal/types"
 
@@ -35,14 +32,22 @@ func (l *UpdateBookLogic) UpdateBook(req types.UpdateBookReq) (*types.Reply, err
 	if !isExist{
 		return nil, errorx.NewCodeError(code.NoFoundError,"图书不存在")
 	}
-	isExist, err = l.svcCtx.BookModel.IsExistBookByName(req.Name)
-	if err != nil{
-		return nil,err
+	bookOld, err := l.svcCtx.BookModel.GetBookByID(req.ID)
+	if bookOld.Name != req.Name{
+		isExist, err = l.svcCtx.BookModel.IsExistBookByName(req.Name)
+		if err != nil{
+			return nil,err
+		}
+		if isExist{
+			return nil, errorx.NewCodeError(code.RepeatError,"图书名重复")
+		}
 	}
-	if isExist{
-		return nil, errorx.NewCodeError(code.RepeatError,"图书名重复")
-	}
-	err = l.svcCtx.BookModel.UpdateBook(&model.Book{Model: gorm.Model{ID: req.ID}, Name: req.Name, Image: req.Author, Info: req.Info})
+	bookNew := bookOld
+	bookNew.Name = req.Name
+	bookNew.Info = req.Info
+	bookNew.Author = req.Author
+	bookNew.Image = req.Image
+	err = l.svcCtx.BookModel.UpdateBook(bookNew)
 	if err != nil {
 		return nil, err
 	}

@@ -22,7 +22,7 @@ type (
 
 	Book struct {
 		gorm.Model
-		Name       string   `json:"name" gorm:"type:varchar(191);comment:图书名;not null;unique"` //图书名
+		Name       string   `json:"name" gorm:"type:varchar(191);comment:图书名;not null"` //图书名
 		Image      string   `json:"image"  gorm:"type:varchar(191);comment:图书图片"`       //图书图片
 		Author     string   `json:"author" gorm:"type:varchar(191);comment:图书作者"`       //图书作者
 		Info       string   `json:"info"  gorm:"type:varchar(1000);comment:图书信息"`       //图书信息
