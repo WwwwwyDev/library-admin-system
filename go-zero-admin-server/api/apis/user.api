@@ -1,0 +1,31 @@
+syntax = "v1"
+
+info(
+	title: "user"
+	desc: "show user service"
+	author: "wuwenyi"
+	email: "773323518@qq.com"
+	version: "dev"
+)
+
+type (
+	GetUsersReq {
+		Page     int    `form:"page,default=1"`
+		Limit    int    `form:"limit,default=10"`
+		Username string `form:"username,optional"`
+	}
+	AddUserReq {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		Info     string `json:"info,optional"`
+	}
+	UpdateUserReq {
+		Id       uint   `path:"id"`
+		Username string `json:"username,optional"`
+		Password string `json:"password,optional"`
+		Info     string `json:"info,optional"`
+	}
+	DeleteUserReq {
+		Id uint `path:"id"`
+	}
+)

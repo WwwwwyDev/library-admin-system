@@ -11,16 +11,16 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input ref="username" v-model="loginForm.username" placeholder="用户名" name="username" type="text"
-          tabindex="1" auto-complete="on" />
+        <el-input ref="username" v-model="loginForm.username" placeholder="用户名" name="username" type="text" tabindex="1"
+          auto-complete="on" />
       </el-form-item>
 
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType"
-          placeholder="密码" name="password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin" />
+        <el-input :key="passwordType" ref="password" v-model="loginForm.password" :type="passwordType" placeholder="密码"
+          name="password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
@@ -38,20 +38,12 @@
   import {
     validUsername
   } from '@/utils/validate'
-import request from '@/utils/request'
+  import request from '@/utils/request'
+  import axios from 'axios'
   export default {
     name: 'Login',
     created() {
-      request({
-        url: 'http://127.0.0.1:8888/book',
-        method: 'GET',
-        params: {
-          page:1,
-          limit:10
-        }
-      }).then(response => {
-        console.log(response)
-      })
+      
     },
     data() {
       const validateUsername = (rule, value, callback) => {

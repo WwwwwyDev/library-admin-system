@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package user;
+
+message IdReq {
+    uint64 id = 1;
+}
+
+message IdsReq {
+    repeated IdReq ids = 1;
+}
+
+message UsernameReq {
+    string username = 1;
+}
+
+message UsersReq {
+    int64 page = 1;
+    int64 limit =2;
+    string username =3;
+}
+
+message UserUpdateReq {
+    uint64 id = 1;
+    string username = 2;
+    string password = 3;
+    string salt = 4;
+    string info = 5;
+}
+
+message UserAddReq {
+    string username = 2;
+    string password = 3;
+    string salt = 4;
+    string info = 5;
+}
+
+
+message RolesReply {
+    uint64 id = 1;
+    string name = 2;
+    string info = 3;
+}
+
+message UserInfoReply {
+    uint64 id = 1;
+    string username = 2;
+    string password = 3;
+    string salt = 4;
+    string info = 5;
+    repeated RolesReply roles = 6;
+}
+
+message UsersInfoReply {
+    int64 total = 1;
+    repeated UserInfoReply usersInfo = 2;
+}
+
+message isExistReply{
+    bool isExist = 1;
+}
+
+message isSuccessReply{
+    bool isSuccess = 1;
+}
+
+service User {
+    rpc getUserById(IdReq) returns(UserInfoReply);
+    rpc getUserByUsername(UsernameReq) returns(UserInfoReply);
+    rpc IsExistUserById(IdReq) returns(isExistReply);
+    rpc IsExistUserByUsername(UsernameReq) returns(isExistReply);
+    rpc getUsers(UsersReq) returns(UsersInfoReply);
+    rpc AddUser(UserAddReq) returns(isSuccessReply);
+    rpc UpdateUser(UserUpdateReq) returns(isSuccessReply);
+    rpc DelUser(IdReq) returns(isSuccessReply);
+    rpc DelSomeUser(IdsReq) returns(isSuccessReply);
+
+}

@@ -1,0 +1,16 @@
+syntax = "v1"
+
+info(
+	title: "login"
+	desc: "show login service"
+	author: "wuwenyi"
+	email: "773323518@qq.com"
+	version: "dev"
+)
+
+type (
+	LoginReq {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+)

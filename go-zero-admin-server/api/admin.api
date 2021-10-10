@@ -1,0 +1,37 @@
+syntax = "v1"
+
+import (
+	"apis/reply.api"
+	"apis/login.api"
+	"apis/user.api"
+)
+
+info(
+	title: "admin"
+	desc: "show admin service"
+	author: "wuwenyi"
+	email: "773323518@qq.com"
+	version: "dev"
+)
+
+@server(
+	group: login
+)
+service admin-api {
+	@handler login
+	post /admin/api/login (LoginReq) returns (Reply)
+}
+
+@server(
+	group: user
+)
+service admin-api {
+	@handler getUsers
+	get /admin/api/user (GetUsersReq) returns (Reply)
+	@handler addUser
+	post /admin/api/user (AddUserReq) returns (Reply)
+	@handler updateUser
+	put /admin/api/user/:id (UpdateUserReq) returns (Reply)
+	@handler deleteUser
+	delete /admin/api/user/:id (DeleteUserReq) returns (Reply)
+}

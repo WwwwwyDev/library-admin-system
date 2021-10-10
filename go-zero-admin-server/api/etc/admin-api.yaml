@@ -1,0 +1,8 @@
+Name: admin-api
+Host: 0.0.0.0
+Port: 8888
+UserRpc:
+  Etcd:
+    Hosts:
+      - 81.70.8.101:2379
+    Key: user.rpc
