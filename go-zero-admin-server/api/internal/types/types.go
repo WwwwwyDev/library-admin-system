@@ -33,3 +33,11 @@ type UpdateUserReq struct {
 type DeleteUserReq struct {
 	Id uint `path:"id"`
 }
+
+type IdReq struct {
+	Id uint `path:"id"`
+}
+
+type UsernameReq struct {
+	Username string `path:"username"`
+}

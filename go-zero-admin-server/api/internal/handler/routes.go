@@ -4,6 +4,8 @@ package handler
 import (
 	"net/http"
 
+	jwt "go-zero-admin-server/api/internal/handler/jwt"
+	search "go-zero-admin-server/api/internal/handler/search"
 	user "go-zero-admin-server/api/internal/handler/user"
 	verify "go-zero-admin-server/api/internal/handler/verify"
 	"go-zero-admin-server/api/internal/svc"
@@ -12,6 +14,37 @@ import (
 )
 
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/rjwt",
+				Handler: jwt.RefreshJwtHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/djwt",
+				Handler: jwt.DecodeJwtHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/search/userId/:id",
+				Handler: search.GetUserByIdHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/search/username/:username",
+				Handler: search.GetUserByUserNameLikeHandler(serverCtx),
+			},
+		},
+	)
+
 	engine.AddRoutes(
 		[]rest.Route{
 			{
@@ -45,5 +78,6 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: user.DeleteUserHandler(serverCtx),
 			},
 		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 }

@@ -2,7 +2,7 @@ package svc
 
 import (
 	"fmt"
-	"go-zero-admin-server/common"
+	"go-zero-admin-server/common/core"
 	"go-zero-admin-server/service/user/model"
 	"go-zero-admin-server/service/user/rpc/internal/config"
 )
@@ -21,7 +21,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		psqlcfg.Host,
 		psqlcfg.Port,
 	)
-	conn := common.NewPostgresqlGorm(dsn)
+	conn := core.NewPostgresqlGorm(dsn)
 	return &ServiceContext{
 		Config: c,
 		UserModel: model.NewUserModel(conn),

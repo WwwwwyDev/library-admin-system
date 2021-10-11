@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"go-zero-admin-server/common"
+	"go-zero-admin-server/common/core"
 	"go-zero-admin-server/service/admin/user/model"
 )
 
@@ -15,7 +15,7 @@ func main() {
 		"81.70.8.101",
 		5432,
 	)
-	conn := common.NewPostgresqlGorm(dsn)
+	conn := core.NewPostgresqlGorm(dsn)
 	userModel:=model.NewUserModel(conn)
 	_ = userModel.DelSomeUser([]uint{1, 3, 4})
 

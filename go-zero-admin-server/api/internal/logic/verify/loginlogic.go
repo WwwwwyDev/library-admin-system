@@ -2,10 +2,12 @@ package verify
 
 import (
 	"context"
+	"github.com/dgrijalva/jwt-go"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
 	"go-zero-admin-server/common/util"
 	"go-zero-admin-server/service/user/rpc/userclient"
+	"time"
 
 	"go-zero-admin-server/api/internal/svc"
 	"go-zero-admin-server/api/internal/types"
@@ -26,22 +28,39 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 		svcCtx: svcCtx,
 	}
 }
+func (l *LoginLogic) getJwtToken(secretKey string, iat, seconds, userId int64) (string, error) {
+	claims := make(jwt.MapClaims)
+	claims["exp"] = iat + seconds
+	claims["iat"] = iat
+	claims["userId"] = userId
+	token := jwt.New(jwt.SigningMethodHS256)
+	token.Claims = claims
+	return token.SignedString([]byte(secretKey))
+}
 
 func (l *LoginLogic) Login(req types.LoginReq) (*types.Reply, error) {
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserByUsername(l.ctx, &userclient.UsernameReq{Username: req.Username})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error,err.Error())
+		return nil, errorx.NewCodeError(code.Error, err.Error())
 	}
 	if !isExistResp.IsExist {
-		return nil, errorx.NewCodeError(code.NoFoundError,"用户不存在")
+		return nil, errorx.NewCodeError(code.NoFoundError, "用户不存在")
 	}
 	userResp, err := l.svcCtx.UserRpc.GetUserByUsername(l.ctx, &userclient.UsernameReq{Username: req.Username})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error,err.Error())
+		return nil, errorx.NewCodeError(code.Error, err.Error())
 	}
 	passwordmd5 := util.Str2Md5(req.Password + userResp.Salt)
 	if passwordmd5 != userResp.Password {
-		return nil, errorx.NewCodeError(code.PasswordError,"用户密码错误")
+		return nil, errorx.NewCodeError(code.PasswordError, "用户密码错误")
 	}
-	return &types.Reply{Code:code.Success,Data: map[string]interface{}{"auth_token":"dwadadwadad"}, Msg: "登录成功"}, nil
+	now := time.Now().Unix()
+	accessExpire := l.svcCtx.Config.Auth.AccessExpire
+	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, int64(userResp.Id))
+	if err != nil {
+		return nil, errorx.NewCodeError(code.Error, err.Error())
+	}
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"userId": userResp.Id, "accessToken": jwtToken,
+		"accessExpire": now + accessExpire,
+		"refreshAfter": now + accessExpire/2}, Msg: "登录成功"}, nil
 }

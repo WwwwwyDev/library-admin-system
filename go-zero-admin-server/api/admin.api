@@ -4,6 +4,7 @@ import (
 	"apis/reply.api"
 	"apis/verify.api"
 	"apis/user.api"
+	"apis/search.api"
 )
 
 info(
@@ -15,6 +16,27 @@ info(
 )
 
 @server(
+	jwt: Auth
+	group : jwt
+)
+service admin-api{
+	@handler refreshJwt
+	post /admin/api/rjwt () returns (Reply)
+	@handler decodeJwt
+	post /admin/api/djwt () returns (Reply)
+}
+
+@server(
+	group : search
+)
+service admin-api{
+	@handler getUserById
+	post /admin/api/search/userId/:id (IdReq) returns (Reply)
+	@handler getUserByUserNameLike
+	post /admin/api/search/username/:username (UsernameReq) returns (Reply)
+}
+
+@server(
 	group: verify
 )
 service admin-api {
@@ -23,6 +45,7 @@ service admin-api {
 }
 
 @server(
+	jwt: Auth
 	group: user
 )
 service admin-api {

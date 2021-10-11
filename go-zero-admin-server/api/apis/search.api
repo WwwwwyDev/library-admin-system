@@ -1,0 +1,20 @@
+syntax = "v1"
+
+info(
+    title: "search"
+    desc: "show search service"
+    author: "wuwenyi"
+    email: "773323518@qq.com"
+    version: "dev"
+)
+
+
+type (
+    IdReq {
+        Id uint `path:"id"`
+    }
+    UsernameReq {
+        username string `path:"username"`
+    }
+)
+
