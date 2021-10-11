@@ -3,6 +3,8 @@ package user
 import (
 	"context"
 	"crypto/md5"
+	"fmt"
+	"github.com/gofrs/uuid"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
 	"go-zero-admin-server/service/user/rpc/userclient"
@@ -35,8 +37,10 @@ func (l *UpdateUserLogic) UpdateUser(req types.UpdateUserReq) (*types.Reply, err
 	if !isExistResp.IsExist{
 		return nil, errorx.NewCodeError(code.NoFoundError,"用户不存在")
 	}
-	l.svcCtx.UserRpc.GetUserById(l.ctx,&userclient.IdReq{Id: uint64(req.Id)})
-	userOld, err := l.svcCtx.UserModel.GetUserByID(req.ID)
+	userOld, err := l.svcCtx.UserRpc.GetUserById(l.ctx, &userclient.IdReq{Id: uint64(req.Id)})
+	if err != nil{
+		return nil,errorx.NewCodeError(code.Error,err.Error())
+	}
 	if userOld.Username!= req.Username{
 		return nil, errorx.NewCodeError(code.NoChangeError,"拒绝修改用户名")
 	}
@@ -48,9 +52,12 @@ func (l *UpdateUserLogic) UpdateUser(req types.UpdateUserReq) (*types.Reply, err
 	has := md5.Sum(passwordb)
 	passwordmd5 := fmt.Sprintf("%x", has) //将[]byte转成16进制
 	userNew.Password = passwordmd5
-	err = l.svcCtx.UserModel.UpdateUser(userNew)
+	isSuccessResp, err := l.svcCtx.UserRpc.UpdateUser(l.ctx, &userclient.UserUpdateReq{Id: userNew.Id, Username: userNew.Username, Password: userNew.Password, Salt: userNew.Salt, Info: req.Info})
 	if err != nil {
-		return nil, err
+		return nil,errorx.NewCodeError(code.Error,err.Error())
 	}
-	return &types.Reply{Code: code.Success, Msg: "ok"}, nil
+	if !isSuccessResp.IsSuccess{
+		return nil, errorx.NewCodeError(code.ChangeError,"修改用户失败")
+	}
+	return &types.Reply{Code: code.Success, Msg: "修改用户成功"}, nil
 }

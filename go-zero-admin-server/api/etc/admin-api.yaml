@@ -1,6 +1,15 @@
 Name: admin-api
 Host: 0.0.0.0
 Port: 8888
+Service:
+  Name: admin-api
+  Mode: pro
+Log:
+  ServiceName: admin-api
+  Mode: file
+  Path: logs
+  Level: info
+  KeepDay: 7
 UserRpc:
   Etcd:
     Hosts:

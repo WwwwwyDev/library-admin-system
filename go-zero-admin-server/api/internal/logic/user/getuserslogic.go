@@ -40,5 +40,5 @@ func (l *GetUsersLogic) GetUsers(req types.GetUsersReq) (*types.Reply, error) {
 		usersResp.UsersInfo[i].Password = "禁止访问该数据"
 		usersResp.UsersInfo[i].Salt = "禁止访问该数据"
 	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"users": usersResp.UsersInfo, "total": usersResp.Total}, Msg: "查询成功"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"users": usersResp.UsersInfo, "total": usersResp.Total}, Msg: "查询用户成功"}, nil
 }

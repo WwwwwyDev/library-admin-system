@@ -38,7 +38,7 @@ func (l *DeleteUserLogic) DeleteUser(req types.DeleteUserReq) (*types.Reply, err
 		return nil,errorx.NewCodeError(code.Error,err.Error())
 	}
 	if !isSuccessResp.IsSuccess{
-		return nil,errorx.NewCodeError(code.DelError,"删除失败")
+		return nil,errorx.NewCodeError(code.DelError,"删除用户失败")
 	}
-	return &types.Reply{Code: code.Success, Msg: "删除成功"}, nil
+	return &types.Reply{Code: code.Success, Msg: "删除用户成功"}, nil
 }

@@ -1,5 +1,14 @@
 Name: user.rpc
 ListenOn: 127.0.0.1:8080
+Service:
+  Name: user-rpc
+  Mode: pro
+Log:
+  ServiceName: user-rpc
+  Mode: file
+  Path: logs
+  Level: info
+  KeepDay: 7
 Postgresql:
   User: postgres
   Password: wwy123456
