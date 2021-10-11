@@ -24,6 +24,10 @@ type (
 		Password string `json:"password,optional"`
 		Info     string `json:"info,optional"`
 	}
+	EditUserRolesReq {
+		Id       uint   `path:"id"`
+		RoleIds  []uint `json:"roleIds,optional"`
+	}
 	DeleteUserReq {
 		Id uint `path:"id"`
 	}

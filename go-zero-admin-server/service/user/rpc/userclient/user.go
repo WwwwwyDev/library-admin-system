@@ -12,16 +12,20 @@ import (
 )
 
 type (
-	UsernameReq    = user.UsernameReq
-	UserUpdateReq  = user.UserUpdateReq
-	RolesReply     = user.RolesReply
-	IdReq          = user.IdReq
-	IdsReq         = user.IdsReq
-	UsersReq       = user.UsersReq
 	UserAddReq     = user.UserAddReq
 	UserInfoReply  = user.UserInfoReply
+	EmptyReq       = user.EmptyReq
+	IdsReq         = user.IdsReq
+	UsersReq       = user.UsersReq
+	RoleReply      = user.RoleReply
+	RolesReply     = user.RolesReply
 	UsersInfoReply = user.UsersInfoReply
+	IdReq          = user.IdReq
+	RoleReq        = user.RoleReq
+	RolesReq       = user.RolesReq
 	IsExistReply   = user.IsExistReply
+	UsernameReq    = user.UsernameReq
+	UserUpdateReq  = user.UserUpdateReq
 	IsSuccessReply = user.IsSuccessReply
 
 	User interface {
@@ -35,6 +39,8 @@ type (
 		UpdateUser(ctx context.Context, in *UserUpdateReq) (*IsSuccessReply, error)
 		DelUser(ctx context.Context, in *IdReq) (*IsSuccessReply, error)
 		DelSomeUser(ctx context.Context, in *IdsReq) (*IsSuccessReply, error)
+		GetAllRole(ctx context.Context, in *EmptyReq) (*RolesReply, error)
+		EditUserRoles(ctx context.Context, in *RolesReq) (*IsSuccessReply, error)
 	}
 
 	defaultUser struct {
@@ -96,4 +102,14 @@ func (m *defaultUser) DelUser(ctx context.Context, in *IdReq) (*IsSuccessReply, 
 func (m *defaultUser) DelSomeUser(ctx context.Context, in *IdsReq) (*IsSuccessReply, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.DelSomeUser(ctx, in)
+}
+
+func (m *defaultUser) GetAllRole(ctx context.Context, in *EmptyReq) (*RolesReply, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetAllRole(ctx, in)
+}
+
+func (m *defaultUser) EditUserRoles(ctx context.Context, in *RolesReq) (*IsSuccessReply, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.EditUserRoles(ctx, in)
 }

@@ -28,7 +28,7 @@ type (
 		Password      string   `json:"password"  gorm:"type:varchar(191);comment:密码md5值;not null"`       //密码md5值
 		Salt     string   `json:"salt" gorm:"type:varchar(191);comment:密码盐"`       //密码盐
 		Info       string   `json:"info"  gorm:"type:varchar(1000);comment:用户信息"`       //用户信息
-		Role   []Role `json:"role" gorm:"many2many:user_role"`
+		Role   []*Role `json:"role" gorm:"many2many:user_role"`
 	}
 )
 

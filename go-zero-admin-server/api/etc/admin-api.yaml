@@ -20,7 +20,7 @@ Redis:
   Db: 0
 Auth:
   AccessSecret: 84a8a776-e447-4870-83ea-a17e8d28c76d
-  AccessExpire: 3600
+  AccessExpire: 36000000
 UserRpc:
   Etcd:
     Hosts:

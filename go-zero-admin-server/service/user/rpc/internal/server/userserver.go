@@ -70,3 +70,13 @@ func (s *UserServer) DelSomeUser(ctx context.Context, in *user.IdsReq) (*user.Is
 	l := logic.NewDelSomeUserLogic(ctx, s.svcCtx)
 	return l.DelSomeUser(in)
 }
+
+func (s *UserServer) GetAllRole(ctx context.Context, in *user.EmptyReq) (*user.RolesReply, error) {
+	l := logic.NewGetAllRoleLogic(ctx, s.svcCtx)
+	return l.GetAllRole(in)
+}
+
+func (s *UserServer) EditUserRoles(ctx context.Context, in *user.RolesReq) (*user.IsSuccessReply, error) {
+	l := logic.NewEditUserRolesLogic(ctx, s.svcCtx)
+	return l.EditUserRoles(in)
+}

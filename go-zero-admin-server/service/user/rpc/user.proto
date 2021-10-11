@@ -2,12 +2,25 @@ syntax = "proto3";
 
 package user;
 
+message EmptyReq {
+
+}
+
 message IdReq {
     uint64 id = 1;
 }
 
 message IdsReq {
     repeated IdReq ids = 1;
+}
+
+message RoleReq{
+    uint64 id = 1;
+}
+
+message RolesReq{
+    uint64 userId = 1;
+    repeated RoleReq ids = 2;
 }
 
 message UsernameReq {
@@ -36,10 +49,14 @@ message UserAddReq {
 }
 
 
-message RolesReply {
+message RoleReply {
     uint64 id = 1;
     string name = 2;
     string info = 3;
+}
+
+message RolesReply {
+    repeated RoleReply roles = 1;
 }
 
 message UserInfoReply {
@@ -48,7 +65,7 @@ message UserInfoReply {
     string password = 3;
     string salt = 4;
     string info = 5;
-    repeated RolesReply roles = 6;
+    repeated RoleReply roles = 6;
 }
 
 message UsersInfoReply {
@@ -75,5 +92,6 @@ service User {
     rpc UpdateUser(UserUpdateReq) returns(isSuccessReply);
     rpc DelUser(IdReq) returns(isSuccessReply);
     rpc DelSomeUser(IdsReq) returns(isSuccessReply);
-
+    rpc GetAllRole(EmptyReq) returns(RolesReply);
+    rpc editUserRoles(RolesReq) returns(isSuccessReply);
 }

@@ -27,9 +27,9 @@ func (l *GetUserByUsernameLogic) GetUserByUsername(in *user.UsernameReq) (*user.
 	if err != nil {
 		return nil, err
 	}
-	rolesHandle := make([]*user.RolesReply, 0)
+	rolesHandle := make([]*user.RoleReply, 0)
 	for _, e := range _user.Role {
-		rolesHandle = append(rolesHandle, &user.RolesReply{Id: uint64(e.ID), Name: e.Name, Info: e.Info})
+		rolesHandle = append(rolesHandle, &user.RoleReply{Id: uint64(e.ID), Name: e.Name, Info: e.Info})
 	}
 	return &user.UserInfoReply{Id: uint64(_user.ID),Username: _user.Username,Password:_user.Password,Salt: _user.Salt,Info: _user.Info,Roles: rolesHandle}, nil
 }

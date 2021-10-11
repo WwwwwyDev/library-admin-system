@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"go-zero-admin-server/common/core"
-	"go-zero-admin-server/service/admin/user/model"
+	"go-zero-admin-server/service/user/model"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 	)
 	conn := core.NewPostgresqlGorm(dsn)
 	userModel:=model.NewUserModel(conn)
-	_ = userModel.DelSomeUser([]uint{1, 3, 4})
+	role := model.Role{Model:gorm.Model{ID: 1}}
+	userModel.AddUser(&model.User{Username: "232423",Password: "2312313",Role: []model.Role{role,role}})
 
 }

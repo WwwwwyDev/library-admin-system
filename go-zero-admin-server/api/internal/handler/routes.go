@@ -33,14 +33,19 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 	engine.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/admin/api/search/userId/:id",
 				Handler: search.GetUserByIdHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/admin/api/search/username/:username",
 				Handler: search.GetUserByUserNameLikeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/search/roles",
+				Handler: search.GetAllRolesHandler(serverCtx),
 			},
 		},
 	)
@@ -71,6 +76,11 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPut,
 				Path:    "/admin/api/user/:id",
 				Handler: user.UpdateUserHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/admin/api/userRoles/:id",
+				Handler: user.EditUserRolesHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodDelete,

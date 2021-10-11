@@ -30,6 +30,11 @@ type UpdateUserReq struct {
 	Info     string `json:"info,optional"`
 }
 
+type EditUserRolesReq struct {
+	Id      uint   `path:"id"`
+	RoleIds []uint `json:"roleIds,optional"`
+}
+
 type DeleteUserReq struct {
 	Id uint `path:"id"`
 }
