@@ -8,7 +8,7 @@ Log:
   ServiceName: admin-api
   Mode: file
   Path: logs
-  Level: info
+  Level: severe
   KeepDay: 7
 UserRpc:
   Etcd:

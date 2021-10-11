@@ -31,6 +31,11 @@ func (s *UserServer) GetUserByUsername(ctx context.Context, in *user.UsernameReq
 	return l.GetUserByUsername(in)
 }
 
+func (s *UserServer) GetUserByUsernameLike(ctx context.Context, in *user.UsernameReq) (*user.UsersInfoReply, error) {
+	l := logic.NewGetUserByUsernameLikeLogic(ctx, s.svcCtx)
+	return l.GetUserByUsernameLike(in)
+}
+
 func (s *UserServer) IsExistUserById(ctx context.Context, in *user.IdReq) (*user.IsExistReply, error) {
 	l := logic.NewIsExistUserByIdLogic(ctx, s.svcCtx)
 	return l.IsExistUserById(in)

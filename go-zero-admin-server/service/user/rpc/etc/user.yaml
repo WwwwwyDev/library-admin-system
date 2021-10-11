@@ -7,7 +7,7 @@ Log:
   ServiceName: user-rpc
   Mode: file
   Path: logs
-  Level: info
+  Level: severe
   KeepDay: 7
 Postgresql:
   User: postgres

@@ -2,11 +2,10 @@ package user
 
 import (
 	"context"
-	"crypto/md5"
-	"fmt"
 	"github.com/gofrs/uuid"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
+	"go-zero-admin-server/common/util"
 	"go-zero-admin-server/service/user/rpc/userclient"
 
 	"go-zero-admin-server/api/internal/svc"
@@ -39,9 +38,7 @@ func (l *AddUserLogic) AddUser(req types.AddUserReq) (*types.Reply, error) {
 	}
 	saltb, err := uuid.NewV4()
 	salts := saltb.String()
-	passwordb := []byte(req.Password + salts)
-	has := md5.Sum(passwordb)
-	passwordmd5 := fmt.Sprintf("%x", has) //将[]byte转成16进制
+	passwordmd5 := util.Str2Md5(req.Password + salts)
 	isSuccess, err := l.svcCtx.UserRpc.AddUser(l.ctx,&userclient.UserAddReq{Username: req.Username,Password: passwordmd5,Salt: salts,Info: req.Info})
 	if err != nil{
 		return nil,errorx.NewCodeError(code.Error,err.Error())

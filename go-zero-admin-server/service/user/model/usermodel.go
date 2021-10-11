@@ -7,6 +7,7 @@ import (
 type (
 	UserModel interface {
 		GetUserByUsername(username string) (*User, error)
+		GetUserByUsernameLike(username string) ([]User, error)
 		GetUserById(id uint) (*User, error)
 		GetUsers(page int, limit int, userS *User) ([]User, int64, error)
 		IsExistUserById(id uint) (bool, error)
@@ -30,12 +31,23 @@ type (
 		Role   []Role `json:"role" gorm:"many2many:user_role"`
 	}
 )
+
+
 func NewUserModel(conn *gorm.DB) UserModel {
 	//如果没有表则自动构建表
 	conn.AutoMigrate(&User{})
 	return &defaultUserModel{
 		conn:  conn,
 	}
+}
+
+func (d defaultUserModel) GetUserByUsernameLike(username string) ([]User, error) {
+	var users []User
+	err := d.conn.Model(&User{}).Where("username like ?", "%"+username+"%").Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
 
 func (d defaultUserModel) GetUserByUsername(username string) (*User, error) {

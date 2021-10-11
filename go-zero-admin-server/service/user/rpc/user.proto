@@ -67,6 +67,7 @@ message isSuccessReply{
 service User {
     rpc getUserById(IdReq) returns(UserInfoReply);
     rpc getUserByUsername(UsernameReq) returns(UserInfoReply);
+    rpc getUserByUsernameLike(UsernameReq) returns(UsersInfoReply);
     rpc IsExistUserById(IdReq) returns(isExistReply);
     rpc IsExistUserByUsername(UsernameReq) returns(isExistReply);
     rpc getUsers(UsersReq) returns(UsersInfoReply);

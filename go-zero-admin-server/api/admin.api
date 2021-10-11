@@ -2,7 +2,7 @@ syntax = "v1"
 
 import (
 	"apis/reply.api"
-	"apis/login.api"
+	"apis/verify.api"
 	"apis/user.api"
 )
 
@@ -15,11 +15,11 @@ info(
 )
 
 @server(
-	group: login
+	group: verify
 )
 service admin-api {
 	@handler login
-	post /admin/api/login (LoginReq) returns (Reply)
+	post /admin/api/verify/login (LoginReq) returns (Reply)
 }
 
 @server(

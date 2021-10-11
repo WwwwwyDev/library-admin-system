@@ -1,10 +1,10 @@
-package login
+package verify
 
 import (
 	"net/http"
 
 	"github.com/tal-tech/go-zero/rest/httpx"
-	"go-zero-admin-server/api/internal/logic/login"
+	"go-zero-admin-server/api/internal/logic/verify"
 	"go-zero-admin-server/api/internal/svc"
 	"go-zero-admin-server/api/internal/types"
 )
@@ -17,7 +17,7 @@ func LoginHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := login.NewLoginLogic(r.Context(), ctx)
+		l := verify.NewLoginLogic(r.Context(), ctx)
 		resp, err := l.Login(req)
 		if err != nil {
 			httpx.Error(w, err)

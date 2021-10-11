@@ -10,4 +10,5 @@ const (
 	ChangeError = 10005  //修改失败
 	AddError = 10006  //添加失败
 	DelError = 10007  //添加失败
+	PasswordError = 10008  //密码错误
 )

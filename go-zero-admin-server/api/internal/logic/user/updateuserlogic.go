@@ -2,11 +2,10 @@ package user
 
 import (
 	"context"
-	"crypto/md5"
-	"fmt"
 	"github.com/gofrs/uuid"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
+	"go-zero-admin-server/common/util"
 	"go-zero-admin-server/service/user/rpc/userclient"
 
 	"go-zero-admin-server/api/internal/svc"
@@ -30,34 +29,28 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) UpdateU
 }
 
 func (l *UpdateUserLogic) UpdateUser(req types.UpdateUserReq) (*types.Reply, error) {
-	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx,&userclient.IdReq{Id: uint64(req.Id)})
-	if err != nil{
-		return nil,errorx.NewCodeError(code.Error,err.Error())
+	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx, &userclient.IdReq{Id: uint64(req.Id)})
+	if err != nil {
+		return nil, errorx.NewCodeError(code.Error, err.Error())
 	}
-	if !isExistResp.IsExist{
-		return nil, errorx.NewCodeError(code.NoFoundError,"用户不存在")
+	if !isExistResp.IsExist {
+		return nil, errorx.NewCodeError(code.NoFoundError, "用户不存在")
 	}
 	userOld, err := l.svcCtx.UserRpc.GetUserById(l.ctx, &userclient.IdReq{Id: uint64(req.Id)})
-	if err != nil{
-		return nil,errorx.NewCodeError(code.Error,err.Error())
-	}
-	if userOld.Username!= req.Username{
-		return nil, errorx.NewCodeError(code.NoChangeError,"拒绝修改用户名")
+	if err != nil {
+		return nil, errorx.NewCodeError(code.Error, err.Error())
 	}
 	userNew := userOld
 	saltb, err := uuid.NewV4()
 	salts := saltb.String()
 	userNew.Salt = salts
-	passwordb := []byte(req.Password + salts)
-	has := md5.Sum(passwordb)
-	passwordmd5 := fmt.Sprintf("%x", has) //将[]byte转成16进制
-	userNew.Password = passwordmd5
+	userNew.Password = util.Str2Md5(req.Password + salts)
 	isSuccessResp, err := l.svcCtx.UserRpc.UpdateUser(l.ctx, &userclient.UserUpdateReq{Id: userNew.Id, Username: userNew.Username, Password: userNew.Password, Salt: userNew.Salt, Info: req.Info})
 	if err != nil {
-		return nil,errorx.NewCodeError(code.Error,err.Error())
+		return nil, errorx.NewCodeError(code.Error, err.Error())
 	}
-	if !isSuccessResp.IsSuccess{
-		return nil, errorx.NewCodeError(code.ChangeError,"修改用户失败")
+	if !isSuccessResp.IsSuccess {
+		return nil, errorx.NewCodeError(code.ChangeError, "修改用户失败")
 	}
 	return &types.Reply{Code: code.Success, Msg: "修改用户成功"}, nil
 }

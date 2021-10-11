@@ -26,7 +26,6 @@ type AddUserReq struct {
 
 type UpdateUserReq struct {
 	Id       uint   `path:"id"`
-	Username string `json:"username,optional"`
 	Password string `json:"password,optional"`
 	Info     string `json:"info,optional"`
 }

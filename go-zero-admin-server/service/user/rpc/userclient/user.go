@@ -12,21 +12,22 @@ import (
 )
 
 type (
+	UsernameReq    = user.UsernameReq
 	UserUpdateReq  = user.UserUpdateReq
+	RolesReply     = user.RolesReply
+	IdReq          = user.IdReq
+	IdsReq         = user.IdsReq
+	UsersReq       = user.UsersReq
 	UserAddReq     = user.UserAddReq
 	UserInfoReply  = user.UserInfoReply
 	UsersInfoReply = user.UsersInfoReply
 	IsExistReply   = user.IsExistReply
 	IsSuccessReply = user.IsSuccessReply
-	UsersReq       = user.UsersReq
-	IdsReq         = user.IdsReq
-	UsernameReq    = user.UsernameReq
-	RolesReply     = user.RolesReply
-	IdReq          = user.IdReq
 
 	User interface {
 		GetUserById(ctx context.Context, in *IdReq) (*UserInfoReply, error)
 		GetUserByUsername(ctx context.Context, in *UsernameReq) (*UserInfoReply, error)
+		GetUserByUsernameLike(ctx context.Context, in *UsernameReq) (*UsersInfoReply, error)
 		IsExistUserById(ctx context.Context, in *IdReq) (*IsExistReply, error)
 		IsExistUserByUsername(ctx context.Context, in *UsernameReq) (*IsExistReply, error)
 		GetUsers(ctx context.Context, in *UsersReq) (*UsersInfoReply, error)
@@ -55,6 +56,11 @@ func (m *defaultUser) GetUserById(ctx context.Context, in *IdReq) (*UserInfoRepl
 func (m *defaultUser) GetUserByUsername(ctx context.Context, in *UsernameReq) (*UserInfoReply, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.GetUserByUsername(ctx, in)
+}
+
+func (m *defaultUser) GetUserByUsernameLike(ctx context.Context, in *UsernameReq) (*UsersInfoReply, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.GetUserByUsernameLike(ctx, in)
 }
 
 func (m *defaultUser) IsExistUserById(ctx context.Context, in *IdReq) (*IsExistReply, error) {

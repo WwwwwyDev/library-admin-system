@@ -4,8 +4,8 @@ package handler
 import (
 	"net/http"
 
-	login "go-zero-admin-server/api/internal/handler/login"
 	user "go-zero-admin-server/api/internal/handler/user"
+	verify "go-zero-admin-server/api/internal/handler/verify"
 	"go-zero-admin-server/api/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
@@ -16,8 +16,8 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/admin/api/login",
-				Handler: login.LoginHandler(serverCtx),
+				Path:    "/admin/api/verify/login",
+				Handler: verify.LoginHandler(serverCtx),
 			},
 		},
 	)
