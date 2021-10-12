@@ -27,6 +27,15 @@ func NewEditUserRolesLogic(ctx context.Context, svcCtx *svc.ServiceContext) Edit
 }
 
 func (l *EditUserRolesLogic) EditUserRoles(req types.EditUserRolesReq) (*types.Reply, error) {
+	for _, e := range req.RoleIds {
+		roleIsExistResp, err := l.svcCtx.UserRpc.IsExistRoleById(l.ctx, &userclient.IdReq{Id: uint64(e)})
+		if err != nil {
+			return nil, errorx.NewCodeError(code.Error, err.Error())
+		}
+		if !roleIsExistResp.IsExist {
+			return nil, errorx.NewCodeError(code.NoFoundError, "不存在此权限")
+		}
+	}
 	rolesHandle := make([]*userclient.RoleReq,0)
 	for _,e := range req.RoleIds{
 		rolesHandle = append(rolesHandle,&userclient.RoleReq{Id: uint64(e)})

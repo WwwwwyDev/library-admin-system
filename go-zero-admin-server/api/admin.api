@@ -21,9 +21,9 @@ info(
 )
 service admin-api{
 	@handler refreshJwt
-	post /admin/api/rjwt () returns (Reply)
+	get /admin/api/rjwt () returns (Reply)
 	@handler decodeJwt
-	post /admin/api/djwt () returns (Reply)
+	get /admin/api/djwt () returns (Reply)
 }
 
 @server(

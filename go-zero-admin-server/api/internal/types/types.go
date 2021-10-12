@@ -21,12 +21,14 @@ type GetUsersReq struct {
 type AddUserReq struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Avatar   string `json:"avatar"`
 	Info     string `json:"info,optional"`
 }
 
 type UpdateUserReq struct {
 	Id       uint   `path:"id"`
 	Password string `json:"password,optional"`
+	Avatar   string `json:"avatar"`
 	Info     string `json:"info,optional"`
 }
 

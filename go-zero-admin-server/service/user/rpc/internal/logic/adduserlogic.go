@@ -25,7 +25,7 @@ func NewAddUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AddUserLo
 }
 
 func (l *AddUserLogic) AddUser(in *user.UserAddReq) (*user.IsSuccessReply, error) {
-	isSuccess, err := l.svcCtx.UserModel.AddUser(&model.User{Username: in.Username, Password: in.Password, Salt: in.Salt, Info: in.Info})
+	isSuccess, err := l.svcCtx.UserModel.AddUser(&model.User{Username: in.Username, Password: in.Password, Avatar:in.Avatar,Salt: in.Salt, Info: in.Info})
 	if err != nil {
 		return nil, err
 	}

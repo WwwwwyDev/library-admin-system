@@ -11,16 +11,16 @@ Log:
   Level: severe
   KeepDay: 7
 CacheRedis:
-  - Host: 81.70.8.101
+  - Host: 81.70.8.101:6379
     Pass: wwy123456
     Type: node
 Redis:
-  Host: 81.70.8.101
+  Host: 81.70.8.101:6379
   Password: wwy123456
   Db: 0
 Auth:
   AccessSecret: 84a8a776-e447-4870-83ea-a17e8d28c76d
-  AccessExpire: 36000000
+  AccessExpire: 3600
 UserRpc:
   Etcd:
     Hosts:

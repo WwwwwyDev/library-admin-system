@@ -80,3 +80,8 @@ func (s *UserServer) EditUserRoles(ctx context.Context, in *user.RolesReq) (*use
 	l := logic.NewEditUserRolesLogic(ctx, s.svcCtx)
 	return l.EditUserRoles(in)
 }
+
+func (s *UserServer) IsExistRoleById(ctx context.Context, in *user.IdReq) (*user.IsExistReply, error) {
+	l := logic.NewIsExistRoleByIdLogic(ctx, s.svcCtx)
+	return l.IsExistRoleById(in)
+}

@@ -12,21 +12,21 @@ import (
 )
 
 type (
-	UserAddReq     = user.UserAddReq
-	UserInfoReply  = user.UserInfoReply
-	EmptyReq       = user.EmptyReq
-	IdsReq         = user.IdsReq
+	IsSuccessReply = user.IsSuccessReply
 	UsersReq       = user.UsersReq
+	IdReq          = user.IdReq
+	UsernameReq    = user.UsernameReq
 	RoleReply      = user.RoleReply
 	RolesReply     = user.RolesReply
-	UsersInfoReply = user.UsersInfoReply
-	IdReq          = user.IdReq
+	UserInfoReply  = user.UserInfoReply
+	EmptyReq       = user.EmptyReq
 	RoleReq        = user.RoleReq
-	RolesReq       = user.RolesReq
-	IsExistReply   = user.IsExistReply
-	UsernameReq    = user.UsernameReq
 	UserUpdateReq  = user.UserUpdateReq
-	IsSuccessReply = user.IsSuccessReply
+	IdsReq         = user.IdsReq
+	UserAddReq     = user.UserAddReq
+	UsersInfoReply = user.UsersInfoReply
+	IsExistReply   = user.IsExistReply
+	RolesReq       = user.RolesReq
 
 	User interface {
 		GetUserById(ctx context.Context, in *IdReq) (*UserInfoReply, error)
@@ -41,6 +41,7 @@ type (
 		DelSomeUser(ctx context.Context, in *IdsReq) (*IsSuccessReply, error)
 		GetAllRole(ctx context.Context, in *EmptyReq) (*RolesReply, error)
 		EditUserRoles(ctx context.Context, in *RolesReq) (*IsSuccessReply, error)
+		IsExistRoleById(ctx context.Context, in *IdReq) (*IsExistReply, error)
 	}
 
 	defaultUser struct {
@@ -112,4 +113,9 @@ func (m *defaultUser) GetAllRole(ctx context.Context, in *EmptyReq) (*RolesReply
 func (m *defaultUser) EditUserRoles(ctx context.Context, in *RolesReq) (*IsSuccessReply, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.EditUserRoles(ctx, in)
+}
+
+func (m *defaultUser) IsExistRoleById(ctx context.Context, in *IdReq) (*IsExistReply, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.IsExistRoleById(ctx, in)
 }

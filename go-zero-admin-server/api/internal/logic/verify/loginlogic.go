@@ -2,6 +2,7 @@ package verify
 
 import (
 	"context"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
@@ -39,6 +40,12 @@ func (l *LoginLogic) getJwtToken(secretKey string, iat, seconds, userId int64) (
 }
 
 func (l *LoginLogic) Login(req types.LoginReq) (*types.Reply, error) {
+	if len(req.Username) < 6 {
+		return nil,errorx.NewCodeError(code.ParameterError, "用户名非法")
+	}
+	if len(req.Password) < 6 {
+		return nil,errorx.NewCodeError(code.ParameterError, "密码非法")
+	}
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserByUsername(l.ctx, &userclient.UsernameReq{Username: req.Username})
 	if err != nil {
 		return nil, errorx.NewCodeError(code.Error, err.Error())
@@ -60,7 +67,9 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.Reply, error) {
 	if err != nil {
 		return nil, errorx.NewCodeError(code.Error, err.Error())
 	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"userId": userResp.Id, "accessToken": jwtToken,
+	idstr := fmt.Sprintf("%d",userResp.Id)
+	l.svcCtx.Redis.Set("loginUserId:"+idstr,jwtToken,time.Duration(accessExpire)*time.Second)
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"userId": userResp.Id, "username": userResp.Username,"avatar":userResp.Avatar,"info":userResp.Info,"accessToken": jwtToken,
 		"accessExpire": now + accessExpire,
 		"refreshAfter": now + accessExpire/2}, Msg: "登录成功"}, nil
 }

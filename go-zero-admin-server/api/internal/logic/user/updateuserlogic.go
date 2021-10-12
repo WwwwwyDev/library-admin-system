@@ -29,6 +29,9 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) UpdateU
 }
 
 func (l *UpdateUserLogic) UpdateUser(req types.UpdateUserReq) (*types.Reply, error) {
+	if len(req.Password) < 6 {
+		return nil,errorx.NewCodeError(code.ParameterError, "密码非法")
+	}
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx, &userclient.IdReq{Id: uint64(req.Id)})
 	if err != nil {
 		return nil, errorx.NewCodeError(code.Error, err.Error())
@@ -45,7 +48,7 @@ func (l *UpdateUserLogic) UpdateUser(req types.UpdateUserReq) (*types.Reply, err
 	salts := saltb.String()
 	userNew.Salt = salts
 	userNew.Password = util.Str2Md5(req.Password + salts)
-	isSuccessResp, err := l.svcCtx.UserRpc.UpdateUser(l.ctx, &userclient.UserUpdateReq{Id: userNew.Id, Username: userNew.Username, Password: userNew.Password, Salt: userNew.Salt, Info: req.Info})
+	isSuccessResp, err := l.svcCtx.UserRpc.UpdateUser(l.ctx, &userclient.UserUpdateReq{Id: userNew.Id, Username: userNew.Username, Password: userNew.Password, Salt: userNew.Salt,Avatar: req.Avatar,Info: req.Info})
 	if err != nil {
 		return nil, errorx.NewCodeError(code.Error, err.Error())
 	}

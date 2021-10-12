@@ -26,10 +26,6 @@ func NewEditUserRolesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Edi
 
 func (l *EditUserRolesLogic) EditUserRoles(in *user.RolesReq) (*user.IsSuccessReply, error) {
 	userId := uint(in.UserId)
-	err := l.svcCtx.RoleModel.DelRoleUserByUserId(userId)
-	if err != nil {
-		return nil, err
-	}
 	_user, err := l.svcCtx.UserModel.GetUserById(userId)
 	if err != nil {
 		return nil, err
@@ -39,7 +35,7 @@ func (l *EditUserRolesLogic) EditUserRoles(in *user.RolesReq) (*user.IsSuccessRe
 		roleReplyHandle = append(roleReplyHandle,&model.Role{Model:gorm.Model{ID: uint(e.Id)}})
 	}
 	_user.Role = roleReplyHandle
-	isSuccess, err := l.svcCtx.UserModel.UpdateUser(_user)
+	isSuccess, err := l.svcCtx.RoleModel.EditUserRoles(_user)
 	if err != nil {
 		return nil, err
 	}

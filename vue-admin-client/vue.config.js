@@ -37,6 +37,12 @@ module.exports = {
       warnings: false,
       errors: false
     },
+    proxy:{
+        "/admin/api":{
+            target:"http://127.0.0.1:8888",
+            changeOrigin:true,//支持跨域
+        }
+    }
     // before: require('./mock/mock-server.js')
   },
   configureWebpack: {

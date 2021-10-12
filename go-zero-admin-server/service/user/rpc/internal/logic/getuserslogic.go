@@ -31,7 +31,7 @@ func (l *GetUsersLogic) GetUsers(in *user.UsersReq) (*user.UsersInfoReply, error
 	}
 	usersHandle := make([]*user.UserInfoReply, 0)
 	for _, e := range users {
-		usersHandle = append(usersHandle, &user.UserInfoReply{Id: uint64(e.ID), Username: e.Username, Password: e.Password, Salt: e.Salt, Info: e.Info})
+		usersHandle = append(usersHandle, &user.UserInfoReply{Id: uint64(e.ID), Username: e.Username, Password: e.Password, Salt: e.Salt,Avatar: e.Avatar, Info: e.Info})
 	}
 	return &user.UsersInfoReply{UsersInfo: usersHandle,Total: total}, nil
 }

@@ -9,8 +9,9 @@ type (
 		AddRole(role *Role) (bool,error)
 		UpdateRole(role *Role) (bool,error)
 		DelRole(role *Role) (bool,error)
-		DelRoleUserByUserId(userId uint) (error)
+		EditUserRoles(user *User) (bool,error)
 		GetAllRoles()([]Role,error)
+		IsExistRoleById(id uint)(bool,error)
 	}
 
 	defaultRoleModel struct {
@@ -30,6 +31,18 @@ func NewRoleModel(conn *gorm.DB) RoleModel {
 	return &defaultRoleModel{
 		conn:  conn,
 	}
+}
+
+func (d defaultRoleModel) IsExistRoleById(id uint) (bool, error) {
+	var total int64
+	err := d.conn.Model(&Role{}).Where("id = ?", id).Count(&total).Error
+	if err != nil {
+		return false, err
+	}
+	if total == 0{
+		return false, nil
+	}
+	return true,nil
 }
 
 
@@ -57,12 +70,12 @@ func (d defaultRoleModel) DelRole(role *Role) (bool, error) {
 	return true,nil
 }
 
-func (d defaultRoleModel) DelRoleUserByUserId(userId uint) (error){
-	err := d.conn.Exec("DELETE FROM user_role WHERE user_id = ?", userId).Error
-	if err != nil{
-		return err
+func (d defaultRoleModel) EditUserRoles(user *User) (bool,error){
+	err := d.conn.Begin().Exec("DELETE FROM user_role WHERE user_id = ?", user.ID).Model(user).Save(user).Commit().Error
+	if err != nil {
+		return false,err
 	}
-	return nil
+	return true,nil
 }
 func (d defaultRoleModel) GetAllRoles() ([]Role, error) {
 	var roles []Role

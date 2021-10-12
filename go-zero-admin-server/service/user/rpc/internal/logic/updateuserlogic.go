@@ -26,7 +26,7 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateUserLogic) UpdateUser(in *user.UserUpdateReq) (*user.IsSuccessReply, error) {
-	isSuccess, err := l.svcCtx.UserModel.UpdateUser(&model.User{Model: gorm.Model{ID: uint(in.Id)}, Username: in.Username, Password: in.Password, Salt: in.Salt, Info: in.Info})
+	isSuccess, err := l.svcCtx.UserModel.UpdateUser(&model.User{Model: gorm.Model{ID: uint(in.Id)}, Username: in.Username, Password: in.Password, Salt: in.Salt,Avatar: in.Avatar, Info: in.Info})
 	if err != nil {
 		return nil, err
 	}

@@ -38,14 +38,16 @@ message UserUpdateReq {
     string username = 2;
     string password = 3;
     string salt = 4;
-    string info = 5;
+    string avatar = 5;
+    string info = 6;
 }
 
 message UserAddReq {
     string username = 2;
     string password = 3;
     string salt = 4;
-    string info = 5;
+    string avatar = 5;
+    string info = 6;
 }
 
 
@@ -64,8 +66,9 @@ message UserInfoReply {
     string username = 2;
     string password = 3;
     string salt = 4;
-    string info = 5;
-    repeated RoleReply roles = 6;
+    string avatar = 5;
+    string info = 6;
+    repeated RoleReply roles = 7;
 }
 
 message UsersInfoReply {
@@ -94,4 +97,5 @@ service User {
     rpc DelSomeUser(IdsReq) returns(isSuccessReply);
     rpc GetAllRole(EmptyReq) returns(RolesReply);
     rpc editUserRoles(RolesReq) returns(isSuccessReply);
+    rpc IsExistRoleById(IdReq) returns(isExistReply);
 }

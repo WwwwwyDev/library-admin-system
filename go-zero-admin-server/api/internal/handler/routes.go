@@ -17,12 +17,12 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 	engine.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/admin/api/rjwt",
 				Handler: jwt.RefreshJwtHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/admin/api/djwt",
 				Handler: jwt.DecodeJwtHandler(serverCtx),
 			},
