@@ -1,12 +1,17 @@
 import {
   login,
   logout,
-  getInfo
+  getInfo,
+  refreshToken
 } from '@/api/user'
 import {
   getToken,
   setToken,
   removeToken,
+  setRefreshAfter,
+  getRefreshAfter,
+  getAccessExpire,
+  setAccessExpire
 } from '@/utils/auth'
 import {
   resetRouter
@@ -28,7 +33,7 @@ const state = getDefaultState()
 const getters = {
   name: state => state.name,
   avatar: state => state.avatar,
-  info: state=> state.info,
+  info: state => state.info,
 }
 
 const mutations = {
@@ -50,8 +55,8 @@ const mutations = {
   SET_ACCESSEXPIRE: (state, accessExpire) => {
     state.accessExpire = accessExpire
   },
-  SET_REFRESHAFTER: (state, info) => {
-    state.info = info
+  SET_REFRESHAFTER: (state, refreshAfter) => {
+    state.refreshAfter = refreshAfter
   },
   SET_ISLOAD: (state, isLoad) => {
     state.isLoad = isLoad
@@ -81,6 +86,8 @@ const actions = {
         commit('SET_TOKEN', data.accessToken)
         commit('SET_ACCESSEXPIRE', data.accessExpire)
         commit('SET_REFRESHAFTER', data.refreshAfter)
+        setRefreshAfter(data.refreshAfter)
+        setAccessExpire(data.accessExpire)
         setToken(data.accessToken)
         resolve()
       }).catch(error => {
@@ -102,11 +109,11 @@ const actions = {
         if (!data) {
           return reject('验证失败,请重新登录')
         }
-
         const {
           username,
           avatar,
-          info
+          info,
+          roles
         } = data
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
@@ -146,11 +153,29 @@ const actions = {
     })
   },
   refreshToken({
-    commit
+    commit,
+    state
   }) {
-    return new Promise(resolve => {
-      let timeNow =	Math.round(new Date().getTime()/1000)
-      console.log(timeNow)
+    return new Promise((resolve, reject) => {
+      let timeNow = Math.round(new Date().getTime() / 1000)
+      let accessExpire = getAccessExpire()
+      let refreshAfter = getRefreshAfter()
+      if(timeNow > accessExpire){
+        return reject('会话失效,请重新登录')
+      }
+      if(timeNow > refreshAfter){
+        refreshToken().then(response=> {
+          const {accessExpire,accessToken,refreshAfter} = response.data
+          commit('SET_TOKEN', accessToken)
+          commit('SET_ACCESSEXPIRE', accessExpire)
+          commit('SET_REFRESHAFTER', refreshAfter)
+          setRefreshAfter(refreshAfter)
+          setAccessExpire(accessExpire)
+          setToken(accessToken)
+        }).catch(error=>{
+          reject(error)
+        })
+      }
       resolve()
     })
   }

@@ -28,11 +28,12 @@ func NewRefreshJwtLogic(ctx context.Context, svcCtx *svc.ServiceContext) Refresh
 	}
 }
 
-func (l *RefreshJwtLogic) getJwtToken(secretKey string, iat, seconds, userId int64) (string, error) {
+func (l *RefreshJwtLogic) getJwtToken(secretKey string, iat, seconds, userId int64,roles string) (string, error) {
 	claims := make(jwt.MapClaims)
 	claims["exp"] = iat + seconds
 	claims["iat"] = iat
 	claims["userId"] = userId
+	claims["roles"] = roles
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims = claims
 	return token.SignedString([]byte(secretKey))
@@ -40,13 +41,14 @@ func (l *RefreshJwtLogic) getJwtToken(secretKey string, iat, seconds, userId int
 
 func (l *RefreshJwtLogic) RefreshJwt() (*types.Reply, error) {
 	sprintf := fmt.Sprintf("%v", l.ctx.Value("userId"))
+	roles := fmt.Sprintf("%v", l.ctx.Value("roles"))
 	userId, err := strconv.ParseInt(sprintf,10,64)
 	if err != nil{
 		return nil, err
 	}
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.Auth.AccessExpire
-	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, userId)
+	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, userId,roles)
 	if err != nil {
 		return nil, err
 	}

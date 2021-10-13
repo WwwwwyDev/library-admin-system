@@ -29,11 +29,12 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginLogic {
 		svcCtx: svcCtx,
 	}
 }
-func (l *LoginLogic) getJwtToken(secretKey string, iat, seconds, userId int64) (string, error) {
+func (l *LoginLogic) getJwtToken(secretKey string, iat, seconds, userId int64, roles string) (string, error) {
 	claims := make(jwt.MapClaims)
 	claims["exp"] = iat + seconds
 	claims["iat"] = iat
 	claims["userId"] = userId
+	claims["roles"] = roles
 	token := jwt.New(jwt.SigningMethodHS256)
 	token.Claims = claims
 	return token.SignedString([]byte(secretKey))
@@ -63,7 +64,15 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.Reply, error) {
 	}
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.Auth.AccessExpire
-	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, int64(userResp.Id))
+	roles := ""
+	for i,e := range userResp.Roles {
+		if i == len(userResp.Roles) - 1{
+			roles += e.Name
+		}else{
+			roles += e.Name + ","
+		}
+	}
+	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, int64(userResp.Id),roles)
 	if err != nil {
 		return nil, err
 	}

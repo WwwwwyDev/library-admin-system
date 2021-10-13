@@ -54,20 +54,62 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'home' }
     }]
   },
-  {
-    path: '/eee',
-    component: Layout,
-    redirect: '/home1',
-    children: [{
-      path: 'home1',
-      name: '首页',
-      component: () => import('@/views/home/index'),
-      meta: { title: '首页', icon: 'home' }
-    }]
-  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+export const permissionRoutes = [
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/user',
+    name: '系统管理',
+    meta: { title: '系统管理', icon: 'system' ,roles:['superadmin']},
+    children: [{
+      path: 'user',
+      name: '用户管理',
+      component: () => import('@/views/system/user/index'),
+      meta: { title: '用户管理', icon: 'user' }
+    },{
+      path: 'log',
+      name: '操作日志',
+      component: () => import('@/views/system/log/index'),
+      meta: { title: '操作日志', icon: 'log' }
+    },]
+  },
+  {
+    path: '/book',
+    component: Layout,
+    redirect: '/book',
+    children: [{
+      path: 'book',
+      name: '图书管理',
+      component: () => import('@/views/book/index'),
+      meta: { title: '图书管理', icon: 'book', roles:['superadmin','admin','bookadmin']}
+    }]
+  },
+  {
+    path: '/lend',
+    component: Layout,
+    redirect: '/lend',
+    children: [{
+      path: 'lend',
+      name: '借阅管理',
+      component: () => import('@/views/lend/index'),
+      meta: { title: '借阅管理', icon: 'lend', roles:['superadmin','admin','lendadmin'] }
+    }]
+  },
+  {
+    path: '/vip',
+    component: Layout,
+    redirect: '/vip',
+    children: [{
+      path: 'vip',
+      name: '会员管理',
+      component: () => import('@/views/vip/index'),
+      meta: { title: '会员管理', icon: 'vip' , roles:['superadmin','admin','vipadmin']}
+    }]
+  },
+]
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),

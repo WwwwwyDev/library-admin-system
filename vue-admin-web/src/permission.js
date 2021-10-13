@@ -1,16 +1,23 @@
 import router from './router'
 import store from './store'
-import { Message } from 'element-ui'
+import {
+  Message
+} from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import {
+  getToken
+} from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import Layout from '@/layout'
 
-NProgress.configure({ showSpinner: false }) // NProgress Configuration
+NProgress.configure({
+  showSpinner: false
+}) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
 
@@ -23,29 +30,59 @@ router.beforeEach(async(to, from, next) => {
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
-      next({ path: '/' })
+      next({
+        path: '/'
+      })
       NProgress.done()
     } else {
       const hasGetUserInfo = store.getters["user/name"]
       if (hasGetUserInfo) {
-        try{
+        try {
           await store.dispatch('user/refreshToken')
-        } catch(error){
+          next()
+        } catch (error) {
           await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
+          if (error.message === undefined)
+            Message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }
-        next()
       } else {
         try {
+          await store.dispatch('user/refreshToken')
           // get user info
-          await store.dispatch('user/getInfo')
-          next()
+          let {roles} = await store.dispatch('user/getInfo')
+          console.log(roles)
+          router.addRoutes( [{
+    path: '/book',
+    component: Layout,
+    redirect: '/book',
+    children: [{
+      path: 'book',
+      name: '图书管理',
+      component: () => import('@/views/book/index'),
+      meta: { title: '图书管理', icon: 'book', roles:['superadmin','admin','bookadmin']}
+    }]
+  },
+  {
+    path: '/lend',
+    component: Layout,
+    redirect: '/lend',
+    children: [{
+      path: 'lend',
+      name: '借阅管理',
+      component: () => import('@/views/lend/index'),
+      meta: { title: '借阅管理', icon: 'lend', roles:['superadmin','admin','lendadmin'] }
+    }]
+  }])
+    console.log(router)
+          next({ ...to, replace: true })
         } catch (error) {
+          console.log(error)
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
+          if (error.message === undefined)
+            Message.error(error || 'Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }

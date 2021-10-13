@@ -30,6 +30,7 @@ func NewDecodeJwtLogic(ctx context.Context, svcCtx *svc.ServiceContext) DecodeJw
 
 func (l *DecodeJwtLogic) DecodeJwt() (*types.Reply, error) {
 	id := fmt.Sprintf("loginUserId:%v", l.ctx.Value("userId"))
+	roles := fmt.Sprintf("%v", l.ctx.Value("roles"))
 	exists,err:= l.svcCtx.Redis.Exists(id).Result()
 	if err != nil {
 		return nil, err
@@ -42,5 +43,5 @@ func (l *DecodeJwtLogic) DecodeJwt() (*types.Reply, error) {
 		return nil, err
 	}
 	split := strings.Split(result, ";")
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"username":split[0],"avatar":split[1],"info":split[2]},Msg: "解析成功"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"username":split[0],"avatar":split[1],"info":split[2],"roles":roles},Msg: "解析成功"}, nil
 }

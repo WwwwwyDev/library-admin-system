@@ -21,3 +21,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function refreshToken() {
+  return request({
+    url: '/rjwt',
+    method: 'get'
+  })
+}
+
