@@ -37,10 +37,10 @@ export default {
     Hamburger
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar'
-    ])
+    ...mapGetters({
+      sidebar: 'sidebar',
+      avatar: 'user/avatar'
+    })
   },
   methods: {
     toggleSideBar() {

@@ -6,7 +6,7 @@ import {
 import {
   getToken,
   setToken,
-  removeToken
+  removeToken,
 } from '@/utils/auth'
 import {
   resetRouter
@@ -24,6 +24,12 @@ const getDefaultState = () => {
 }
 
 const state = getDefaultState()
+
+const getters = {
+  name: state => state.name,
+  avatar: state => state.avatar,
+  info: state=> state.info,
+}
 
 const mutations = {
   RESET_STATE: (state) => {
@@ -46,6 +52,9 @@ const mutations = {
   },
   SET_REFRESHAFTER: (state, info) => {
     state.info = info
+  },
+  SET_ISLOAD: (state, isLoad) => {
+    state.isLoad = isLoad
   }
 }
 
@@ -140,7 +149,7 @@ const actions = {
     commit
   }) {
     return new Promise(resolve => {
-      let timeNow =	Math.round(new Date().getTime()/1000) 
+      let timeNow =	Math.round(new Date().getTime()/1000)
       console.log(timeNow)
       resolve()
     })
@@ -150,6 +159,7 @@ const actions = {
 export default {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions
 }

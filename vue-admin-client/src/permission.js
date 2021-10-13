@@ -26,11 +26,9 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasGetUserInfo = store.getters.name
+      const hasGetUserInfo = store.getters["user/name"]
       if (hasGetUserInfo) {
         try{
-          let timeNow =	Math.round(new Date().getTime()/1000)
-          console.log(timeNow)
           await store.dispatch('user/refreshToken')
         } catch(error){
           await store.dispatch('user/resetToken')

@@ -15,7 +15,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      name: "name"
+      name: "user/name"
     })
   }
 }
