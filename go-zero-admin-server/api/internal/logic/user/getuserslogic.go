@@ -34,7 +34,7 @@ func (l *GetUsersLogic) GetUsers(req types.GetUsersReq) (*types.Reply, error) {
 	}
 	usersResp, err := l.svcCtx.UserRpc.GetUsers(l.ctx, &userclient.UsersReq{Page: int64(req.Page), Limit: int64(req.Limit), Username: req.Username})
 	if err != nil {
-		return nil,errorx.NewCodeError(code.Error,err.Error())
+		return nil, err
 	}
 	for i,_ := range usersResp.UsersInfo{
 		usersResp.UsersInfo[i].Password = "禁止访问该数据"

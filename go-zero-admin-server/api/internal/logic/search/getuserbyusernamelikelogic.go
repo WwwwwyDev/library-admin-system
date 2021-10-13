@@ -3,7 +3,6 @@ package search
 import (
 	"context"
 	"go-zero-admin-server/common/code"
-	"go-zero-admin-server/common/errorx"
 	"go-zero-admin-server/service/user/rpc/userclient"
 
 	"go-zero-admin-server/api/internal/svc"
@@ -29,7 +28,7 @@ func NewGetUserByUserNameLikeLogic(ctx context.Context, svcCtx *svc.ServiceConte
 func (l *GetUserByUserNameLikeLogic) GetUserByUserNameLike(req types.UsernameReq) (*types.Reply, error) {
 	userResp, err := l.svcCtx.UserRpc.GetUserByUsernameLike(l.ctx, &userclient.UsernameReq{Username: req.Username})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	users := userResp.UsersInfo
 	for i, _ := range users {

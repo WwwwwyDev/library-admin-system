@@ -28,14 +28,14 @@ func NewDeleteUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) DeleteU
 func (l *DeleteUserLogic) DeleteUser(req types.DeleteUserReq) (*types.Reply, error) {
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx,&userclient.IdReq{Id: uint64(req.Id)})
 	if err != nil{
-		return nil,errorx.NewCodeError(code.Error,err.Error())
+		return nil, err
 	}
 	if !isExistResp.IsExist{
 		return nil, errorx.NewCodeError(code.NoFoundError,"用户不存在")
 	}
 	isSuccessResp, err := l.svcCtx.UserRpc.DelUser(l.ctx, &userclient.IdReq{Id: uint64(req.Id)})
 	if err != nil {
-		return nil,errorx.NewCodeError(code.Error,err.Error())
+		return nil, err
 	}
 	if !isSuccessResp.IsSuccess{
 		return nil,errorx.NewCodeError(code.DelError,"删除用户失败")

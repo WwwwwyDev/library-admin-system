@@ -2,11 +2,10 @@ package jwt
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"go-zero-admin-server/common/code"
-	"go-zero-admin-server/common/errorx"
-	"go-zero-admin-server/service/user/rpc/userclient"
-	"strconv"
+	"strings"
 
 	"go-zero-admin-server/api/internal/svc"
 	"go-zero-admin-server/api/internal/types"
@@ -30,16 +29,18 @@ func NewDecodeJwtLogic(ctx context.Context, svcCtx *svc.ServiceContext) DecodeJw
 
 
 func (l *DecodeJwtLogic) DecodeJwt() (*types.Reply, error) {
-	sprintf := fmt.Sprintf("%v", l.ctx.Value("userId"))
-	userId, err := strconv.ParseUint(sprintf,10,64)
-	if err != nil{
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+	id := fmt.Sprintf("loginUserId:%v", l.ctx.Value("userId"))
+	exists,err:= l.svcCtx.Redis.Exists(id).Result()
+	if err != nil {
+		return nil, err
 	}
-	user, err := l.svcCtx.UserRpc.GetUserById(l.ctx, &userclient.IdReq{Id: userId})
-	if err != nil{
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+	if exists!=1{
+		return nil,errors.New("会话过期")
 	}
-	user.Password = "禁止访问该数据"
-	user.Salt = "禁止访问该数据"
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"user":user},Msg: "解析成功"}, nil
+	result, err := l.svcCtx.Redis.Get(id).Result()
+	if err != nil {
+		return nil, err
+	}
+	split := strings.Split(result, ";")
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"username":split[0],"avatar":split[1],"info":split[2]},Msg: "解析成功"}, nil
 }

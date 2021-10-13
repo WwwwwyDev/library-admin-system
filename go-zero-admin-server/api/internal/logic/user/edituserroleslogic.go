@@ -30,7 +30,7 @@ func (l *EditUserRolesLogic) EditUserRoles(req types.EditUserRolesReq) (*types.R
 	for _, e := range req.RoleIds {
 		roleIsExistResp, err := l.svcCtx.UserRpc.IsExistRoleById(l.ctx, &userclient.IdReq{Id: uint64(e)})
 		if err != nil {
-			return nil, errorx.NewCodeError(code.Error, err.Error())
+			return nil, err
 		}
 		if !roleIsExistResp.IsExist {
 			return nil, errorx.NewCodeError(code.NoFoundError, "不存在此权限")
@@ -42,7 +42,7 @@ func (l *EditUserRolesLogic) EditUserRoles(req types.EditUserRolesReq) (*types.R
 	}
 	isSuccessResp, err := l.svcCtx.UserRpc.EditUserRoles(l.ctx, &userclient.RolesReq{UserId: uint64(req.Id), Ids: rolesHandle})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	if !isSuccessResp.IsSuccess{
 		return nil, errorx.NewCodeError(code.ChangeError, "编辑权限失败")

@@ -48,14 +48,14 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.Reply, error) {
 	}
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserByUsername(l.ctx, &userclient.UsernameReq{Username: req.Username})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	if !isExistResp.IsExist {
 		return nil, errorx.NewCodeError(code.NoFoundError, "用户不存在")
 	}
 	userResp, err := l.svcCtx.UserRpc.GetUserByUsername(l.ctx, &userclient.UsernameReq{Username: req.Username})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	passwordmd5 := util.Str2Md5(req.Password + userResp.Salt)
 	if passwordmd5 != userResp.Password {
@@ -65,11 +65,11 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.Reply, error) {
 	accessExpire := l.svcCtx.Config.Auth.AccessExpire
 	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, int64(userResp.Id))
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	idstr := fmt.Sprintf("%d",userResp.Id)
-	l.svcCtx.Redis.Set("loginUserId:"+idstr,jwtToken,time.Duration(accessExpire)*time.Second)
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"userId": userResp.Id, "username": userResp.Username,"avatar":userResp.Avatar,"info":userResp.Info,"accessToken": jwtToken,
+	l.svcCtx.Redis.Set("loginUserId:"+idstr,userResp.Username+";"+userResp.Avatar+";"+userResp.Info,time.Duration(accessExpire)*time.Second)
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"accessToken": jwtToken,
 		"accessExpire": now + accessExpire,
 		"refreshAfter": now + accessExpire/2}, Msg: "登录成功"}, nil
 }

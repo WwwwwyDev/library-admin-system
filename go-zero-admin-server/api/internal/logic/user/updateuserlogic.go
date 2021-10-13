@@ -34,14 +34,14 @@ func (l *UpdateUserLogic) UpdateUser(req types.UpdateUserReq) (*types.Reply, err
 	}
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx, &userclient.IdReq{Id: uint64(req.Id)})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	if !isExistResp.IsExist {
 		return nil, errorx.NewCodeError(code.NoFoundError, "用户不存在")
 	}
 	userOld, err := l.svcCtx.UserRpc.GetUserById(l.ctx, &userclient.IdReq{Id: uint64(req.Id)})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	userNew := userOld
 	saltb, err := uuid.NewV4()
@@ -50,7 +50,7 @@ func (l *UpdateUserLogic) UpdateUser(req types.UpdateUserReq) (*types.Reply, err
 	userNew.Password = util.Str2Md5(req.Password + salts)
 	isSuccessResp, err := l.svcCtx.UserRpc.UpdateUser(l.ctx, &userclient.UserUpdateReq{Id: userNew.Id, Username: userNew.Username, Password: userNew.Password, Salt: userNew.Salt,Avatar: req.Avatar,Info: req.Info})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	if !isSuccessResp.IsSuccess {
 		return nil, errorx.NewCodeError(code.ChangeError, "修改用户失败")

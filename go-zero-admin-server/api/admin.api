@@ -24,6 +24,8 @@ service admin-api{
 	get /admin/api/rjwt () returns (Reply)
 	@handler decodeJwt
 	get /admin/api/djwt () returns (Reply)
+	@handler loginOut
+	post /admin/api/verify/loginOut () returns (Reply)
 }
 
 @server(

@@ -32,14 +32,14 @@ func (l *GetUserByIdLogic) GetUserById(req types.IdReq) (*types.Reply, error) {
 	}
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx,&userclient.IdReq{Id: uint64(req.Id)})
 	if err != nil{
-		return nil,errorx.NewCodeError(code.Error,err.Error())
+		return nil, err
 	}
 	if !isExistResp.IsExist{
 		return nil, errorx.NewCodeError(code.NoFoundError,"用户不存在")
 	}
 	user, err := l.svcCtx.UserRpc.GetUserById(l.ctx, &userclient.IdReq{Id: uint64(req.Id)})
 	if err != nil{
-		return nil,errorx.NewCodeError(code.Error,err.Error())
+		return nil, err
 	}
 	user.Password = "禁止访问该数据"
 	user.Salt = "禁止访问该数据"

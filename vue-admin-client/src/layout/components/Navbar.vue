@@ -42,9 +42,6 @@ export default {
       'avatar'
     ])
   },
-  mounted() {
-    console.log(this.avatar)
-  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')

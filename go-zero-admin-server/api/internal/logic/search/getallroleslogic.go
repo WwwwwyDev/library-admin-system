@@ -3,7 +3,6 @@ package search
 import (
 	"context"
 	"go-zero-admin-server/common/code"
-	"go-zero-admin-server/common/errorx"
 	"go-zero-admin-server/service/user/rpc/userclient"
 
 	"go-zero-admin-server/api/internal/svc"
@@ -29,7 +28,7 @@ func NewGetAllRolesLogic(ctx context.Context, svcCtx *svc.ServiceContext) GetAll
 func (l *GetAllRolesLogic) GetAllRoles() (*types.Reply, error) {
 	roles, err := l.svcCtx.UserRpc.GetAllRole(l.ctx, &userclient.EmptyReq{})
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
-	return &types.Reply{Code: code.Success,Data: map[string]interface{}{"roles": roles},Msg: "查询成功"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"roles": roles}, Msg: "查询成功"}, nil
 }

@@ -26,6 +26,11 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/admin/api/djwt",
 				Handler: jwt.DecodeJwtHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/verify/loginOut",
+				Handler: jwt.LoginOutHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)

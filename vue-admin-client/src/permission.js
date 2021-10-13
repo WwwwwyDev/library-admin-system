@@ -28,12 +28,21 @@ router.beforeEach(async(to, from, next) => {
     } else {
       const hasGetUserInfo = store.getters.name
       if (hasGetUserInfo) {
+        try{
+          let timeNow =	Math.round(new Date().getTime()/1000)
+          console.log(timeNow)
+          await store.dispatch('user/refreshToken')
+        } catch(error){
+          await store.dispatch('user/resetToken')
+          Message.error(error || 'Has Error')
+          next(`/login?redirect=${to.path}`)
+          NProgress.done()
+        }
         next()
       } else {
         try {
           // get user info
           await store.dispatch('user/getInfo')
-
           next()
         } catch (error) {
           // remove token and go to login page to re-login

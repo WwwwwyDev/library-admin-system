@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"go-zero-admin-server/common/code"
-	"go-zero-admin-server/common/errorx"
 	"strconv"
 	"time"
 
@@ -43,14 +42,20 @@ func (l *RefreshJwtLogic) RefreshJwt() (*types.Reply, error) {
 	sprintf := fmt.Sprintf("%v", l.ctx.Value("userId"))
 	userId, err := strconv.ParseInt(sprintf,10,64)
 	if err != nil{
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.Auth.AccessExpire
 	jwtToken, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, l.svcCtx.Config.Auth.AccessExpire, userId)
 	if err != nil {
-		return nil, errorx.NewCodeError(code.Error, err.Error())
+		return nil, err
 	}
+	id := fmt.Sprintf("loginUserId:%v", l.ctx.Value("userId"))
+	result, err := l.svcCtx.Redis.Get(id).Result()
+	if err != nil {
+		return nil, err
+	}
+	l.svcCtx.Redis.Set(id,result,time.Duration(accessExpire)*time.Second)
 	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"accessToken": jwtToken,
 		"accessExpire": now + accessExpire,
 		"refreshAfter": now + accessExpire/2}, Msg: "刷新成功"}, nil
