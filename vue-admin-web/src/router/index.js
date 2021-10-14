@@ -53,8 +53,7 @@ export const constantRoutes = [
       component: () => import('@/views/home/index'),
       meta: { title: '首页', icon: 'home' }
     }]
-  },
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 export const permissionRoutes = [
@@ -63,17 +62,17 @@ export const permissionRoutes = [
     component: Layout,
     redirect: '/system/user',
     name: '系统管理',
-    meta: { title: '系统管理', icon: 'system' ,roles:['superadmin']},
+    meta: { title: '系统管理', icon: 'system',roles:['superadmin']},
     children: [{
       path: 'user',
       name: '用户管理',
       component: () => import('@/views/system/user/index'),
-      meta: { title: '用户管理', icon: 'user' }
+      meta: { title: '用户管理', icon: 'user'}
     },{
       path: 'log',
       name: '操作日志',
       component: () => import('@/views/system/log/index'),
-      meta: { title: '操作日志', icon: 'log' }
+      meta: { title: '操作日志', icon: 'log'}
     },]
   },
   {
@@ -90,7 +89,7 @@ export const permissionRoutes = [
   {
     path: '/lend',
     component: Layout,
-    redirect: '/lend',
+    redirect: '/lend/lend',
     children: [{
       path: 'lend',
       name: '借阅管理',
@@ -109,6 +108,7 @@ export const permissionRoutes = [
       meta: { title: '会员管理', icon: 'vip' , roles:['superadmin','admin','vipadmin']}
     }]
   },
+  { path: '*', redirect: '/404', hidden: true }
 ]
 const createRouter = () => new Router({
   // mode: 'history', // require service support

@@ -52,34 +52,10 @@ router.beforeEach(async (to, from, next) => {
           await store.dispatch('user/refreshToken')
           // get user info
           let {roles} = await store.dispatch('user/getInfo')
-          console.log(roles)
-          router.addRoutes( [{
-    path: '/book',
-    component: Layout,
-    redirect: '/book',
-    children: [{
-      path: 'book',
-      name: '图书管理',
-      component: () => import('@/views/book/index'),
-      meta: { title: '图书管理', icon: 'book', roles:['superadmin','admin','bookadmin']}
-    }]
-  },
-  {
-    path: '/lend',
-    component: Layout,
-    redirect: '/lend',
-    children: [{
-      path: 'lend',
-      name: '借阅管理',
-      component: () => import('@/views/lend/index'),
-      meta: { title: '借阅管理', icon: 'lend', roles:['superadmin','admin','lendadmin'] }
-    }]
-  }])
-    console.log(router)
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+          router.addRoutes(accessRoutes)
           next({ ...to, replace: true })
         } catch (error) {
-          console.log(error)
-          // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           if (error.message === undefined)
             Message.error(error || 'Has Error')
