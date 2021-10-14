@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	externalserver "go-zero-admin-server/api/internal/handler/externalserver"
 	jwt "go-zero-admin-server/api/internal/handler/jwt"
 	search "go-zero-admin-server/api/internal/handler/search"
 	user "go-zero-admin-server/api/internal/handler/user"
@@ -66,6 +67,16 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/admin/api/search/loginStatus",
 				Handler: search.GetLoginStatusHandler(serverCtx),
+			},
+		},
+	)
+
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/qiniuToken",
+				Handler: externalserver.GetQiniuTokenHandler(serverCtx),
 			},
 		},
 	)

@@ -47,6 +47,14 @@ service admin-api{
 }
 
 @server(
+	group : externalserver
+)
+service admin-api{
+	@handler getQiniuToken
+	get /admin/api/qiniuToken () returns (Reply)
+}
+
+@server(
 	group: verify
 )
 service admin-api {

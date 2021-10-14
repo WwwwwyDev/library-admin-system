@@ -19,4 +19,10 @@ type Config struct {
 		Password string
 		Db int
 	}
+	Qiniu struct{
+		AccessKey string
+		SecretKey string
+		Expires uint64
+		Bucket string
+	}
 }

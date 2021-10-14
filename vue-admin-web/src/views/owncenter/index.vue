@@ -21,7 +21,7 @@
                   <el-input type="textarea" v-model="info" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="拥有权限">
-                  <el-tag v-for="item in roles.split(',')" effect="plain">
+                  <el-tag v-for="item in roles.split(',')" :key='item.index' effect="plain">
                     {{ item }}
                   </el-tag>
                 </el-form-item>
@@ -49,10 +49,8 @@
 
   export default {
     data() {
-      return {}
-    },
-    created() {
-
+      return {
+      }
     },
     computed: {
       ...mapGetters({
