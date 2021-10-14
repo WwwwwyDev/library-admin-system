@@ -26,7 +26,8 @@ func NewLoginOutLogic(ctx context.Context, svcCtx *svc.ServiceContext) LoginOutL
 }
 
 func (l *LoginOutLogic) LoginOut() (*types.Reply, error) {
-	id := fmt.Sprintf("loginUserId:%v", l.ctx.Value("userId"))
-	l.svcCtx.Redis.Del(id)
+	id := fmt.Sprintf("%v", l.ctx.Value("userId"))
+	l.svcCtx.Redis.Del("loginUserId:"+id)
+	l.svcCtx.Redis.Do("srem","loginStatus",id)
 	return &types.Reply{Code: code.Success, Msg: "登出成功"}, nil
 }

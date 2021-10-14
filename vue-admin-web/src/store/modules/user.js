@@ -22,9 +22,11 @@ const getDefaultState = () => {
     token: getToken(),
     accessExpire: 0,
     refreshAfter: 0,
+    id: 0,
     name: '',
     avatar: '',
     info: '',
+    roles:[],
   }
 }
 
@@ -34,6 +36,8 @@ const getters = {
   name: state => state.name,
   avatar: state => state.avatar,
   info: state => state.info,
+  id: state => state.id,
+  roles: state => state.roles
 }
 
 const mutations = {
@@ -42,6 +46,9 @@ const mutations = {
   },
   SET_TOKEN: (state, token) => {
     state.token = token
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   },
   SET_NAME: (state, name) => {
     state.name = name
@@ -58,8 +65,8 @@ const mutations = {
   SET_REFRESHAFTER: (state, refreshAfter) => {
     state.refreshAfter = refreshAfter
   },
-  SET_ISLOAD: (state, isLoad) => {
-    state.isLoad = isLoad
+  SET_ROLES: (state, roles) =>{
+    state.roles = roles
   }
 }
 
@@ -110,11 +117,14 @@ const actions = {
           return reject('验证失败,请重新登录')
         }
         const {
+          id,
           username,
           avatar,
           info,
           roles
         } = data
+        commit('SET_ROLES', roles)
+        commit('SET_ID', id)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
         commit('SET_INFO', info)

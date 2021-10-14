@@ -26,6 +26,10 @@ service admin-api{
 	get /admin/api/djwt () returns (Reply)
 	@handler loginOut
 	post /admin/api/verify/loginOut () returns (Reply)
+	@handler changePassword
+	post /admin/api/verify/changePassword () returns (Reply)
+	@handler editUser
+	post /admin/api/verify/editUser () returns (Reply)
 }
 
 @server(
@@ -38,6 +42,8 @@ service admin-api{
 	get /admin/api/search/username/:username (UsernameReq) returns (Reply)
 	@handler getAllRoles
 	get /admin/api/search/roles () returns (Reply)
+	@handler getLoginStatus
+	get /admin/api/search/loginStatus () returns (Reply)
 }
 
 @server(

@@ -11,12 +11,14 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <el-dropdown-item>
-            个人信息
-          </el-dropdown-item>
-          <el-dropdown-item>
-            修改密码
-          </el-dropdown-item>
+          <router-link to="/owncenter/index">
+            <el-dropdown-item>
+              个人中心
+            </el-dropdown-item>
+          </router-link>
+          <a target="_blank" href="https://gitee.com/wu_wen_yi/library-system-admin">
+            <el-dropdown-item>Gitee</el-dropdown-item>
+          </a>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">安全退出</span>
           </el-dropdown-item>
@@ -34,6 +36,11 @@
   import Hamburger from '@/components/Hamburger'
 
   export default {
+    data(){
+      return{
+        dialogVisible:true
+      }
+    },
     components: {
       Breadcrumb,
       Hamburger

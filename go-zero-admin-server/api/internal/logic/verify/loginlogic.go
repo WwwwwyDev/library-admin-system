@@ -78,6 +78,7 @@ func (l *LoginLogic) Login(req types.LoginReq) (*types.Reply, error) {
 	}
 	idstr := fmt.Sprintf("%d",userResp.Id)
 	l.svcCtx.Redis.Set("loginUserId:"+idstr,userResp.Username+";"+userResp.Avatar+";"+userResp.Info,time.Duration(accessExpire)*time.Second)
+	l.svcCtx.Redis.Do("SADD","loginStatus",idstr)
 	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"accessToken": jwtToken,
 		"accessExpire": now + accessExpire,
 		"refreshAfter": now + accessExpire/2}, Msg: "登录成功"}, nil

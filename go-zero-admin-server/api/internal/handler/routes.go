@@ -31,6 +31,16 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/admin/api/verify/loginOut",
 				Handler: jwt.LoginOutHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/verify/changePassword",
+				Handler: jwt.ChangePasswordHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/verify/editUser",
+				Handler: jwt.EditUserHandler(serverCtx),
+			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
@@ -51,6 +61,11 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodGet,
 				Path:    "/admin/api/search/roles",
 				Handler: search.GetAllRolesHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/search/loginStatus",
+				Handler: search.GetLoginStatusHandler(serverCtx),
 			},
 		},
 	)
