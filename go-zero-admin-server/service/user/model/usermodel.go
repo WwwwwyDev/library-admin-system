@@ -123,7 +123,7 @@ func (d defaultUserModel) UpdateUser(user *User) (bool, error) {
 }
 
 func (d defaultUserModel) DelUser(user *User) (bool, error) {
-	err := d.conn.Model(user).Delete(user).Error
+	err := d.conn.Begin().Exec("DELETE FROM user_role WHERE user_id = ?", user.ID).Model(user).Delete(user).Commit().Error
 	if err != nil {
 		return false, err
 	}
