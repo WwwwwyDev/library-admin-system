@@ -30,5 +30,5 @@ func (l *GetAllRolesLogic) GetAllRoles() (*types.Reply, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"roles": roles}, Msg: "查询成功"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"roles": roles.Roles}, Msg: "查询成功"}, nil
 }

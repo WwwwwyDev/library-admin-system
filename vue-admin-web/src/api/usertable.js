@@ -29,3 +29,18 @@ export function addUser(data) {
     data
   })
 }
+
+export function editUser(id, data) {
+  return request({
+    url: '/user/'+String(id),
+    method: 'put',
+    data
+  })
+}
+
+export function getRoles(){
+  return request({
+    url: '/search/roles',
+    method: 'get'
+  })
+}

@@ -16,7 +16,9 @@ import {
 import {
   resetRouter
 } from '@/router'
-
+import {
+  userAvatar
+} from '@/settings'
 const getDefaultState = () => {
   return {
     token: getToken(),
@@ -26,7 +28,7 @@ const getDefaultState = () => {
     name: '',
     avatar: '',
     info: '',
-    roles:[],
+    roles: [],
   }
 }
 
@@ -65,7 +67,7 @@ const mutations = {
   SET_REFRESHAFTER: (state, refreshAfter) => {
     state.refreshAfter = refreshAfter
   },
-  SET_ROLES: (state, roles) =>{
+  SET_ROLES: (state, roles) => {
     state.roles = roles
   }
 }
@@ -126,7 +128,7 @@ const actions = {
         commit('SET_ROLES', roles)
         commit('SET_ID', id)
         commit('SET_NAME', username)
-        commit('SET_AVATAR', avatar==""?"https://p.qqan.com/up/2021-10/16332291757662901.jpg":avatar)
+        commit('SET_AVATAR', avatar === "" ? userAvatar : avatar)
         commit('SET_INFO', info)
         resolve(data)
       }).catch(error => {
@@ -170,19 +172,23 @@ const actions = {
       let timeNow = Math.round(new Date().getTime() / 1000)
       let accessExpire = getAccessExpire()
       let refreshAfter = getRefreshAfter()
-      if(timeNow > accessExpire){
+      if (timeNow > accessExpire) {
         return reject('会话失效,请重新登录')
       }
-      if(timeNow > refreshAfter){
-        refreshToken().then(response=> {
-          const {accessExpire,accessToken,refreshAfter} = response.data
+      if (timeNow > refreshAfter) {
+        refreshToken().then(response => {
+          const {
+            accessExpire,
+            accessToken,
+            refreshAfter
+          } = response.data
           commit('SET_TOKEN', accessToken)
           commit('SET_ACCESSEXPIRE', accessExpire)
           commit('SET_REFRESHAFTER', refreshAfter)
           setRefreshAfter(refreshAfter)
           setAccessExpire(accessExpire)
           setToken(accessToken)
-        }).catch(error=>{
+        }).catch(error => {
           reject(error)
         })
       }

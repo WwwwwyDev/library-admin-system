@@ -1,6 +1,6 @@
 import * as qiniu from 'qiniu-js'
-
-export const domain = "http://file.wwywwy.top/"
+import {qiniuDomain} from '@/settings'
+export const domain =  qiniuDomain
 
 export function upload(file,token) {
   let key = null
