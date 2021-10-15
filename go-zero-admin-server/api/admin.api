@@ -27,9 +27,9 @@ service admin-api{
 	@handler loginOut
 	post /admin/api/verify/loginOut () returns (Reply)
 	@handler changePassword
-	post /admin/api/verify/changePassword () returns (Reply)
+	post /admin/api/verify/changePassword (ChangePasswordByJwtReq) returns (Reply)
 	@handler editUser
-	post /admin/api/verify/editUser () returns (Reply)
+	post /admin/api/verify/editUser (UpdateUserByJwtReq) returns (Reply)
 }
 
 @server(

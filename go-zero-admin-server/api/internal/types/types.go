@@ -27,7 +27,7 @@ type AddUserReq struct {
 
 type UpdateUserReq struct {
 	Id       uint   `path:"id"`
-	Password string `json:"password,optional"`
+	Password string `json:"password"`
 	Avatar   string `json:"avatar,optional"`
 	Info     string `json:"info,optional"`
 }
@@ -39,6 +39,17 @@ type EditUserRolesReq struct {
 
 type DeleteUserReq struct {
 	Id uint `path:"id"`
+}
+
+type UpdateUserByJwtReq struct {
+	Avatar string `json:"avatar,optional"`
+	Info   string `json:"info,optional"`
+}
+
+type ChangePasswordByJwtReq struct {
+	OldPassword      string `json:"oldPassword"`
+	NewPassword      string `json:"newPassword"`
+	NewPasswordAgain string `json:"newPasswordAgain"`
 }
 
 type IdReq struct {

@@ -29,6 +29,9 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) UpdateU
 }
 
 func (l *UpdateUserLogic) UpdateUser(req types.UpdateUserReq) (*types.Reply, error) {
+	if req.Id == 1 {
+		return nil,errorx.NewCodeError(code.DelError,"拒绝修改超级管理员")
+	}
 	if len(req.Password) < 6 {
 		return nil,errorx.NewCodeError(code.ParameterError, "密码非法")
 	}

@@ -28,3 +28,10 @@ export function refreshToken() {
     method: 'get'
   })
 }
+
+export function getUserById(id){
+  return request({
+    url: '/search/userId/'+String(id),
+    method: 'get'
+  })
+}

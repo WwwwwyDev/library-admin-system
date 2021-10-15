@@ -27,6 +27,16 @@ func NewEditUserRolesLogic(ctx context.Context, svcCtx *svc.ServiceContext) Edit
 }
 
 func (l *EditUserRolesLogic) EditUserRoles(req types.EditUserRolesReq) (*types.Reply, error) {
+	if req.Id == 1 {
+		return nil,errorx.NewCodeError(code.DelError,"拒绝修改超级管理员")
+	}
+	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx,&userclient.IdReq{Id: uint64(req.Id)})
+	if err != nil{
+		return nil, err
+	}
+	if !isExistResp.IsExist{
+		return nil, errorx.NewCodeError(code.NoFoundError,"用户不存在")
+	}
 	for _, e := range req.RoleIds {
 		roleIsExistResp, err := l.svcCtx.UserRpc.IsExistRoleById(l.ctx, &userclient.IdReq{Id: uint64(e)})
 		if err != nil {

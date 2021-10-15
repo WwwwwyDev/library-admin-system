@@ -26,6 +26,9 @@ func NewDeleteUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) DeleteU
 }
 
 func (l *DeleteUserLogic) DeleteUser(req types.DeleteUserReq) (*types.Reply, error) {
+	if req.Id == 1 {
+		return nil,errorx.NewCodeError(code.DelError,"拒绝删除超级管理员")
+	}
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx,&userclient.IdReq{Id: uint64(req.Id)})
 	if err != nil{
 		return nil, err

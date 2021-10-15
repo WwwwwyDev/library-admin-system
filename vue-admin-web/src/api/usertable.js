@@ -44,3 +44,12 @@ export function getRoles(){
     method: 'get'
   })
 }
+
+
+export function editUserRoles(id,data){
+  return request({
+    url: '/userRoles/'+String(id),
+    method: 'put',
+    data
+  })
+}

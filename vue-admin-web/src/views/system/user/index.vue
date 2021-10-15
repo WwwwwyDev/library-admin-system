@@ -16,7 +16,7 @@
       </el-header>
       <el-main>
         <el-table v-loading="listLoading" :data="list" element-loading-text="加载中" border fit highlight-current-row>
-          <el-table-column align="center" label="ID" width="95" sortable>
+          <el-table-column align="center" label="ID" width="95">
             <template slot-scope="scope">
               {{ scope.row.id }}
             </template>
@@ -26,7 +26,7 @@
               <el-avatar :size="50" :src="scope.row.avatar"></el-avatar>
             </template>
           </el-table-column>
-          <el-table-column label="用户名" width="150" sortable>
+          <el-table-column label="用户名" width="150">
             <template slot-scope="scope">
               {{ scope.row.username }}
             </template>
@@ -49,7 +49,7 @@
           <el-table-column label="操作" width="150" fixed="right">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="设置用户权限" placement="top">
-                <el-button icon="el-icon-setting" circle></el-button>
+                <el-button icon="el-icon-setting" circle @click="openRolesDialog(scope.row.id)"></el-button>
               </el-tooltip>
               <el-popconfirm title="确定删除吗?" @onConfirm="deleteRow(scope.row.id)" icon="el-icon-info" icon-color="red">
                 <el-button slot="reference" type="danger" icon="el-icon-delete" circle></el-button>
@@ -96,10 +96,10 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="编辑用户" :visible.sync="editDialogVisible" :after-close="clearAddForm">
+    <el-dialog title="编辑用户" :visible.sync="editDialogVisible">
       <el-form :model="editForm" :rules="FormRules" ref="editForm" label-width="120px" @submit.native.prevent>
         <el-form-item label="用户账号">
-          <el-input placeholder="请输入账号" v-model="editForm.username" :disabled="true">
+          <el-input placeholder="" v-model="editForm.username" :disabled="true">
           </el-input>
         </el-form-item>
         <el-form-item label="修改密码" prop="password">
@@ -123,18 +123,51 @@
         <el-button type="primary" @click="submitEditForm">确 定</el-button>
       </span>
     </el-dialog>
+
+    <el-dialog title="权限设置" :visible.sync="rolesDialogVisible" width="40%">
+      <el-form ref="rolesForm" label-width="100px" @submit.native.prevent>
+        <el-form-item label="用户账号">
+          <el-input placeholder="" v-model="rolesForm.username" :disabled="true">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="用户权限">
+          <el-select v-model="rolesForm.checkedRolesValues" multiple placeholder="请选择">
+            <el-option v-for="item in rolesOption" :key="item.value" :label="item.label" :value="item.value">
+            </el-option>
+          </el-select>
+          <el-popover placement="right" width="300" trigger="click">
+            <el-table :data="roles">
+              <el-table-column width="100" property="name" label="权限标签"></el-table-column>
+              <el-table-column width="150" property="info" label="介绍"></el-table-column>
+            </el-table>
+            <i slot="reference" class="el-icon-info"></i>
+          </el-popover>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="rolesDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitRolesForm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+  import {
+    mapActions
+  } from 'vuex'
   import {
     getLoginStatus,
     getUsers,
     deleteUser,
     addUser,
     editUser,
-    getRoles
+    getRoles,
+    editUserRoles
   } from '@/api/usertable'
+  import {
+    getUserById
+  } from '@/api/user'
   import {
     getQiniuToken
   } from '@/api/qiniu'
@@ -198,8 +231,14 @@
             }
           ],
         },
+        rolesDialogVisible: false,
         roles: [],
         rolesOption: [],
+        rolesForm: {
+          id: 0,
+          username: "",
+          checkedRolesValues: [],
+        }
       }
     },
     created() {
@@ -215,7 +254,13 @@
       async fetchRoles() {
         let res = await getRoles()
         this.roles = res.data.roles
-        console.log(this.roles)
+        for (let i = 0; i < this.roles.length; i++) {
+          let temp = {
+            "value": this.roles[i].id,
+            "label": this.roles[i].name
+          }
+          this.rolesOption.push(temp)
+        }
       },
       async fetchLoginStatus() {
         let res = await getLoginStatus()
@@ -224,6 +269,11 @@
       },
       async fetchData(params) {
         this.listLoading = true
+        try {
+          await this.refreshToken()
+        } catch (error) {
+          location.reload()
+        }
         let res = await getUsers(params)
         let {
           users,
@@ -298,6 +348,20 @@
         this.editForm.info = info
         this.editDialogVisible = true
       },
+      async openRolesDialog(id) {
+        this.clearRolesForm()
+        let res = await getUserById(id)
+        let {
+          user
+        } = res.data
+        this.rolesForm.id = id
+        this.rolesForm.username = user.username
+        let userRoles = user.roles === undefined ? [] : user.roles
+        for (let i = 0; i < userRoles.length; i++) {
+          this.rolesForm.checkedRolesValues.push(userRoles[i].id)
+        }
+        this.rolesDialogVisible = true
+      },
       clearAddForm() {
         this.addForm.avatar = ""
         this.addForm.username = ""
@@ -310,14 +374,20 @@
         this.editForm.password = ""
         this.editForm.info = ""
       },
+      clearRolesForm() {
+        this.rolesForm.id = 0
+        this.rolesForm.username = ""
+        this.rolesForm.checkedRolesValues = []
+      },
       submitAddForm() {
         this.$refs["addForm"].validate(async (valid) => {
           if (valid) {
             let res = await addUser(this.addForm)
-            this.$message({
-              message: res.msg,
-              type: 'success'
-            });
+            if (res != undefined)
+              this.$message({
+                message: res.msg,
+                type: 'success'
+              });
             this.addDialogVisible = false
             this.fetchData({
               "page": this.page,
@@ -331,10 +401,11 @@
         this.$refs["editForm"].validate(async (valid) => {
           if (valid) {
             let res = await editUser(this.editForm.id, this.editForm)
-            this.$message({
-              message: res.msg,
-              type: 'success'
-            });
+            if (res != undefined)
+              this.$message({
+                message: res.msg,
+                type: 'success'
+              });
             this.editDialogVisible = false
             this.fetchData({
               "page": this.page,
@@ -343,6 +414,22 @@
             })
           }
         });
+      },
+      async submitRolesForm() {
+        let res = await editUserRoles(this.rolesForm.id, {
+          "roleIds": this.rolesForm.checkedRolesValues
+        })
+        if (res != undefined)
+          this.$message({
+            message: res.msg,
+            type: 'success'
+          });
+        this.rolesDialogVisible = false
+        this.fetchData({
+          "page": this.page,
+          "limit": this.limit,
+          "username": this.usernameSearchInput
+        })
       },
       changePhotoFile(file, fileList) {
         if (fileList.length > 0) {
@@ -436,7 +523,10 @@
           }
         })
         this.$refs.imageCropper.close();
-      }
+      },
+      ...mapActions({
+        refreshToken: 'user/refreshToken'
+      })
     }
   }
 </script>
