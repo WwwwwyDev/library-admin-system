@@ -68,12 +68,12 @@
     </el-container>
 
     <el-dialog title="添加用户" :visible.sync="addDialogVisible">
-      <el-form :model="addForm" label-width="120px">
-        <el-form-item label="用户账号">
+      <el-form :model="addForm" :rules="addRules" ref="addForm" label-width="120px" @submit.native.prevent>
+        <el-form-item label="用户账号" prop="username">
           <el-input placeholder="请输入账号" v-model="addForm.username" clearable>
           </el-input>
         </el-form-item>
-        <el-form-item label="用户密码">
+        <el-form-item label="用户密码" prop="password">
           <el-input placeholder="请输入密码" v-model="addForm.password" show-password></el-input>
         </el-form-item>
         <el-form-item label="用户头像">
@@ -90,8 +90,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
+        <el-button @click="clearAddForm">取 消</el-button>
+        <el-button type="primary" @click="submitAddForm">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -101,7 +101,8 @@
   import {
     getLoginStatus,
     getUsers,
-    deleteUser
+    deleteUser,
+    addUser
   } from '@/api/usertable'
   import {
     getQiniuToken
@@ -131,6 +132,30 @@
           password: "",
           avatar: "",
           info: ""
+        },
+        addRules: {
+          password: [{
+              required: true,
+              message: "请输入密码",
+              trigger: "blur"
+            },
+            {
+              min: 6,
+              message: "密码长度不能小于6个字符",
+              trigger: "blur"
+            }
+          ],
+          username: [{
+              required: true,
+              message: "请输入用户名",
+              trigger: "blur"
+            },
+            {
+              min: 6,
+              message: "用户名长度不能小于6个字符",
+              trigger: "blur"
+            }
+          ],
         }
       }
     },
@@ -162,6 +187,9 @@
           } else {
             users[i]["isLogin"] = false
           }
+          if (users[i].avatar ===undefined){
+            users[i].avatar = "https://p.qqan.com/up/2021-10/16332291757662901.jpg"
+          }
         }
         this.list = users
         this.total = total
@@ -191,24 +219,49 @@
         })
         this.page = 1
       },
-      deleteRow(id) {
+      async deleteRow(id) {
         if (this.loginStatus.has(id)) {
           return this.$message({
             message: "无法删除在线用户",
             type: 'error'
           });
         }
-        deleteUser(id).then(response => {
-          this.$message({
-            message: response.msg,
-            type: 'success'
-          });
-          this.fetchData({
-            "page": this.page,
-            "limit": this.limit,
-            "username": this.usernameSearchInput
-          })
+        let res = await deleteUser(id)
+        this.$message({
+          message: res.msg,
+          type: 'success'
+        });
+        this.fetchData({
+          "page": this.page,
+          "limit": this.limit,
+          "username": this.usernameSearchInput
         })
+      },
+      submitAddForm() {
+        this.$refs["addForm"].validate(async (valid) => {
+          if (valid) {
+            this.addForm.avatar = this.imageUrl
+            let res = await addUser(this.addForm)
+            this.$message({
+              message: res.msg,
+              type: 'success'
+            });
+            this.clearAddForm()
+            this.fetchData({
+              "page": this.page,
+              "limit": this.limit,
+              "username": this.usernameSearchInput
+            })
+          }
+        });
+      },
+      clearAddForm(){
+        this.addForm.avatar = ""
+        this.addForm.username = ""
+        this.addForm.password = ""
+        this.addForm.info = ""
+        this.imageUrl = ""
+        this.addDialogVisible = false
       },
       changePhotoFile(file, fileList) {
         if (fileList.length > 0) {
@@ -216,16 +269,17 @@
         }
         var size = file.raw.size;
         var type = file.raw.type;
-        if (size > 512000) {
+        if (type != "image/jpeg" && type != "image/jpg" && type != "image/png") {
           this.$message({
-            message: "图片不能超过500k",
+            message: "仅支持上传jpg、jpeg、png图片",
             type: "error",
           });
           return;
         }
-        if (type != "image/jpeg" && type != "image/jpg" && type != "image/png") {
+        let sizeKB = 200
+        if (size > 1024 * sizeKB) {
           this.$message({
-            message: "仅支持上传jpg、jpeg、png图片",
+            message: `图片不能超过${sizeKB}k`,
             type: "error",
           });
           return;

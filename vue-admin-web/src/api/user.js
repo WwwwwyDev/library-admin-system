@@ -28,4 +28,3 @@ export function refreshToken() {
     method: 'get'
   })
 }
-

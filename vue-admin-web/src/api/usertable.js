@@ -20,3 +20,12 @@ export function deleteUser(id) {
     method:'delete'
   })
 }
+
+
+export function addUser(data) {
+  return request({
+    url: '/user',
+    method: 'post',
+    data
+  })
+}

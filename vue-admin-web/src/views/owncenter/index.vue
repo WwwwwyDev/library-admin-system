@@ -15,13 +15,13 @@
             <el-row :gutter="20">
               <el-form label-width="80px">
                 <el-form-item label="用户名">
-                  <el-tag>{{name}}</el-tag>
+                  {{name}}
                 </el-form-item>
                 <el-form-item label="个人信息">
                   <el-input type="textarea" v-model="info" :disabled="true"></el-input>
                 </el-form-item>
                 <el-form-item label="拥有权限">
-                  <el-tag v-for="item in roles.split(',')" :key='item.index' effect="plain">
+                  <el-tag v-for="item in rolesList" :key='item.index'>
                     {{ item }}
                   </el-tag>
                 </el-form-item>
@@ -50,7 +50,11 @@
   export default {
     data() {
       return {
+        rolesList:[]
       }
+    },
+    created() {
+      this.rolesList = this.roles == ""?["无权限"]:this.roles.split(",")
     },
     computed: {
       ...mapGetters({

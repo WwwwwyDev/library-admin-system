@@ -126,7 +126,7 @@ const actions = {
         commit('SET_ROLES', roles)
         commit('SET_ID', id)
         commit('SET_NAME', username)
-        commit('SET_AVATAR', avatar)
+        commit('SET_AVATAR', avatar==""?"https://p.qqan.com/up/2021-10/16332291757662901.jpg":avatar)
         commit('SET_INFO', info)
         resolve(data)
       }).catch(error => {
