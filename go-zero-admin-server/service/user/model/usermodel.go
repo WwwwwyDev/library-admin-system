@@ -15,7 +15,7 @@ type (
 		AddUser(user *User) (bool, error)
 		UpdateUser(user *User) (bool, error)
 		DelUser(user *User) (bool, error)
-		DelSomeUser(id []uint) (bool, error)
+		DelSomeUser(ids []uint) (bool, error)
 	}
 
 	defaultUserModel struct {
@@ -130,8 +130,8 @@ func (d defaultUserModel) DelUser(user *User) (bool, error) {
 	return true, nil
 }
 
-func (d defaultUserModel) DelSomeUser(id []uint) (bool, error) {
-	err := d.conn.Model(&User{}).Delete(&User{}, id).Error
+func (d defaultUserModel) DelSomeUser(ids []uint) (bool, error) {
+	err := d.conn.Model(&User{}).Delete(&User{}, ids).Error
 	if err != nil {
 		return false, err
 	}

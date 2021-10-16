@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package user;
+package book;
 
 message EmptyReq {
 
@@ -14,88 +14,104 @@ message IdsReq {
     repeated IdReq ids = 1;
 }
 
-message RoleReq{
-    uint64 id = 1;
+
+message NameReq {
+    string name = 1;
 }
 
-message RolesReq{
-    uint64 userId = 1;
-    repeated RoleReq ids = 2;
-}
-
-message UsernameReq {
-    string username = 1;
-}
-
-message UsersReq {
+message TypesReq{
     int64 page = 1;
-    int64 limit =2;
-    string username =3;
+    int64 limit = 2;
+    string name = 3;
 }
 
-message UserUpdateReq {
-    uint64 id = 1;
-    string username = 2;
-    string password = 3;
-    string salt = 4;
-    string avatar = 5;
-    string info = 6;
-}
-
-message UserAddReq {
-    string username = 2;
-    string password = 3;
-    string salt = 4;
-    string avatar = 5;
-    string info = 6;
-}
-
-
-message RoleReply {
+message TypeUpdateReq {
     uint64 id = 1;
     string name = 2;
-    string info = 3;
+    string intro = 3;
 }
 
-message RolesReply {
-    repeated RoleReply roles = 1;
+message TypeAddReq {
+    string name = 1;
+    string intro = 2;
 }
 
-message UserInfoReply {
+message BooksReq {
+    int64 page = 1;
+    int64 limit = 2;
+    string name = 3;
+    string author = 4;
+}
+
+message BookUpdateReq {
     uint64 id = 1;
-    string username = 2;
-    string password = 3;
-    string salt = 4;
-    string avatar = 5;
-    string info = 6;
-    repeated RoleReply roles = 7;
+    string name = 2;
+    string image = 3;
+    string author = 4;
+    string info = 5;
+    uint64 typeId = 6;
 }
 
-message UsersInfoReply {
+message BookAddReq {
+    string name = 1;
+    string image = 2;
+    string author = 3;
+    string info = 4;
+    uint64 typeId = 6;
+}
+
+
+message TypeInfoReply {
+    uint64 id = 1;
+    string name = 2;
+    string intro = 3;
+    repeated BookInfoReply booksInfo = 4;
+}
+
+message TypesInfoReply {
     int64 total = 1;
-    repeated UserInfoReply usersInfo = 2;
+    repeated TypeInfoReply types = 2;
 }
 
-message isExistReply{
+message BookInfoReply {
+    uint64 id = 1;
+    string name = 2;
+    string image = 3;
+    string author = 4;
+    string info = 5;
+    string type = 6;
+}
+
+message BooksInfoReply {
+    int64 total = 1;
+    repeated BookInfoReply booksInfo = 2;
+}
+
+message isExistReply {
     bool isExist = 1;
 }
 
-message isSuccessReply{
+message isSuccessReply {
     bool isSuccess = 1;
 }
 
-service User {
-    rpc getUserById(IdReq) returns(UserInfoReply);
-    rpc getUserByUsername(UsernameReq) returns(UserInfoReply);
-    rpc getUserByUsernameLike(UsernameReq) returns(UsersInfoReply);
-    rpc IsExistUserById(IdReq) returns(isExistReply);
-    rpc IsExistUserByUsername(UsernameReq) returns(isExistReply);
-    rpc getUsers(UsersReq) returns(UsersInfoReply);
-    rpc AddUser(UserAddReq) returns(isSuccessReply);
-    rpc UpdateUser(UserUpdateReq) returns(isSuccessReply);
-    rpc DelUser(IdReq) returns(isSuccessReply);
-    rpc DelSomeUser(IdsReq) returns(isSuccessReply);
-    rpc GetAllRole(EmptyReq) returns(RolesReply);
-    rpc editUserRoles(RolesReq) returns(isSuccessReply);
-    rpc IsExistRoleById(IdReq) returns(isExistReply);
+service Book {
+    rpc getBookById(IdReq) returns(BookInfoReply);
+    rpc getBookByNameLike(NameReq) returns(BooksInfoReply);
+    rpc IsExistBookById(IdReq) returns(isExistReply);
+    rpc IsExistBookByName(NameReq) returns(isExistReply);
+    rpc getBooks(BooksReq) returns(BooksInfoReply);
+    rpc AddBook(BookAddReq) returns(isSuccessReply);
+    rpc UpdateBook(BookUpdateReq) returns(isSuccessReply);
+    rpc DelBook(IdReq) returns(isSuccessReply);
+    rpc DelSomeBook(IdsReq) returns(isSuccessReply);
+
+    rpc getTypeById(IdReq) returns(TypeInfoReply);
+    rpc getTypeByNameLike(NameReq) returns(TypesInfoReply);
+    rpc IsExistTypeById(IdReq) returns(isExistReply);
+    rpc IsExistTypeByName(NameReq) returns(isExistReply);
+    rpc getTypes(TypesReq) returns(TypesInfoReply);
+    rpc AddType(TypeAddReq) returns(isSuccessReply);
+    rpc UpdateType(TypeUpdateReq) returns(isSuccessReply);
+    rpc DelType(IdReq) returns(isSuccessReply);
 }

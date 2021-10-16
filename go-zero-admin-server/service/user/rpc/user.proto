@@ -43,11 +43,11 @@ message UserUpdateReq {
 }
 
 message UserAddReq {
-    string username = 2;
-    string password = 3;
-    string salt = 4;
-    string avatar = 5;
-    string info = 6;
+    string username = 1;
+    string password = 2;
+    string salt = 3;
+    string avatar = 4;
+    string info = 5;
 }
 
 

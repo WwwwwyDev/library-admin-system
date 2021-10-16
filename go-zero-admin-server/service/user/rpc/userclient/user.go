@@ -12,21 +12,21 @@ import (
 )
 
 type (
-	IsSuccessReply = user.IsSuccessReply
-	UsersReq       = user.UsersReq
 	IdReq          = user.IdReq
+	RoleReq        = user.RoleReq
 	UsernameReq    = user.UsernameReq
+	UserInfoReply  = user.UserInfoReply
+	IdsReq         = user.IdsReq
+	UserUpdateReq  = user.UserUpdateReq
+	RolesReq       = user.RolesReq
+	UsersReq       = user.UsersReq
+	IsExistReply   = user.IsExistReply
+	IsSuccessReply = user.IsSuccessReply
+	EmptyReq       = user.EmptyReq
+	UserAddReq     = user.UserAddReq
 	RoleReply      = user.RoleReply
 	RolesReply     = user.RolesReply
-	UserInfoReply  = user.UserInfoReply
-	EmptyReq       = user.EmptyReq
-	RoleReq        = user.RoleReq
-	UserUpdateReq  = user.UserUpdateReq
-	IdsReq         = user.IdsReq
-	UserAddReq     = user.UserAddReq
 	UsersInfoReply = user.UsersInfoReply
-	IsExistReply   = user.IsExistReply
-	RolesReq       = user.RolesReq
 
 	User interface {
 		GetUserById(ctx context.Context, in *IdReq) (*UserInfoReply, error)

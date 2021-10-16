@@ -1,10 +1,10 @@
-Name: user.rpc
-ListenOn: 127.0.0.1:8080
+Name: book.rpc
+ListenOn: 127.0.0.1:8081
 Service:
   Name: user-rpc
   Mode: pro
 Log:
-  ServiceName: user-rpc
+  ServiceName: book-rpc
   Mode: file
   Path: logs
   Level: error
@@ -14,8 +14,8 @@ Postgresql:
   Password: wwy123456
   Host: 81.70.8.101
   Port: 5432
-  Name: admin_user
+  Name: library_book
 Etcd:
   Hosts:
   - 81.70.8.101:2379
-  Key: user.rpc
+  Key: book.rpc
