@@ -25,7 +25,7 @@
         <div class="cropper_right">
           <h3>预览</h3>
           <!-- 预览 -->
-          <div class="cropper_preview" :style="{
+<!--          <div class="cropper_preview" :style="{
               width: preview.w + 'px',
               height: preview.h + 'px',
               overflow: 'hidden',
@@ -34,7 +34,7 @@
             <div :style="preview.div">
               <img :src="preview.url" :style="preview.img" alt="" />
             </div>
-          </div>
+          </div> -->
           <br>
           <div class="cropper_preview2" :style="{
 		      width: preview.w + 'px',
@@ -46,13 +46,13 @@
               <img :src="preview.url" :style="preview.img" alt="" />
             </div>
           </div>
-          <div style="margin-top: 50px;">
+          <div style="margin-top: 30px;">
             <el-button type="primary" style="width: 150px; margin-left: 45px" @click="uploadImg" :loading="loading" round>
               确定
             </el-button>
           </div>
           <div style="margin-top: 20px;">
-            <el-button  style="width: 150px; margin-left: 45px" @click="close()" :loading="loading" round>
+            <el-button style="width: 150px; margin-left: 45px" @click="close()" :loading="loading" round>
               取消
             </el-button>
           </div>
@@ -88,8 +88,8 @@
           info: true, // 裁剪框的大小信息
           canScale: true, // 图片是否允许滚动缩放
           autoCrop: true, // 是否默认生成截图狂
-          autoCropWidth: 100, // 默认生成截图框宽度
-          autoCropHeight: 100, // 默认生成截图框高度
+          autoCropWidth: 150, // 默认生成截图框宽度
+          autoCropHeight: 150, // 默认生成截图框高度
           fixed: true, // 是否开启截图框宽高固定比例
           fixedNumber: [1, 1], // 截图框的宽高比例
           full: true, // 是否输出原图比例的截图

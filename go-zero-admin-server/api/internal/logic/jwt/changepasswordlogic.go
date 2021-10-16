@@ -34,6 +34,9 @@ func (l *ChangePasswordLogic) ChangePassword(req types.ChangePasswordByJwtReq) (
 	if req.NewPassword != req.NewPasswordAgain{
 		return nil, errorx.NewCodeError(code.ParameterError,"两次输入密码不一致")
 	}
+	if req.NewPassword == req.OldPassword{
+		return nil, errorx.NewCodeError(code.ParameterError,"新旧密码不能一致")
+	}
 	sprintf := fmt.Sprintf("%v", l.ctx.Value("userId"))
 	userId, err := strconv.ParseInt(sprintf,10,64)
 	isExistResp, err := l.svcCtx.UserRpc.IsExistUserById(l.ctx, &userclient.IdReq{Id: uint64(userId)})
@@ -48,9 +51,8 @@ func (l *ChangePasswordLogic) ChangePassword(req types.ChangePasswordByJwtReq) (
 		return nil, err
 	}
 	oldPasswordReq := util.Str2Md5(req.OldPassword + userOld.Salt)
-	oldPassword := util.Str2Md5(userOld.Password+userOld.Salt)
-	if oldPasswordReq != oldPassword{
-		return nil, errorx.NewCodeError(code.ParameterError,"两次输入密码不一致")
+	if oldPasswordReq != userOld.Password{
+		return nil, errorx.NewCodeError(code.ParameterError,"旧密码错误")
 	}
 	saltb, err := uuid.NewV4()
 	salts := saltb.String()
@@ -60,7 +62,7 @@ func (l *ChangePasswordLogic) ChangePassword(req types.ChangePasswordByJwtReq) (
 		return nil, err
 	}
 	if !isSuccessResp.IsSuccess {
-		return nil, errorx.NewCodeError(code.ChangeError, "修改用户失败")
+		return nil, errorx.NewCodeError(code.ChangeError, "修改密码失败")
 	}
-	return &types.Reply{}, nil
+	return &types.Reply{Code: code.Success, Msg: "修改密码成功"}, nil
 }

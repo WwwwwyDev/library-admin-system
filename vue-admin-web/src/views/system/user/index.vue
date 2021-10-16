@@ -68,8 +68,8 @@
       </el-footer>
     </el-container>
 
-    <el-dialog title="添加用户" :visible.sync="addDialogVisible">
-      <el-form :model="addForm" :rules="FormRules" ref="addForm" label-width="120px" @submit.native.prevent>
+    <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="500px">
+      <el-form :model="addForm" :rules="FormRules" ref="addForm" label-width="90px" @submit.native.prevent>
         <el-form-item label="用户账号" prop="username">
           <el-input placeholder="请输入账号" v-model="addForm.username" clearable>
           </el-input>
@@ -96,8 +96,8 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="编辑用户" :visible.sync="editDialogVisible">
-      <el-form :model="editForm" :rules="FormRules" ref="editForm" label-width="120px" @submit.native.prevent>
+    <el-dialog title="编辑用户" :visible.sync="editDialogVisible"  width="500px">
+      <el-form :model="editForm" :rules="FormRules" ref="editForm" label-width="90px" @submit.native.prevent>
         <el-form-item label="用户账号">
           <el-input placeholder="" v-model="editForm.username" :disabled="true">
           </el-input>
@@ -124,8 +124,8 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="权限设置" :visible.sync="rolesDialogVisible" width="40%">
-      <el-form ref="rolesForm" label-width="100px" @submit.native.prevent>
+    <el-dialog title="权限设置" :visible.sync="rolesDialogVisible" width="450px">
+      <el-form ref="rolesForm" label-width="90px" @submit.native.prevent>
         <el-form-item label="用户账号">
           <el-input placeholder="" v-model="rolesForm.username" :disabled="true">
           </el-input>
@@ -537,6 +537,7 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    border-radius: 50%;
   }
 
   .avatar-uploader .el-upload:hover {
@@ -556,5 +557,6 @@
     width: 178px;
     height: 178px;
     display: block;
+    border-radius: 50%;
   }
 </style>

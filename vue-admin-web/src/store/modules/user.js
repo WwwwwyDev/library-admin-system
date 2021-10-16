@@ -194,6 +194,29 @@ const actions = {
       }
       resolve()
     })
+  },
+  refreshTokenNow({
+    commit,
+    state
+  }) {
+    return new Promise((resolve, reject) => {
+      refreshToken().then(response => {
+        const {
+          accessExpire,
+          accessToken,
+          refreshAfter
+        } = response.data
+        commit('SET_TOKEN', accessToken)
+        commit('SET_ACCESSEXPIRE', accessExpire)
+        commit('SET_REFRESHAFTER', refreshAfter)
+        setRefreshAfter(refreshAfter)
+        setAccessExpire(accessExpire)
+        setToken(accessToken)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 

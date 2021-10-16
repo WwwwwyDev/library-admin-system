@@ -35,3 +35,20 @@ export function getUserById(id){
     method: 'get'
   })
 }
+
+//通过jwt修改用户信息
+export function editUser(data){
+  return request({
+    url: 'verify/editUser',
+    method: 'post',
+    data
+  })
+}
+//通过jwt修改用户密码
+export function changePassword(data){
+  return request({
+    url: 'verify/changePassword',
+    method: 'post',
+    data
+  })
+}
