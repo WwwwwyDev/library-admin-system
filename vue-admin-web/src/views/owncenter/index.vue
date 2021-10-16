@@ -199,10 +199,6 @@
           loading.close()
         }
         let res = await editUser(this.editForm)
-        // this.$message({
-        //   message: res.msg,
-        //   type: 'success'
-        // });
         this.editDialogVisible = false
         try {
           await this.refreshToken()
