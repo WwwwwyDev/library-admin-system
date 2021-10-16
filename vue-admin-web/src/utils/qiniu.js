@@ -1,8 +1,10 @@
 import * as qiniu from 'qiniu-js'
-import {qiniuDomain} from '@/settings'
-export const domain =  qiniuDomain
+import {
+  qiniuDomain
+} from '@/settings'
+export const domain = qiniuDomain
 
-export function upload(file,token) {
+export function upload(file, token) {
   let key = null
   let config = {
     useCdnDomain: true,
@@ -19,3 +21,22 @@ export function upload(file,token) {
   }
   return qiniu.upload(file, key, token, putExtra, config)
 }
+
+export function uploadAsync(file, token) {
+  return new Promise((resolve, reject) => {
+    const observable = upload(file, token)
+    const subscription = observable.subscribe({
+      next(res) {
+        //进度
+      },
+      error(err) {
+        reject(err)
+      },
+      complete(res) {
+        resolve(domain + res.hash)
+      }
+    })
+  })
+}
+
+

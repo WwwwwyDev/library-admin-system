@@ -93,7 +93,7 @@
     getQiniuToken
   } from '@/api/qiniu'
   import {
-    upload,
+    uploadAsync,
     domain
   } from '@/utils/qiniu'
   import {
@@ -106,6 +106,7 @@
     },
     data() {
       return {
+        avatarFile: null,
         editDialogVisible: false,
         changePwdDialogVisible: false,
         rolesList: [],
@@ -168,16 +169,40 @@
         this.editDialogVisible = true
       },
       clearEditForm() {
-        this.editForm.username = "",
-          this.editForm.avatar = "",
-          this.editForm.info = ""
+        this.avatarFile = null
+        this.editForm.username = ""
+        this.editForm.avatar = ""
+        this.editForm.info = ""
       },
       async submitEditForm() {
+        if (this.avatarFile != null) {
+          let res = await getQiniuToken()
+          let {
+            token
+          } = res.data
+          const loading = this.$loading({
+            lock: true,
+            text: '上传头像中',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          })
+          try {
+            this.editForm.avatar = await uploadAsync(this.avatarFile, token)
+          } catch (err) {
+            this.$message({
+              message: "头像上传失败",
+              type: 'error'
+            });
+            loading.close()
+            return
+          }
+          loading.close()
+        }
         let res = await editUser(this.editForm)
-        this.$message({
-          message: res.msg,
-          type: 'success'
-        });
+        // this.$message({
+        //   message: res.msg,
+        //   type: 'success'
+        // });
         this.editDialogVisible = false
         try {
           await this.refreshToken()
@@ -245,34 +270,8 @@
       },
       //file:裁剪后的图
       async getEditFile(file) {
-        let res = await getQiniuToken()
-        let {
-          token
-        } = res.data
-        const observable = upload(file, token)
-        var _this = this
-        const loading = this.$loading({
-          lock: true,
-          text: '上传中',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        });
-        const subscription = observable.subscribe({
-          next(res) {
-            //进度
-          },
-          error(err) {
-            return _this.$message({
-              message: "图片上传失败",
-              type: 'error'
-            });
-            loading.close();
-          },
-          complete(res) {
-            _this.editForm.avatar = domain + res.hash
-            loading.close();
-          }
-        })
+        this.avatarFile = file
+        this.editForm.avatar = window.URL.createObjectURL(file)
         this.$refs.imageCropper.close();
       },
       ...mapActions({
