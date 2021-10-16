@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package user;
+
+message EmptyReq {
+
+}
+
+message IdReq {
+    uint64 id = 1;
+}
+
+message IdsReq {
+    repeated IdReq ids = 1;
+}
+
+message RoleReq{
+    uint64 id = 1;
+}
+
+message RolesReq{
+    uint64 userId = 1;
+    repeated RoleReq ids = 2;
+}
+
+message UsernameReq {
+    string username = 1;
+}
+
+message UsersReq {
+    int64 page = 1;
+    int64 limit =2;
+    string username =3;
+}
+
+message UserUpdateReq {
+    uint64 id = 1;
+    string username = 2;
+    string password = 3;
+    string salt = 4;
+    string avatar = 5;
+    string info = 6;
+}
+
+message UserAddReq {
+    string username = 2;
+    string password = 3;
+    string salt = 4;
+    string avatar = 5;
+    string info = 6;
+}
+
+
+message RoleReply {
+    uint64 id = 1;
+    string name = 2;
+    string info = 3;
+}
+
+message RolesReply {
+    repeated RoleReply roles = 1;
+}
+
+message UserInfoReply {
+    uint64 id = 1;
+    string username = 2;
+    string password = 3;
+    string salt = 4;
+    string avatar = 5;
+    string info = 6;
+    repeated RoleReply roles = 7;
+}
+
+message UsersInfoReply {
+    int64 total = 1;
+    repeated UserInfoReply usersInfo = 2;
+}
+
+message isExistReply{
+    bool isExist = 1;
+}
+
+message isSuccessReply{
+    bool isSuccess = 1;
+}
+
+service User {
+    rpc getUserById(IdReq) returns(UserInfoReply);
+    rpc getUserByUsername(UsernameReq) returns(UserInfoReply);
+    rpc getUserByUsernameLike(UsernameReq) returns(UsersInfoReply);
+    rpc IsExistUserById(IdReq) returns(isExistReply);
+    rpc IsExistUserByUsername(UsernameReq) returns(isExistReply);
+    rpc getUsers(UsersReq) returns(UsersInfoReply);
+    rpc AddUser(UserAddReq) returns(isSuccessReply);
+    rpc UpdateUser(UserUpdateReq) returns(isSuccessReply);
+    rpc DelUser(IdReq) returns(isSuccessReply);
+    rpc DelSomeUser(IdsReq) returns(isSuccessReply);
+    rpc GetAllRole(EmptyReq) returns(RolesReply);
+    rpc editUserRoles(RolesReq) returns(isSuccessReply);
+    rpc IsExistRoleById(IdReq) returns(isExistReply);
+}

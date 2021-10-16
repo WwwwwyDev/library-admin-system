@@ -16,11 +16,11 @@
       </el-header>
       <el-main>
         <el-table v-loading="listLoading" :data="list" element-loading-text="加载中" border fit highlight-current-row>
-          <el-table-column align="center" label="ID" width="95">
+<!--          <el-table-column align="center" label="ID" width="95">
             <template slot-scope="scope">
               {{ scope.row.id }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="头像" width="100" align="center">
             <template slot-scope="scope">
               <el-avatar :size="50" :src="scope.row.avatar"></el-avatar>
