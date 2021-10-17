@@ -79,6 +79,11 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/admin/api/search/loginStatus",
 				Handler: search.GetLoginStatusHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/search/book/type",
+				Handler: search.GetAllBookTypesHandler(serverCtx),
+			},
 		},
 	)
 

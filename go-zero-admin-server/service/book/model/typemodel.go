@@ -9,6 +9,7 @@ type (
 		GetTypeByNameLike(name string) ([]Type, error)
 		GetTypeById(id uint) (*Type, error)
 		GetTypes(page int, limit int, typeS *Type) ([]Type, int64, error)
+		GetAllTypes() ([]Type, error)
 		IsExistTypeById(id uint) (bool, error)
 		IsExistTypeByName(name string) (bool, error)
 		AddType(_type *Type) (bool, error)
@@ -33,8 +34,17 @@ func NewTypeModel(conn *gorm.DB) TypeModel {
 	//如果没有表则自动构建表
 	conn.AutoMigrate(&Type{})
 	return &defaultTypeModel{
-		conn:  conn.Debug(),
+		conn:  conn,
 	}
+}
+
+func (d defaultTypeModel) GetAllTypes() ([]Type, error) {
+	var _types []Type
+	err := d.conn.Model(&Type{}).Find(&_types).Error
+	if err != nil {
+		return nil, err
+	}
+	return _types, nil
 }
 
 func (d defaultTypeModel) GetTypeByNameLike(name string) ([]Type, error) {

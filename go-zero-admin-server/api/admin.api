@@ -1,11 +1,11 @@
 syntax = "v1"
 
 import (
-	"apis/reply.api"
-	"apis/verify.api"
-	"apis/user.api"
-	"apis/search.api"
-	"apis/book.api"
+	"doc/reply.api"
+	"doc/verify.api"
+	"doc/user.api"
+	"doc/search.api"
+	"doc/book.api"
 )
 
 info(
@@ -49,6 +49,8 @@ service admin-api {
 	get /admin/api/search/roles () returns (Reply)
 	@handler getLoginStatus
 	get /admin/api/search/loginStatus () returns (Reply)
+	@handler getAllBookTypes
+	get /admin/api/search/book/type () returns (Reply)
 }
 
 @server(

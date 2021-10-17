@@ -108,6 +108,7 @@ service Book {
     rpc DelSomeBook(IdsReq) returns(isSuccessReply);
 
     rpc getTypeById(IdReq) returns(TypeInfoReply);
+    rpc getAllTypes(EmptyReq) returns(TypesInfoReply);
     rpc getTypeByNameLike(NameReq) returns(TypesInfoReply);
     rpc IsExistTypeById(IdReq) returns(isExistReply);
     rpc IsExistTypeByName(NameReq) returns(isExistReply);

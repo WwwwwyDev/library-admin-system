@@ -36,7 +36,7 @@ func NewBookModel(conn *gorm.DB) BookModel {
 	//如果没有表则自动构建表
 	conn.AutoMigrate(&Book{})
 	return &defaultBookModel{
-		conn: conn.Debug(),
+		conn: conn,
 	}
 }
 

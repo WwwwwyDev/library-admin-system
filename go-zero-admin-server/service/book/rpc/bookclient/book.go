@@ -12,22 +12,22 @@ import (
 )
 
 type (
-	EmptyReq       = book.EmptyReq
 	IdsReq         = book.IdsReq
+	BookInfoReply  = book.BookInfoReply
 	TypesReq       = book.TypesReq
 	BookAddReq     = book.BookAddReq
+	TypeInfoReply  = book.TypeInfoReply
 	TypesInfoReply = book.TypesInfoReply
-	BooksInfoReply = book.BooksInfoReply
+	IsExistReply   = book.IsExistReply
 	NameReq        = book.NameReq
 	TypeUpdateReq  = book.TypeUpdateReq
 	TypeAddReq     = book.TypeAddReq
 	BooksReq       = book.BooksReq
-	IdReq          = book.IdReq
-	BookInfoReply  = book.BookInfoReply
-	IsExistReply   = book.IsExistReply
-	IsSuccessReply = book.IsSuccessReply
 	BookUpdateReq  = book.BookUpdateReq
-	TypeInfoReply  = book.TypeInfoReply
+	BooksInfoReply = book.BooksInfoReply
+	EmptyReq       = book.EmptyReq
+	IdReq          = book.IdReq
+	IsSuccessReply = book.IsSuccessReply
 
 	Book interface {
 		GetBookById(ctx context.Context, in *IdReq) (*BookInfoReply, error)
@@ -40,6 +40,7 @@ type (
 		DelBook(ctx context.Context, in *IdReq) (*IsSuccessReply, error)
 		DelSomeBook(ctx context.Context, in *IdsReq) (*IsSuccessReply, error)
 		GetTypeById(ctx context.Context, in *IdReq) (*TypeInfoReply, error)
+		GetAllTypes(ctx context.Context, in *EmptyReq) (*TypesInfoReply, error)
 		GetTypeByNameLike(ctx context.Context, in *NameReq) (*TypesInfoReply, error)
 		IsExistTypeById(ctx context.Context, in *IdReq) (*IsExistReply, error)
 		IsExistTypeByName(ctx context.Context, in *NameReq) (*IsExistReply, error)
@@ -108,6 +109,11 @@ func (m *defaultBook) DelSomeBook(ctx context.Context, in *IdsReq) (*IsSuccessRe
 func (m *defaultBook) GetTypeById(ctx context.Context, in *IdReq) (*TypeInfoReply, error) {
 	client := book.NewBookClient(m.cli.Conn())
 	return client.GetTypeById(ctx, in)
+}
+
+func (m *defaultBook) GetAllTypes(ctx context.Context, in *EmptyReq) (*TypesInfoReply, error) {
+	client := book.NewBookClient(m.cli.Conn())
+	return client.GetAllTypes(ctx, in)
 }
 
 func (m *defaultBook) GetTypeByNameLike(ctx context.Context, in *NameReq) (*TypesInfoReply, error) {

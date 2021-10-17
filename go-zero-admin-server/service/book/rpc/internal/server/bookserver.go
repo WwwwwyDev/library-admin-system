@@ -71,6 +71,11 @@ func (s *BookServer) GetTypeById(ctx context.Context, in *book.IdReq) (*book.Typ
 	return l.GetTypeById(in)
 }
 
+func (s *BookServer) GetAllTypes(ctx context.Context, in *book.EmptyReq) (*book.TypesInfoReply, error) {
+	l := logic.NewGetAllTypesLogic(ctx, s.svcCtx)
+	return l.GetAllTypes(in)
+}
+
 func (s *BookServer) GetTypeByNameLike(ctx context.Context, in *book.NameReq) (*book.TypesInfoReply, error) {
 	l := logic.NewGetTypeByNameLikeLogic(ctx, s.svcCtx)
 	return l.GetTypeByNameLike(in)

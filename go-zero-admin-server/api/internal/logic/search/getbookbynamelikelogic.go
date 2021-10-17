@@ -30,5 +30,5 @@ func (l *GetBookByNameLikeLogic) GetBookByNameLike(req types.NameReq) (*types.Re
 	if err != nil {
 		return nil, err
 	}
-	return &types.Reply{Code: code.Success,Data: map[string]interface{}{"books":books},Msg: "获取成功"}, nil
+	return &types.Reply{Code: code.Success,Data: map[string]interface{}{"books":books.BooksInfo},Msg: "获取成功"}, nil
 }

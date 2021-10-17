@@ -30,5 +30,5 @@ func (l *GetTypeByNameLikeLogic) GetTypeByNameLike(req types.NameReq) (*types.Re
 	if err != nil {
 		return nil, err
 	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"types": _types}, Msg: "获取成功"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"types": _types.TypesInfo}, Msg: "获取成功"}, nil
 }

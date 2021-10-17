@@ -2,6 +2,7 @@
   <div class="app-container">
     <el-container>
       <el-header>
+        <el-row>
         <el-col :span="4">
           <el-input placeholder="请输入查找的用户名" v-model.lazy="usernameSearchInput" clearable>
           </el-input>
@@ -12,7 +13,7 @@
         <el-col :span="1" :offset="1">
           <el-button type="primary" @click="openAddDialog" round>添加用户</el-button>
         </el-col>
-
+</el-row>
       </el-header>
       <el-main>
         <el-table v-loading="listLoading" :data="list" element-loading-text="加载中" border fit highlight-current-row>

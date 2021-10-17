@@ -36,5 +36,5 @@ func (l *GetTypesLogic) GetTypes(req types.GetTypesReq) (*types.Reply, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"books": typesResp.TypesInfo, "total": typesResp.Total}, Msg: "查询用户成功"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"types": typesResp.TypesInfo, "total": typesResp.Total}, Msg: "查询用户成功"}, nil
 }

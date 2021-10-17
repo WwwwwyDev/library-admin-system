@@ -103,14 +103,26 @@ export const permissionRoutes = [{
     path: '/book',
     component: Layout,
     redirect: '/book',
+    meta: {
+      title: '图书馆',
+      icon: 'book',
+      roles: ['superadmin', 'admin', 'bookadmin']
+    },
     children: [{
-      path: 'book',
-      name: '图书管理',
+      path: '',
+      name: '藏书管理',
       component: () => import('@/views/book/index'),
       meta: {
-        title: '图书管理',
-        icon: 'book',
-        roles: ['superadmin', 'admin', 'bookadmin']
+        title: '藏书管理',
+        icon: 'book'
+      }
+    },{
+      path: 'type',
+      name: '类目管理',
+      component: () => import('@/views/book/type/index'),
+      meta: {
+        title: '类目管理',
+        icon: 'type'
       }
     }]
   },

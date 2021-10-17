@@ -3,17 +3,13 @@
     <el-container>
       <el-header>
         <el-col :span="4">
-          <el-input placeholder="请输入查找的书名" v-model.lazy="searchNameInput"  clearable>
-          </el-input>
-        </el-col>
-        <el-col :span="4" :offset="1">
-          <el-input placeholder="请输入查找的作者名" v-model.lazy="searchAuthorInput" clearable>
+          <el-input placeholder="请输入查找的种类名" v-model.lazy="searchNameInput"  clearable>
           </el-input>
         </el-col>
         <el-col :span="1" :offset="0" style="padding-left: 10px;">
-          <el-button icon="el-icon-search" circle @click="search" ></el-button>
+          <el-button type="primary" icon="el-icon-search"  @click="search">搜索</el-button>
         </el-col>
-        <el-col :span="1" :offset="1">
+        <el-col :span="1" :offset="3">
           <el-button type="primary"  round>添加用户</el-button>
         </el-col>
       </el-header>
@@ -24,37 +20,21 @@
               {{ scope.row.id }}
             </template>
           </el-table-column>
-          <el-table-column label="书名" width="100" align="center">
+          <el-table-column label="种类名" width="100" align="center">
             <template slot-scope="scope">
               {{ scope.row.name }}
             </template>
           </el-table-column>
-          <el-table-column label="图片" width="150">
-            <template slot-scope="scope">
-              <el-image :src="scope.row.image">
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline"></i>
-                </div>
-              </el-image>
-            </template>
-          </el-table-column>
-          <el-table-column label="作者" width="150">
-            <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="种类" width="150">
-            <template slot-scope="scope">
-              <span>{{ scope.row.type }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="信息">
-            <template slot-scope="scope">
-              <span>{{ scope.row.info }}</span>
-            </template>
+          <el-table-column label="种类介绍" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.intro }}</span>
+              </template>
           </el-table-column>
           <el-table-column label="操作" width="150" fixed="right">
             <template slot-scope="scope">
+              <el-tooltip class="item" effect="dark" content="查询该类目下的图书" placement="top">
+                <el-button icon="el-icon-search" circle></el-button>
+                </el-tooltip>
               <el-popconfirm title="确定删除吗?" icon="el-icon-info" icon-color="red">
                 <el-button slot="reference" type="danger" icon="el-icon-delete" circle></el-button>
               </el-popconfirm>
@@ -65,7 +45,7 @@
       </el-main>
       <el-footer>
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page"
-          :page-sizes="[5, 10, 20, 100]" :page-size="limit" layout="total, sizes, prev, pager, next, jumper"
+          :page-sizes="[1, 10, 20, 100]" :page-size="limit" layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
       </el-footer>
@@ -78,19 +58,19 @@
     mapActions
   } from 'vuex'
   import {
-    getBooks
-  } from '@/api/booktable'
+    getTypes
+  } from '@/api/typetable'
 
   export default {
     data() {
       return {
-        searchAuthorInput:'',
         searchNameInput:'',
         list: null,
         listLoading: true,
         page: 1,
         limit: 10,
         total: 0,
+        
       }
     },
     created() {
@@ -107,12 +87,12 @@
         } catch (error) {
           location.reload()
         }
-        let res = await getBooks(params)
+        let res = await getTypes(params)
         let {
-          books,
+          types,
           total
         } = res.data
-        this.list = books
+        this.list = types
         this.total = total
         this.listLoading = false
       },
@@ -121,7 +101,6 @@
           "page": this.page,
           "limit": limit,
           "name": this.searchNameInput,
-          "author": this.searchAuthorInput
         })
         this.limit = limit
       },
@@ -130,7 +109,6 @@
           "page": page,
           "limit": this.limit,
           "name": this.searchNameInput,
-          "author": this.searchAuthorInput
         })
         this.page = page
       },
@@ -139,7 +117,6 @@
           "page": 1,
           "limit": this.limit,
           "name": this.searchNameInput,
-          "author": this.searchAuthorInput
         })
         this.page = 1
       },
