@@ -5,12 +5,14 @@ import (
 	"github.com/tal-tech/go-zero/zrpc"
 	"go-zero-admin-server/api/internal/config"
 	"go-zero-admin-server/common/core"
+	"go-zero-admin-server/service/book/rpc/bookclient"
 	"go-zero-admin-server/service/user/rpc/userclient"
 )
 
 type ServiceContext struct {
 	Config config.Config
 	UserRpc userclient.User
+	BookRpc bookclient.Book
 	Redis *redis.Client
 }
 
@@ -19,6 +21,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c,
 		UserRpc: userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
+		BookRpc: bookclient.NewBook(zrpc.MustNewClient(c.BookRpc)),
 		Redis: redis,
 	}
 }

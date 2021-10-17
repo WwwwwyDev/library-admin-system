@@ -36,7 +36,7 @@ func NewBookModel(conn *gorm.DB) BookModel {
 	//如果没有表则自动构建表
 	conn.AutoMigrate(&Book{})
 	return &defaultBookModel{
-		conn: conn,
+		conn: conn.Debug(),
 	}
 }
 
@@ -85,14 +85,14 @@ func (d defaultBookModel) IsExistBookByName(name string) (bool, error) {
 func (d defaultBookModel) GetBooks(page int, limit int, bookS *Book) ([]Book, int64, error) {
 	var books []Book
 	var total int64
-	temp := d.conn.Model(&Book{}).Order("id ASC")
+	temp := d.conn.Model(&Book{}).Preload("Type").Order("id ASC")
 	if bookS.Name != "" {
 		temp = temp.Where("name like ?", "%"+bookS.Name+"%")
 	}
 	if bookS.Author != "" {
 		temp = temp.Where("author like ?", "%"+bookS.Author+"%")
 	}
-	err := temp.Preload("Type").Count(&total).Limit(limit).Offset((page - 1) * limit).Find(&books).Error
+	err := temp.Count(&total).Limit(limit).Offset((page - 1) * limit).Find(&books).Error
 	if err != nil {
 		return nil, 0, err
 	}

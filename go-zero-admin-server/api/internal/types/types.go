@@ -59,3 +59,18 @@ type IdReq struct {
 type UsernameReq struct {
 	Username string `path:"username"`
 }
+
+type GetBooksReq struct {
+	Page   int    `form:"page,default=1"`
+	Limit  int    `form:"limit,default=10"`
+	Name   string `form:"name,optional"`
+	Author string `form:"author,optional"`
+}
+
+type AddBookReq struct {
+	Name   string `json:"name"`
+	Image  string `json:"image,optional"`
+	Author string `json:"author,optional"`
+	Info   string `json:"info,optional"`
+	TypeId uint   `json:"typeId"`
+}

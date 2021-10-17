@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	book "go-zero-admin-server/api/internal/handler/book"
 	externalserver "go-zero-admin-server/api/internal/handler/externalserver"
 	jwt "go-zero-admin-server/api/internal/handler/jwt"
 	search "go-zero-admin-server/api/internal/handler/search"
@@ -117,6 +118,22 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodDelete,
 				Path:    "/admin/api/user/:id",
 				Handler: user.DeleteUserHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/book",
+				Handler: book.GetBooksHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/book",
+				Handler: book.AddBookHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

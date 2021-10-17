@@ -31,3 +31,8 @@ UserRpc:
     Hosts:
       - 81.70.8.101:2379
     Key: user.rpc
+BookRpc:
+  Etcd:
+    Hosts:
+      - 81.70.8.101:2379
+    Key: book.rpc

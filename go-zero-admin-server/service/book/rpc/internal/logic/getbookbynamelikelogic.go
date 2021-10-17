@@ -29,7 +29,11 @@ func (l *GetBookByNameLikeLogic) GetBookByNameLike(in *book.NameReq) (*book.Book
 	}
 	booksHandle := make([]*book.BookInfoReply, 0)
 	for _, e := range _books {
-		booksHandle = append(booksHandle, &book.BookInfoReply{Id: uint64(e.ID),Name: e.Name,Image: e.Image,Author: e.Author,Info: e.Info,Type: e.Type.Name})
+		if e.Type == nil{
+			booksHandle = append(booksHandle,&book.BookInfoReply{Id: uint64(e.ID), Name: e.Name,Author: e.Author,Image: e.Image,Info: e.Info,Type: ""})
+		}else{
+			booksHandle = append(booksHandle,&book.BookInfoReply{Id: uint64(e.ID), Name: e.Name,Author: e.Author,Image: e.Image,Info: e.Info,Type: e.Type.Name})
+		}
 	}
 	return &book.BooksInfoReply{BooksInfo: booksHandle}, nil
 }

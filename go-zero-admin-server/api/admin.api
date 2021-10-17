@@ -5,6 +5,7 @@ import (
 	"apis/verify.api"
 	"apis/user.api"
 	"apis/search.api"
+	"apis/book.api"
 )
 
 info(
@@ -19,7 +20,7 @@ info(
 	jwt: Auth
 	group : jwt
 )
-service admin-api{
+service admin-api {
 	@handler refreshJwt
 	get /admin/api/rjwt () returns (Reply)
 	@handler decodeJwt
@@ -35,7 +36,7 @@ service admin-api{
 @server(
 	group : search
 )
-service admin-api{
+service admin-api {
 	@handler getUserById
 	get /admin/api/search/userId/:id (IdReq) returns (Reply)
 	@handler getUserByUserNameLike
@@ -49,7 +50,7 @@ service admin-api{
 @server(
 	group : externalserver
 )
-service admin-api{
+service admin-api {
 	@handler getQiniuToken
 	get /admin/api/qiniuToken () returns (Reply)
 }
@@ -77,4 +78,15 @@ service admin-api {
 	put /admin/api/userRoles/:id (EditUserRolesReq) returns (Reply)
 	@handler deleteUser
 	delete /admin/api/user/:id (DeleteUserReq) returns (Reply)
+}
+
+@server(
+	jwt: Auth
+	group: book
+)
+service admin-api {
+	@handler getBooks
+	get /admin/api/book (GetBooksReq) returns (Reply)
+	@handler  addBook
+	post /admin/api/book (AddBookReq) returns (Reply)
 }

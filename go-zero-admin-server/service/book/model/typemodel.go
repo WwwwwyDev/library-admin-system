@@ -33,7 +33,7 @@ func NewTypeModel(conn *gorm.DB) TypeModel {
 	//如果没有表则自动构建表
 	conn.AutoMigrate(&Type{})
 	return &defaultTypeModel{
-		conn:  conn,
+		conn:  conn.Debug(),
 	}
 }
 
