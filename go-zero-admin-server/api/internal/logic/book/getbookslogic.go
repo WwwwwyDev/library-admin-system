@@ -35,5 +35,5 @@ func (l *GetBooksLogic) GetBooks(req types.GetBooksReq) (*types.Reply, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"books": booksResp.BooksInfo, "total": booksResp.Total}, Msg: "查询用户成功"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"books": booksResp.BooksInfo, "total": booksResp.Total}, Msg: "查询图书成功"}, nil
 }

@@ -14,7 +14,10 @@ type (
         Id uint `path:"id"`
     }
     UsernameReq {
-        username string `path:"username"`
+        Username string `path:"username"`
+    }
+    NameReq {
+        Name string `path:"name"`
     }
 )
 

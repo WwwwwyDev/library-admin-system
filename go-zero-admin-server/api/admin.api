@@ -41,6 +41,10 @@ service admin-api {
 	get /admin/api/search/userId/:id (IdReq) returns (Reply)
 	@handler getUserByUserNameLike
 	get /admin/api/search/username/:username (UsernameReq) returns (Reply)
+	@handler getBookByNameLike
+	get /admin/api/search/book/:name (NameReq) returns (Reply)
+	@handler getTypeByNameLike
+	get /admin/api/search/book/type/:name (NameReq) returns (Reply)
 	@handler getAllRoles
 	get /admin/api/search/roles () returns (Reply)
 	@handler getLoginStatus
@@ -87,6 +91,19 @@ service admin-api {
 service admin-api {
 	@handler getBooks
 	get /admin/api/book (GetBooksReq) returns (Reply)
-	@handler  addBook
+	@handler addBook
 	post /admin/api/book (AddBookReq) returns (Reply)
+	@handler updateBook
+	put /admin/api/book/:id (UpdateBookReq) returns (Reply)
+	@handler deleteBook
+	delete /admin/api/book/:id (DeleteBookReq) returns (Reply)
+	
+	@handler getTypes
+	get /admin/api/book/type (GetTypesReq) returns (Reply)
+	@handler addType
+	post /admin/api/book/type (AddTypeReq) returns (Reply)
+	@handler updateType
+	put /admin/api/book/type/:id (UpdateTypeReq) returns (Reply)
+	@handler deleteType
+	delete /admin/api/book/type/:id (DeleteTypeReq) returns (Reply)
 }

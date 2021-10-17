@@ -61,6 +61,16 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/admin/api/search/book/:name",
+				Handler: search.GetBookByNameLikeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/search/book/type/:name",
+				Handler: search.GetTypeByNameLikeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/admin/api/search/roles",
 				Handler: search.GetAllRolesHandler(serverCtx),
 			},
@@ -134,6 +144,36 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/admin/api/book",
 				Handler: book.AddBookHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/admin/api/book/:id",
+				Handler: book.UpdateBookHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/admin/api/book/:id",
+				Handler: book.DeleteBookHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/book/type",
+				Handler: book.GetTypesHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/book/type",
+				Handler: book.AddTypeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/admin/api/book/type/:id",
+				Handler: book.UpdateTypeHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/admin/api/book/type/:id",
+				Handler: book.DeleteTypeHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

@@ -33,7 +33,7 @@ func (l *GetBooksLogic) GetBooks(in *book.BooksReq) (*book.BooksInfoReply, error
 		if e.Type == nil{
 			booksHandle = append(booksHandle,&book.BookInfoReply{Id: uint64(e.ID), Name: e.Name,Author: e.Author,Image: e.Image,Info: e.Info,Type: ""})
 		}else{
-			booksHandle = append(booksHandle,&book.BookInfoReply{Id: uint64(e.ID), Name: e.Name,Author: e.Author,Image: e.Image,Info: e.Info,Type: e.Type.Name})
+			booksHandle = append(booksHandle,&book.BookInfoReply{Id: uint64(e.ID), Name: e.Name,Author: e.Author,Image: e.Image,Info: e.Info,Type: e.Type.Name,TypeId: uint64(e.TypeID)})
 		}
 	}
 	return &book.BooksInfoReply{BooksInfo: booksHandle,Total: total}, nil

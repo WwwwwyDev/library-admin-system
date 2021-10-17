@@ -48,7 +48,7 @@ func (d defaultTypeModel) GetTypeByNameLike(name string) ([]Type, error) {
 
 func (d defaultTypeModel) GetTypeById(id uint) (*Type, error) {
 	var _type *Type
-	err := d.conn.Model(&Type{}).Preload("Book").Where("id = ?", id).First(&_type).Error
+	err := d.conn.Model(&Type{}).Preload("Book").Where("id = ?", id).Find(&_type).Error
 	if err != nil {
 		return nil, err
 	}

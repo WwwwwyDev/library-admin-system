@@ -12,22 +12,22 @@ import (
 )
 
 type (
-	TypesInfoReply = book.TypesInfoReply
-	BookInfoReply  = book.BookInfoReply
-	IsExistReply   = book.IsExistReply
 	EmptyReq       = book.EmptyReq
-	IdReq          = book.IdReq
+	IdsReq         = book.IdsReq
+	TypesReq       = book.TypesReq
+	BookAddReq     = book.BookAddReq
+	TypesInfoReply = book.TypesInfoReply
+	BooksInfoReply = book.BooksInfoReply
 	NameReq        = book.NameReq
 	TypeUpdateReq  = book.TypeUpdateReq
-	BooksReq       = book.BooksReq
-	IdsReq         = book.IdsReq
 	TypeAddReq     = book.TypeAddReq
-	TypesReq       = book.TypesReq
-	TypeInfoReply  = book.TypeInfoReply
-	BookUpdateReq  = book.BookUpdateReq
-	BookAddReq     = book.BookAddReq
-	BooksInfoReply = book.BooksInfoReply
+	BooksReq       = book.BooksReq
+	IdReq          = book.IdReq
+	BookInfoReply  = book.BookInfoReply
+	IsExistReply   = book.IsExistReply
 	IsSuccessReply = book.IsSuccessReply
+	BookUpdateReq  = book.BookUpdateReq
+	TypeInfoReply  = book.TypeInfoReply
 
 	Book interface {
 		GetBookById(ctx context.Context, in *IdReq) (*BookInfoReply, error)

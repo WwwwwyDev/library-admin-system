@@ -23,26 +23,33 @@ type (
         Info string `json:"info,optional"`
         TypeId uint `json:"typeId"`
     }
-    //    UpdateUserReq {
-    //        Id       uint   `path:"id"`
-    //        Password string `json:"password"`
-    //        Avatar string `json:"avatar,optional"`
-    //        Info     string `json:"info,optional"`
-    //    }
-    //    EditUserRolesReq {
-    //        Id       uint   `path:"id"`
-    //        RoleIds  []uint `json:"roleIds,optional"`
-    //    }
-    //    DeleteUserReq {
-    //        Id uint `path:"id"`
-    //    }
-    //    UpdateUserByJwtReq {
-    //        Avatar string `json:"avatar,optional"`
-    //        Info     string `json:"info,optional"`
-    //    }
-    //    ChangePasswordByJwtReq {
-    //        OldPassword string `json:"oldPassword"`
-    //        NewPassword string `json:"newPassword"`
-    //        NewPasswordAgain string `json:"newPasswordAgain"`
-    //    }
+    UpdateBookReq {
+        Id       uint   `path:"id"`
+        Name string `json:"name"`
+        Image string `json:"image,optional"`
+        Author string `json:"author,optional"`
+        Info string `json:"info,optional"`
+        TypeId uint `json:"typeId"`
+    }
+    DeleteBookReq {
+        Id uint `path:"id"`
+    }
+
+    GetTypesReq {
+        Page int `form:"page,default=1"`
+        Limit int `form:"limit,default=10"`
+        Name string `form:"name,optional"`
+    }
+    AddTypeReq {
+        Name string `json:"name"`
+        Intro string `json:"intro,optional"`
+    }
+    UpdateTypeReq {
+        Id       uint   `path:"id"`
+        Name string `json:"name"`
+        Intro string `json:"intro,optional"`
+    }
+    DeleteTypeReq {
+        Id uint `path:"id"`
+    }
 )

@@ -33,5 +33,5 @@ func (l *GetTypesLogic) GetTypes(in *book.TypesReq) (*book.TypesInfoReply, error
 	for _, e := range types {
 		typesHandle = append(typesHandle, &book.TypeInfoReply{Id: uint64(e.ID), Name: e.Name,Intro: e.Intro})
 	}
-	return &book.TypesInfoReply{Types: typesHandle,Total: total}, nil
+	return &book.TypesInfoReply{TypesInfo: typesHandle,Total: total}, nil
 }

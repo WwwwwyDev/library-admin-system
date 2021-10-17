@@ -60,6 +60,10 @@ type UsernameReq struct {
 	Username string `path:"username"`
 }
 
+type NameReq struct {
+	Name string `path:"name"`
+}
+
 type GetBooksReq struct {
 	Page   int    `form:"page,default=1"`
 	Limit  int    `form:"limit,default=10"`
@@ -73,4 +77,38 @@ type AddBookReq struct {
 	Author string `json:"author,optional"`
 	Info   string `json:"info,optional"`
 	TypeId uint   `json:"typeId"`
+}
+
+type UpdateBookReq struct {
+	Id     uint   `path:"id"`
+	Name   string `json:"name"`
+	Image  string `json:"image,optional"`
+	Author string `json:"author,optional"`
+	Info   string `json:"info,optional"`
+	TypeId uint   `json:"typeId"`
+}
+
+type DeleteBookReq struct {
+	Id uint `path:"id"`
+}
+
+type GetTypesReq struct {
+	Page  int    `form:"page,default=1"`
+	Limit int    `form:"limit,default=10"`
+	Name  string `form:"name,optional"`
+}
+
+type AddTypeReq struct {
+	Name  string `json:"name"`
+	Intro string `json:"intro,optional"`
+}
+
+type UpdateTypeReq struct {
+	Id    uint   `path:"id"`
+	Name  string `json:"name"`
+	Intro string `json:"intro,optional"`
+}
+
+type DeleteTypeReq struct {
+	Id uint `path:"id"`
 }

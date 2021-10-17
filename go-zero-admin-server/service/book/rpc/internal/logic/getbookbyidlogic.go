@@ -28,5 +28,9 @@ func (l *GetBookByIdLogic) GetBookById(in *book.IdReq) (*book.BookInfoReply, err
 	if err != nil {
 		return nil,err
 	}
-	return &book.BookInfoReply{Id: uint64(_book.ID),Name: _book.Name,Author: _book.Author,Image: _book.Image,Type: _book.Type.Name}, nil
+	if _book.Type != nil {
+		return &book.BookInfoReply{Id: uint64(_book.ID),Name: _book.Name,Author: _book.Author,Image: _book.Image,Type: "",TypeId: 0}, nil
+	}else{
+		return &book.BookInfoReply{Id: uint64(_book.ID),Name: _book.Name,Author: _book.Author,Image: _book.Image,Type: _book.Type.Name,TypeId: uint64(_book.TypeID)}, nil
+	}
 }

@@ -70,7 +70,7 @@ message TypeInfoReply {
 
 message TypesInfoReply {
     int64 total = 1;
-    repeated TypeInfoReply types = 2;
+    repeated TypeInfoReply typesInfo = 2;
 }
 
 message BookInfoReply {
@@ -80,6 +80,7 @@ message BookInfoReply {
     string author = 4;
     string info = 5;
     string type = 6;
+    uint64 typeId = 7;
 }
 
 message BooksInfoReply {

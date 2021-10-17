@@ -7,7 +7,7 @@ Log:
   ServiceName: book-rpc
   Mode: file
   Path: logs
-  Level: error
+  Level: severe
   KeepDay: 7
 Postgresql:
   User: postgres

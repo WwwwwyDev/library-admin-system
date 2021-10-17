@@ -42,7 +42,7 @@ func NewBookModel(conn *gorm.DB) BookModel {
 
 func (d defaultBookModel) GetBookByNameLike(name string) ([]Book, error) {
 	var book []Book
-	err := d.conn.Model(&Book{}).Preload("Type").Where("name like ?", name).First(&book).Error
+	err := d.conn.Model(&Book{}).Preload("Type").Where("name like ?", "%"+name+"%").Find(&book).Error
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (d defaultBookModel) GetBookByNameLike(name string) ([]Book, error) {
 
 func (d defaultBookModel) GetBookByID(id uint) (*Book, error) {
 	var book *Book
-	err := d.conn.Model(&Book{}).Preload("Type").Where("id = ?", id).First(&book).Error
+	err := d.conn.Model(&Book{}).Preload("Type").Where("id = ?", id).Find(&book).Error
 	if err != nil {
 		return nil, err
 	}
