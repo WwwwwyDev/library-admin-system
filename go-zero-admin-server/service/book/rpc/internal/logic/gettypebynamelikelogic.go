@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-
 	"go-zero-admin-server/service/book/rpc/book"
 	"go-zero-admin-server/service/book/rpc/internal/svc"
 
@@ -36,5 +35,5 @@ func (l *GetTypeByNameLikeLogic) GetTypeByNameLike(in *book.NameReq) (*book.Type
 		//}
 		typesHandle = append(typesHandle, &book.TypeInfoReply{Id: uint64(e.ID),Name: e.Name,Intro: e.Intro})
 	}
-	return &book.TypesInfoReply{}, nil
+	return &book.TypesInfoReply{TypesInfo: typesHandle}, nil
 }
