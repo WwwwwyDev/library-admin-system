@@ -14,18 +14,18 @@
           <el-col :span="1" style="padding-left: 10px;">
             <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
           </el-col>
-          <el-col :span="1" :offset="3">
-            <el-button type="primary" @click="openAddDialog" round>添加用户</el-button>
+          <el-col :span="1" :offset="2">
+            <el-button type="primary" @click="openAddDialog" round>添加图书</el-button>
           </el-col>
         </el-row>
       </el-header>
       <el-main>
         <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-          <el-table-column align="center" label="ID" width="95">
+<!--          <el-table-column align="center" label="ID" width="95">
             <template slot-scope="scope">
               {{ scope.row.id }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column label="书名" width="100" align="center">
             <template slot-scope="scope">
               {{ scope.row.name }}
@@ -57,10 +57,12 @@
           </el-table-column>
           <el-table-column label="操作" width="150" fixed="right">
             <template slot-scope="scope">
-              <el-popconfirm title="确定删除吗?" icon="el-icon-info" icon-color="red">
+              <el-popconfirm title="确定删除吗?" @onConfirm="deleteRow(scope.row.id)" icon="el-icon-info" icon-color="red">
                 <el-button slot="reference" type="danger" icon="el-icon-delete" circle></el-button>
               </el-popconfirm>
-              <el-button type="primary" icon="el-icon-edit" circle></el-button>
+              <el-button type="primary" icon="el-icon-edit" circle
+                @click="openEditDialog(scope.row.id,scope.row.name,scope.row.image,scope.row.author,scope.row.info,scope.row.typeId)">
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -73,7 +75,7 @@
       </el-footer>
     </el-container>
 
-    <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="500px">
+    <el-dialog title="添加图书" :visible.sync="addDialogVisible" width="500px">
       <el-form :model="addForm" :rules="FormRules" ref="addForm" label-width="90px" @submit.native.prevent>
         <el-form-item label="图书名" prop="name">
           <el-input placeholder="请输入书名" v-model="addForm.name" clearable>
@@ -87,8 +89,8 @@
           <el-input placeholder="请输入信息" v-model="addForm.info" clearable>
           </el-input>
         </el-form-item>
-        <el-form-item label="类目" prop="type">
-          <el-select v-model="addForm.type" filterable placeholder="请选择">
+        <el-form-item label="类目" prop="checkedType">
+          <el-select v-model="addForm.checkedType" filterable placeholder="请选择">
             <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
             </el-option>
           </el-select>
@@ -107,6 +109,40 @@
         <el-button type="primary" @click="submitAddForm">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="编辑图书" :visible.sync="editDialogVisible" width="500px">
+      <el-form :model="editForm" :rules="FormRules" ref="editForm" label-width="90px" @submit.native.prevent>
+        <el-form-item label="图书名" prop="name">
+          <el-input placeholder="请输入书名" v-model="editForm.name" clearable>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="作者">
+          <el-input placeholder="请输入作者" v-model="editForm.author" clearable>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="信息">
+          <el-input placeholder="请输入信息" v-model="editForm.info" clearable>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="类目" prop="checkedType">
+          <el-select v-model="editForm.checkedType" filterable placeholder="请选择">
+            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.id">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="图片">
+          <el-upload class="image-uploader" action="" :show-file-list="false" :auto-upload="false"
+            :on-change="changePhotoFile">
+            <img v-if="editForm.image" :src="editForm.image" class="image">
+            <i v-else class="el-icon-plus image-uploader-icon"></i>
+          </el-upload>
+          <imageCropper ref="imageCropper" @getFile="getEditFile"></imageCropper>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitEditForm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -115,7 +151,10 @@
     mapActions
   } from 'vuex'
   import {
-    getBooks
+    getBooks,
+    editBook,
+    addBook,
+    deleteBook,
   } from '@/api/booktable'
   import {
     getAllTypes
@@ -149,8 +188,8 @@
           image: "",
           author: "",
           info: "",
-          type: null,
-          typeId: 0,
+          checkedType: null,
+          typeId: 0
         },
         editDialogVisible: false,
         editForm: {
@@ -159,7 +198,8 @@
           image: "",
           author: "",
           info: "",
-          typeId: 0,
+          checkedType: null,
+          typeId: 0
         },
         FormRules: {
           name: [{
@@ -167,10 +207,11 @@
             message: "请输入书名",
             trigger: "blur"
           }],
-          type: [{
+          checkedType: [{
             required: true,
             message: "请选择图书类目",
-            trigger: 'change'
+            trigger: 'change',
+            type: 'number'
           }]
         },
       }
@@ -203,6 +244,19 @@
       async fetchOption() {
         let res = await getAllTypes()
         this.options = res.data.types
+      },
+      async deleteRow(id) {
+        let res = await deleteBook(id)
+        this.$message({
+          message: res.msg,
+          type: 'success'
+        });
+        this.fetchData({
+          "page": this.page,
+          "limit": this.limit,
+          "name": this.searchNameInput,
+          "author": this.searchAuthorInput
+        })
       },
       handleSizeChange(limit) {
         this.fetchData({
@@ -241,20 +295,116 @@
         this.addForm.image = ""
         this.addForm.info = ""
         this.addForm.name = ""
+        this.addForm.checkedType = null
         this.addForm.typeId = 0
-        this.addForm.type = null
       },
       submitAddForm() {
-
+        this.$refs["addForm"].validate(async (valid) => {
+          if (valid) {
+            if (this.imageFile != null) {
+              let res = await getQiniuToken()
+              let {
+                token
+              } = res.data
+              const loading = this.$loading({
+                lock: true,
+                text: '上传图片中',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+              })
+              try {
+                this.addForm.image = await uploadAsync(this.imageFile, token)
+              } catch (err) {
+                this.$message({
+                  message: "图片上传失败",
+                  type: 'error'
+                });
+                loading.close()
+                return
+              }
+              loading.close()
+            }
+            if (this.addForm.checkedType !== null)
+              this.addForm.typeId = this.addForm.checkedType
+            let res = await addBook(this.addForm)
+            if (res != undefined)
+              this.$message({
+                message: res.msg,
+                type: 'success'
+              });
+            this.addDialogVisible = false
+            this.fetchData({
+              "page": this.page,
+              "limit": this.limit,
+              "name": this.searchNameInput,
+              "author": this.searchAuthorInput
+            })
+          }
+        })
       },
-      openEditDialog() {
-
+      openEditDialog(id, name, image, author, info, checkedType) {
+        this.clearEditForm()
+        this.editForm.id = id
+        this.editForm.author = author
+        this.editForm.image = image
+        this.editForm.info = info
+        this.editForm.name = name
+        this.editForm.checkedType = checkedType
+        this.editDialogVisible = true
       },
       clearEditForm() {
-
+        this.imageFile = null
+        this.editForm.id = 0
+        this.editForm.author = ""
+        this.editForm.image = ""
+        this.editForm.info = ""
+        this.editForm.name = ""
+        this.editForm.checkedType = null
+        this.editForm.typeId = 0
       },
       submitEditForm() {
-
+        this.$refs["editForm"].validate(async (valid) => {
+          if (valid) {
+            if (this.imageFile != null) {
+              let res = await getQiniuToken()
+              let {
+                token
+              } = res.data
+              const loading = this.$loading({
+                lock: true,
+                text: '上传图片中',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.7)'
+              })
+              try {
+                this.editForm.image = await uploadAsync(this.imageFile, token)
+              } catch (err) {
+                this.$message({
+                  message: "图片上传失败",
+                  type: 'error'
+                });
+                loading.close()
+                return
+              }
+              loading.close()
+            }
+            if (this.editForm.checkedType !== null)
+              this.editForm.typeId = this.editForm.checkedType
+            let res = await editBook(this.editForm.id, this.editForm)
+            if (res != undefined)
+              this.$message({
+                message: res.msg,
+                type: 'success'
+              });
+            this.editDialogVisible = false
+            this.fetchData({
+              "page": this.page,
+              "limit": this.limit,
+              "name": this.searchNameInput,
+              "author": this.searchAuthorInput
+            })
+          }
+        })
       },
       changePhotoFile(file, fileList) {
         if (fileList.length > 0) {
@@ -289,6 +439,11 @@
       async getAddFile(file) {
         this.imageFile = file
         this.addForm.image = window.URL.createObjectURL(file)
+        this.$refs.imageCropper.close();
+      },
+      async getEditFile(file) {
+        this.imageFile = file
+        this.editForm.image = window.URL.createObjectURL(file)
         this.$refs.imageCropper.close();
       },
       ...mapActions({

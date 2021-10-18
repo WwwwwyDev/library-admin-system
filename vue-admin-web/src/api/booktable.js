@@ -7,3 +7,27 @@ export function getBooks(params) {
     params
   })
 }
+
+export function editBook(id,data){
+  return request({
+    url: '/book/'+String(id),
+    method: 'put',
+    data
+  })
+}
+
+export function deleteBook(id) {
+  return request({
+    url: '/book/'+String(id),
+    method:'delete'
+  })
+}
+
+
+export function addBook(data) {
+  return request({
+    url: '/book',
+    method: 'post',
+    data
+  })
+}

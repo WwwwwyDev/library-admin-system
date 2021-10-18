@@ -3,14 +3,14 @@
     <el-container>
       <el-header>
         <el-col :span="4">
-          <el-input placeholder="请输入查找的种类名" v-model.lazy="searchNameInput"  clearable>
+          <el-input placeholder="请输入查找的种类名" v-model.lazy="searchNameInput" clearable>
           </el-input>
         </el-col>
         <el-col :span="1" :offset="0" style="padding-left: 10px;">
-          <el-button type="primary" icon="el-icon-search"  @click="search">搜索</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
         </el-col>
-        <el-col :span="1" :offset="3">
-          <el-button type="primary"  round>添加用户</el-button>
+        <el-col :span="1" :offset="2">
+          <el-button type="primary" round>添加类目</el-button>
         </el-col>
       </el-header>
       <el-main>
@@ -20,21 +20,21 @@
               {{ scope.row.id }}
             </template>
           </el-table-column>
-          <el-table-column label="种类名" width="100" align="center">
+          <el-table-column label="类目名" width="100" align="center">
             <template slot-scope="scope">
               {{ scope.row.name }}
             </template>
           </el-table-column>
-          <el-table-column label="种类介绍" >
-              <template slot-scope="scope">
-                <span>{{ scope.row.intro }}</span>
-              </template>
+          <el-table-column label="类目介绍">
+            <template slot-scope="scope">
+              <span>{{ scope.row.intro }}</span>
+            </template>
           </el-table-column>
           <el-table-column label="操作" width="150" fixed="right">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="查询该类目下的图书" placement="top">
                 <el-button icon="el-icon-search" circle></el-button>
-                </el-tooltip>
+              </el-tooltip>
               <el-popconfirm title="确定删除吗?" icon="el-icon-info" icon-color="red">
                 <el-button slot="reference" type="danger" icon="el-icon-delete" circle></el-button>
               </el-popconfirm>
@@ -58,19 +58,39 @@
     mapActions
   } from 'vuex'
   import {
-    getTypes
+    getTypes,
+    editType,
+    deleteType,
+    addType
   } from '@/api/typetable'
 
   export default {
     data() {
       return {
-        searchNameInput:'',
+        searchNameInput: '',
         list: null,
         listLoading: true,
         page: 1,
         limit: 10,
         total: 0,
-        
+        addDialogVisible: false,
+        addForm: {
+          name: "",
+          intro: ""
+        },
+        editDialogVisible: false,
+        editForm: {
+          id: 0,
+          name: "",
+          intro: ""
+        },
+        FormRules: {
+          name: [{
+            required: true,
+            message: "请输入书名",
+            trigger: "blur"
+          }]
+        },
       }
     },
     created() {
@@ -112,7 +132,7 @@
         })
         this.page = page
       },
-      search(){
+      search() {
         this.fetchData({
           "page": 1,
           "limit": this.limit,
