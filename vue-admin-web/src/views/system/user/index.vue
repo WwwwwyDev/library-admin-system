@@ -1,23 +1,24 @@
 <template>
   <div class="app-container">
+    <el-backtop :bottom="60"></el-backtop>
     <el-container>
       <el-header>
         <el-row>
-        <el-col :span="4">
-          <el-input placeholder="请输入查找的用户名" v-model.lazy="usernameSearchInput" clearable>
-          </el-input>
-        </el-col>
-        <el-col :span="1" :offset="0" style="padding-left: 10px;">
-          <el-button icon="el-icon-search" circle @click="searchUsername"></el-button>
-        </el-col>
-        <el-col :span="1" :offset="1">
-          <el-button type="primary" @click="openAddDialog" round>添加用户</el-button>
-        </el-col>
-</el-row>
+          <el-col :span="4">
+            <el-input placeholder="请输入查找的用户名" v-model.lazy="usernameSearchInput" clearable>
+            </el-input>
+          </el-col>
+          <el-col :span="1" :offset="0" style="padding-left: 10px;">
+            <el-button icon="el-icon-search" circle @click="searchUsername"></el-button>
+          </el-col>
+          <el-col :span="1" :offset="1">
+            <el-button type="primary" @click="openAddDialog" round>添加用户</el-button>
+          </el-col>
+        </el-row>
       </el-header>
       <el-main>
         <el-table v-loading="listLoading" :data="list" element-loading-text="加载中" border fit highlight-current-row>
-<!--          <el-table-column align="center" label="ID" width="95">
+          <!--          <el-table-column align="center" label="ID" width="95">
             <template slot-scope="scope">
               {{ scope.row.id }}
             </template>
@@ -397,9 +398,9 @@
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
               })
-              try{
+              try {
                 this.addForm.avatar = await uploadAsync(this.avatarFile, token)
-              }catch(err){
+              } catch (err) {
                 this.$message({
                   message: "头像上传失败",
                   type: 'error'
@@ -438,9 +439,9 @@
                 spinner: 'el-icon-loading',
                 background: 'rgba(0, 0, 0, 0.7)'
               })
-              try{
+              try {
                 this.editForm.avatar = await uploadAsync(this.avatarFile, token)
-              }catch(err){
+              } catch (err) {
                 this.$message({
                   message: "头像上传失败",
                   type: 'error'

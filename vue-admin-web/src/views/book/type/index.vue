@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <el-backtop :bottom="60"></el-backtop>
     <el-container>
       <el-header>
         <el-col :span="4">
@@ -33,7 +34,7 @@
           <el-table-column label="操作" width="150" fixed="right">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" content="查询该类目下的图书" placement="top">
-                <el-button icon="el-icon-search"  @click="openBookDialog(scope.row.id)" circle></el-button>
+                <el-button icon="el-icon-search" @click="openBookDialog(scope.row.id)" circle></el-button>
               </el-tooltip>
               <el-popconfirm title="删除类目,同时会删除该类目下的图书" @onConfirm="deleteRow(scope.row.id)" icon="el-icon-info"
                 icon-color="red">
@@ -86,8 +87,7 @@
     </el-dialog>
 
     <el-dialog title="该类目下的图书" :visible.sync="bookDialogVisible" width="300px">
-      <el-table :data="bookList" element-loading-text="Loading" border fit
-        highlight-current-row>
+      <el-table :data="bookList" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="图书名" align="center">
           <template slot-scope="scope">
             {{ scope.row.name }}
@@ -262,7 +262,7 @@
           }
         })
       },
-      async openBookDialog(id){
+      async openBookDialog(id) {
         let res = await getTypeById(id)
         this.bookList = res.data.type.booksInfo
         this.bookDialogVisible = true

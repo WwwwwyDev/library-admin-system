@@ -4,7 +4,13 @@
       label-position="left">
 
       <div class="title-container">
-        <h3 class="title">用户登录</h3>
+        <h3 class="title">用户登录 <el-popover placement="right" width="150" trigger="click">
+            <el-image
+                :src='require("@/assets/gitee.png")'>
+              </el-image>
+            <i slot="reference" class="el-icon-info"></i>
+          </el-popover>
+        </h3>
       </div>
 
       <el-form-item prop="username">
@@ -25,8 +31,6 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
-
-
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
         @click.native.prevent="handleLogin">登录</el-button>
 

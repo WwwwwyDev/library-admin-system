@@ -10,6 +10,7 @@ import (
 	search "go-zero-admin-server/api/internal/handler/search"
 	user "go-zero-admin-server/api/internal/handler/user"
 	verify "go-zero-admin-server/api/internal/handler/verify"
+	vip "go-zero-admin-server/api/internal/handler/vip"
 	"go-zero-admin-server/api/internal/svc"
 
 	"github.com/tal-tech/go-zero/rest"
@@ -184,6 +185,32 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodDelete,
 				Path:    "/admin/api/book/type/:id",
 				Handler: book.DeleteTypeHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/vip",
+				Handler: vip.GetVipsHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/admin/api/vip",
+				Handler: vip.AddVipHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPut,
+				Path:    "/admin/api/vip/:id",
+				Handler: vip.UpdateVipHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/admin/api/vip/:id",
+				Handler: vip.DeleteVipHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

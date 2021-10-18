@@ -96,6 +96,6 @@ service User {
     rpc DelUser(IdReq) returns(isSuccessReply);
     rpc DelSomeUser(IdsReq) returns(isSuccessReply);
     rpc GetAllRole(EmptyReq) returns(RolesReply);
-    rpc editUserRoles(RolesReq) returns(isSuccessReply);
+    rpc EditUserRoles(RolesReq) returns(isSuccessReply);
     rpc IsExistRoleById(IdReq) returns(isExistReply);
 }

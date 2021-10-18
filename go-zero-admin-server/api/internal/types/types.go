@@ -112,3 +112,27 @@ type UpdateTypeReq struct {
 type DeleteTypeReq struct {
 	Id uint `path:"id"`
 }
+
+type GetVipsReq struct {
+	Page       int    `form:"page,default=1"`
+	Limit      int    `form:"limit,default=10"`
+	CardNumber string `form:"cardNumber,optional"`
+	Name       string `form:"name,optional"`
+}
+
+type AddVipReq struct {
+	CardNumber string `json:"cardNumber"`
+	Name       string `json:"name,optional"`
+	Info       string `json:"info,optional"`
+}
+
+type UpdateVipReq struct {
+	Id         uint   `path:"id"`
+	CardNumber string `json:"cardNumber"`
+	Name       string `json:"name,optional"`
+	Info       string `json:"info,optional"`
+}
+
+type DeleteVipReq struct {
+	Id uint `path:"id"`
+}

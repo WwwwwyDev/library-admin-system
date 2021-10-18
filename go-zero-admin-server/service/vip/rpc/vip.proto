@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package vip;
+
+message EmptyReq {
+
+}
+
+message IdReq {
+    uint64 id = 1;
+}
+
+message IdsReq {
+    repeated IdReq ids = 1;
+}
+
+
+message CardNumberReq {
+    string cardNumber = 1;
+}
+
+message VipsReq{
+    int64 page = 1;
+    int64 limit = 2;
+    string name = 3;
+    string cardNumber = 4;
+}
+
+message VipUpdateReq {
+    uint64 id = 1;
+    string cardNumber = 2;
+    string name = 3;
+    string info = 4;
+}
+
+message VipAddReq {
+    string cardNumber = 1;
+    string name = 2;
+    string info = 3;
+}
+
+
+
+message VipInfoReply {
+    uint64 id = 1;
+    string cardNumber = 2;
+    string name = 3;
+    string info = 4;
+}
+
+message VipsInfoReply {
+    int64 total = 1;
+    repeated VipInfoReply vipsInfo = 2;
+}
+
+
+message isExistReply {
+    bool isExist = 1;
+}
+
+message isSuccessReply {
+    bool isSuccess = 1;
+}
+
+service Vip {
+    rpc getVipById(IdReq) returns(VipInfoReply);
+    rpc getVipByCardNumberLike(CardNumberReq) returns(VipsInfoReply);
+    rpc IsExistVipById(IdReq) returns(isExistReply);
+    rpc IsExistVipByCardNumber(CardNumberReq) returns(isExistReply);
+    rpc getVips(VipsReq) returns(VipsInfoReply);
+    rpc AddVip(VipAddReq) returns(isSuccessReply);
+    rpc UpdateVip(VipUpdateReq) returns(isSuccessReply);
+    rpc DelVip(IdReq) returns(isSuccessReply);
+    rpc DelSomeVip(IdsReq) returns(isSuccessReply);
+}

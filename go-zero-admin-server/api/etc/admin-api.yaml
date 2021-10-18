@@ -36,3 +36,9 @@ BookRpc:
     Hosts:
       - 81.70.8.101:2379
     Key: book.rpc
+VipRpc:
+  Etcd:
+    Hosts:
+      - 81.70.8.101:2379
+    Key: vip.rpc
+

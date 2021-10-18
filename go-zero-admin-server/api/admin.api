@@ -6,6 +6,7 @@ import (
 	"doc/user.api"
 	"doc/search.api"
 	"doc/book.api"
+	"doc/vip.api"
 )
 
 info(
@@ -110,4 +111,19 @@ service admin-api {
 	put /admin/api/book/type/:id (UpdateTypeReq) returns (Reply)
 	@handler deleteType
 	delete /admin/api/book/type/:id (DeleteTypeReq) returns (Reply)
+}
+
+@server(
+	jwt: Auth
+	group: vip
+)
+service admin-api {
+	@handler getVips
+	get /admin/api/vip (GetVipsReq) returns (Reply)
+	@handler addVip
+	post /admin/api/vip (AddVipReq) returns (Reply)
+	@handler updateVip
+	put /admin/api/vip/:id (UpdateVipReq) returns (Reply)
+	@handler deleteVip
+	delete /admin/api/vip/:id (DeleteVipReq) returns (Reply)
 }

@@ -1,0 +1,32 @@
+syntax = "v1"
+
+info(
+	title: "vip"
+	desc: "show vip service"
+	author: "wuwenyi"
+	email: "773323518@qq.com"
+	version: "dev"
+)
+
+type (
+	GetVipsReq {
+		Page       int    `form:"page,default=1"`
+		Limit      int    `form:"limit,default=10"`
+		CardNumber string `form:"cardNumber,optional"`
+		Name       string `form:"name,optional"`
+	}
+	AddVipReq {
+		CardNumber string `json:"cardNumber"`
+		Name       string `json:"name,optional"`
+		Info       string `json:"info,optional"`
+	}
+	UpdateVipReq {
+		Id         uint   `path:"id"`
+		CardNumber string `json:"cardNumber"`
+		Name       string `json:"name,optional"`
+		Info       string `json:"info,optional"`
+	}
+	DeleteVipReq {
+		Id uint `path:"id"`
+	}
+)

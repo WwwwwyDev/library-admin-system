@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <el-backtop :bottom="60"></el-backtop>
     <el-container>
       <el-header>
         <el-row>
@@ -21,7 +22,7 @@
       </el-header>
       <el-main>
         <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-<!--          <el-table-column align="center" label="ID" width="95">
+          <!--          <el-table-column align="center" label="ID" width="95">
             <template slot-scope="scope">
               {{ scope.row.id }}
             </template>
