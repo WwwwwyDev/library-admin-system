@@ -13,3 +13,10 @@ export function getAllTypes() {
     method: 'get'
   })
 }
+
+export function getTypeById(id) {
+  return request({
+    url: '/search/book/typeId/'+String(id),
+    method: 'get'
+  })
+}

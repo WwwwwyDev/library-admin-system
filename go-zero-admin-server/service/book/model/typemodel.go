@@ -120,7 +120,11 @@ func (d defaultTypeModel) UpdateType(_type *Type) (bool, error) {
 }
 
 func (d defaultTypeModel) DelType(_type *Type) (bool, error) {
-	err := d.conn.Model(_type).Delete(_type).Error
+	err := d.conn.Where(&Book{TypeID: _type.ID}).Delete(&Book{}).Error
+	if err != nil {
+		return false,err
+	}
+	err = d.conn.Model(_type).Delete(_type).Error
 	if err != nil {
 		return false,err
 	}

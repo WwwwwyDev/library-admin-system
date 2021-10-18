@@ -71,6 +71,11 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodGet,
+				Path:    "/admin/api/search/book/typeId/:id",
+				Handler: search.GetTypeByIdHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
 				Path:    "/admin/api/search/roles",
 				Handler: search.GetAllRolesHandler(serverCtx),
 			},

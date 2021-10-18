@@ -45,6 +45,8 @@ service admin-api {
 	get /admin/api/search/book/:name (NameReq) returns (Reply)
 	@handler getTypeByNameLike
 	get /admin/api/search/book/type/:name (NameReq) returns (Reply)
+	@handler getTypeById
+	get /admin/api/search/book/typeId/:id (IdReq) returns (Reply)
 	@handler getAllRoles
 	get /admin/api/search/roles () returns (Reply)
 	@handler getLoginStatus
