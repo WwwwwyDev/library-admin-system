@@ -19,5 +19,8 @@ type (
     NameReq {
         Name string `path:"name"`
     }
+    CardNumberReq {
+        CardNumber string `path:"cardNumber"`
+    }
 )
 

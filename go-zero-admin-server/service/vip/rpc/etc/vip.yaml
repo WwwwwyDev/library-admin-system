@@ -1,7 +1,10 @@
 Name: vip.rpc
 ListenOn: 0.0.0.0:8082
+Service:
+  Name: vip-rpc
+  Mode: pro
 Log:
-  ServiceName: book-rpc
+  ServiceName: vip-rpc
   Mode: file
   Path: logs
   Level: severe

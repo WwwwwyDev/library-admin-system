@@ -64,6 +64,10 @@ type NameReq struct {
 	Name string `path:"name"`
 }
 
+type CardNumberReq struct {
+	CardNumber string `path:"cardNumber"`
+}
+
 type GetBooksReq struct {
 	Page   int    `form:"page,default=1"`
 	Limit  int    `form:"limit,default=10"`

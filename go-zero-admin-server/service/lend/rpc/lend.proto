@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package lend;
+
+
+
+message EmptyReq {
+
+}
+
+message BookIdReq {
+    uint64 bookId = 1;
+}
+
+message IdReq {
+    uint64 id = 1;
+}
+
+message LendsReq {
+    int64 page = 1;
+    int64 limit = 2;
+    string bookName = 3;
+    string vipCardNumber = 4;
+}
+
+
+message LendAddReq {
+    uint64 vipId = 1;
+    uint64 bookId = 2;
+    string bookName = 3;
+    string vipCardNumber = 4;
+    google.protobuf.Timestamp lendTime = 5;
+}
+
+
+
+message LendInfoReply {
+    uint64 id = 1;
+    uint64 vipId = 2;
+    uint64 bookId = 3;
+    string bookName = 4;
+    string vipCardNumber = 5;
+    google.protobuf.Timestamp lendTime = 6;
+}
+
+message LendsInfoReply {
+    int64 total = 1;
+    repeated LendInfoReply lendsInfo = 2;
+}
+
+
+message isLendReply {
+    bool isLend = 1;
+}
+
+message isExistReply {
+    bool isExist = 1;
+}
+
+
+message isSuccessReply {
+    bool isSuccess = 1;
+}
+
+service lend {
+    rpc IsExistLendById(IdReq) returns(isExistReply);
+    rpc IsLend(BookIdReq) returns(isLendReply);
+    rpc getLends(LendsReq) returns(LendsInfoReply);
+    rpc AddLend(LendAddReq) returns(isSuccessReply);
+    rpc DelLend(IdReq) returns(isSuccessReply);
+}

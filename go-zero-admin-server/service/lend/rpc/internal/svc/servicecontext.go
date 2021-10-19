@@ -1,0 +1,29 @@
+package svc
+
+import (
+	"fmt"
+	"go-zero-admin-server/common/core"
+	"go-zero-admin-server/service/lend/rpc/internal/config"
+	"go-zero-admin-server/service/lend/model"
+)
+
+type ServiceContext struct {
+	Config config.Config
+	LendModel model.LendModel
+}
+
+func NewServiceContext(c config.Config) *ServiceContext {
+	psqlcfg := c.Postgresql
+	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable TimeZone=Asia/Shanghai",
+		psqlcfg.User,
+		psqlcfg.Password,
+		psqlcfg.Name,
+		psqlcfg.Host,
+		psqlcfg.Port,
+	)
+	conn := core.NewPostgresqlGorm(dsn)
+	return &ServiceContext{
+		Config: c,
+		LendModel: model.NewLendModel(conn),
+	}
+}

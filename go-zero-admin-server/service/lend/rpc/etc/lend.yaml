@@ -1,10 +1,10 @@
-Name: book.rpc
-ListenOn: 0.0.0.0:8081
+Name: lend.rpc
+ListenOn: 0.0.0.0:8083
 Service:
-  Name: book-rpc
+  Name: lend-rpc
   Mode: pro
 Log:
-  ServiceName: book-rpc
+  ServiceName: lend-rpc
   Mode: file
   Path: logs
   Level: severe
@@ -14,8 +14,8 @@ Postgresql:
   Password: wwy123456
   Host: 81.70.8.101
   Port: 5432
-  Name: library_book
+  Name: library_lend
 Etcd:
   Hosts:
   - 81.70.8.101:2379
-  Key: book.rpc
+  Key: lend.rpc
