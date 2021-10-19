@@ -7,6 +7,7 @@ import (
 	"doc/search.api"
 	"doc/book.api"
 	"doc/vip.api"
+	"doc/lend.api"
 )
 
 info(
@@ -128,4 +129,17 @@ service admin-api {
 	put /admin/api/vip/:id (UpdateVipReq) returns (Reply)
 	@handler deleteVip
 	delete /admin/api/vip/:id (DeleteVipReq) returns (Reply)
+}
+
+@server(
+	jwt: Auth
+	group: lend
+)
+service admin-api {
+	@handler getLends
+	get /admin/api/lend (GetLendsReq) returns (Reply)
+	@handler addLend
+	post /admin/api/lend (AddLendReq) returns (Reply)
+	@handler deleteLend
+	delete /admin/api/lend/:id (DeleteLendReq) returns (Reply)
 }

@@ -138,3 +138,21 @@ type UpdateVipReq struct {
 type DeleteVipReq struct {
 	Id uint `path:"id"`
 }
+
+type GetLendsReq struct {
+	Page          int    `form:"page,default=1"`
+	Limit         int    `form:"limit,default=10"`
+	VipCardNumber string `form:"vipCardNumber,optional"`
+	BookName      string `form:"bookName,optional"`
+}
+
+type AddLendReq struct {
+	VipId         uint   `json:"vipId"`
+	BookId        uint   `json:"bookId"`
+	VipCardNumber string `json:"vipCardNumber,optional"`
+	BookName      string `json:"bookName,optional"`
+}
+
+type DeleteLendReq struct {
+	Id uint `path:"id"`
+}

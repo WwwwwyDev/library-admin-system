@@ -1,0 +1,27 @@
+syntax = "v1"
+
+info(
+    title: "lend"
+    desc: "show lend service"
+    author: "wuwenyi"
+    email: "773323518@qq.com"
+    version: "dev"
+)
+
+type (
+    GetLendsReq {
+        Page       int    `form:"page,default=1"`
+        Limit      int    `form:"limit,default=10"`
+        VipCardNumber string `form:"vipCardNumber,optional"`
+        BookName       string `form:"bookName,optional"`
+    }
+    AddLendReq {
+        VipId     uint `json:"vipId"`
+        BookId   uint `json:"bookId"`
+        VipCardNumber string `json:"vipCardNumber,optional"`
+        BookName       string `json:"bookName,optional"`
+    }
+    DeleteLendReq {
+        Id uint `path:"id"`
+    }
+)
