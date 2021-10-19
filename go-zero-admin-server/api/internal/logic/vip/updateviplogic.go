@@ -2,6 +2,7 @@ package vip
 
 import (
 	"context"
+	"github.com/gofrs/uuid"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
 	"go-zero-admin-server/service/vip/rpc/vipclient"
@@ -27,7 +28,12 @@ func NewUpdateVipLogic(ctx context.Context, svcCtx *svc.ServiceContext) UpdateVi
 }
 
 func (l *UpdateVipLogic) UpdateVip(req types.UpdateVipReq) (*types.Reply, error) {
-	isSuccess, err := l.svcCtx.VipRpc.UpdateVip(l.ctx, &vipclient.VipUpdateReq{Id: uint64(req.Id), CardNumber: req.CardNumber, Name: req.Name, Info: req.Info})
+	cardb, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
+	cards := cardb.String()
+	isSuccess, err := l.svcCtx.VipRpc.UpdateVip(l.ctx, &vipclient.VipUpdateReq{Id: uint64(req.Id), CardNumber: cards, Name: req.Name, Info: req.Info})
 	if err != nil {
 		return nil, err
 	}

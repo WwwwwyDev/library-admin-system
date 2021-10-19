@@ -26,6 +26,10 @@ func NewDeleteVipLogic(ctx context.Context, svcCtx *svc.ServiceContext) DeleteVi
 }
 
 func (l *DeleteVipLogic) DeleteVip(req types.DeleteVipReq) (*types.Reply, error) {
+	isExist, err := l.svcCtx.VipRpc.IsExistVipById(l.ctx, &vipclient.IdReq{Id: uint64(req.Id)})
+	if !isExist.IsExist{
+		return nil, errorx.NewCodeError(code.NoFoundError,"没有此会员")
+	}
 	isSuccess, err := l.svcCtx.VipRpc.DelVip(l.ctx, &vipclient.IdReq{Id: uint64(req.Id)})
 	if err != nil {
 		return nil, err

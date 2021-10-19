@@ -121,16 +121,14 @@ type GetVipsReq struct {
 }
 
 type AddVipReq struct {
-	CardNumber string `json:"cardNumber"`
-	Name       string `json:"name,optional"`
-	Info       string `json:"info,optional"`
+	Name string `json:"name,optional"`
+	Info string `json:"info,optional"`
 }
 
 type UpdateVipReq struct {
-	Id         uint   `path:"id"`
-	CardNumber string `json:"cardNumber"`
-	Name       string `json:"name,optional"`
-	Info       string `json:"info,optional"`
+	Id   uint   `path:"id"`
+	Name string `json:"name,optional"`
+	Info string `json:"info,optional"`
 }
 
 type DeleteVipReq struct {

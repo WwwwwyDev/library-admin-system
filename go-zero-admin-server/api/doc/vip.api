@@ -16,13 +16,11 @@ type (
 		Name       string `form:"name,optional"`
 	}
 	AddVipReq {
-		CardNumber string `json:"cardNumber"`
 		Name       string `json:"name,optional"`
 		Info       string `json:"info,optional"`
 	}
 	UpdateVipReq {
 		Id         uint   `path:"id"`
-		CardNumber string `json:"cardNumber"`
 		Name       string `json:"name,optional"`
 		Info       string `json:"info,optional"`
 	}

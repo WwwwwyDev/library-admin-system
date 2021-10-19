@@ -42,7 +42,7 @@ func NewVipModel(conn *gorm.DB) VipModel {
 
 func (d defaultVipModel) GetVipByCardNumber(cardNumber string) (*Vip, error) {
 	var vip *Vip
-	err := d.conn.Model(&Vip{}).Where("cardNumber = ?", cardNumber).Find(&vip).Error
+	err := d.conn.Model(&Vip{}).Where("card_number = ?", cardNumber).Find(&vip).Error
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (d defaultVipModel) GetVipByCardNumber(cardNumber string) (*Vip, error) {
 
 func (d defaultVipModel) GetVipByCardNumberLike(cardNumber string) ([]Vip, error) {
 	var vip []Vip
-	err := d.conn.Model(&Vip{}).Where("cardNumber like ?", "%"+cardNumber+"%").Find(&vip).Error
+	err := d.conn.Model(&Vip{}).Where("card_number like ?", "%"+cardNumber+"%").Find(&vip).Error
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (d defaultVipModel) GetVips(page int, limit int, vipS *Vip) ([]Vip, int64, 
 		temp = temp.Where("name like ?", "%"+vipS.Name+"%")
 	}
 	if vipS.CardNumber != "" {
-		temp = temp.Where("cardNumber like ?", "%"+vipS.CardNumber+"%")
+		temp = temp.Where("card_number like ?", "%"+vipS.CardNumber+"%")
 	}
 	err := temp.Count(&total).Limit(limit).Offset((page - 1) * limit).Find(&vips).Error
 	if err != nil {
@@ -98,7 +98,7 @@ func (d defaultVipModel) IsExistVipById(id uint) (bool, error) {
 
 func (d defaultVipModel) IsExistVipByCardNumber(cardNumber string) (bool, error) {
 	var total int64
-	err := d.conn.Model(&Vip{}).Where("cardNumber = ?", cardNumber).Count(&total).Error
+	err := d.conn.Model(&Vip{}).Where("card_number = ?", cardNumber).Count(&total).Error
 	if err != nil {
 		return false, err
 	}

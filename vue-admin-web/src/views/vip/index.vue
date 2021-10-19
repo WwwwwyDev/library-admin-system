@@ -3,49 +3,35 @@
     <el-container>
       <el-header>
         <el-col :span="4">
-          <el-input placeholder="请输入查找的书名" v-model.lazy="searchNameInput"  clearable>
+          <el-input placeholder="请输入查找的会员卡号" v-model.lazy="searchCardNumberInput" clearable>
           </el-input>
         </el-col>
         <el-col :span="4" :offset="1">
-          <el-input placeholder="请输入查找的作者名" v-model.lazy="searchAuthorInput" clearable>
+          <el-input placeholder="请输入查找的会员名" v-model.lazy="searchNameInput" clearable>
           </el-input>
         </el-col>
         <el-col :span="1" :offset="0" style="padding-left: 10px;">
-          <el-button icon="el-icon-search" circle @click="search" ></el-button>
+          <el-button icon="el-icon-search" circle @click="search"></el-button>
         </el-col>
         <el-col :span="1" :offset="1">
-          <el-button type="primary"  round>添加用户</el-button>
+          <el-button type="primary" @click="openAddDialog" round>添加会员</el-button>
         </el-col>
       </el-header>
       <el-main>
         <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-          <el-table-column align="center" label="ID" width="95">
+<!--          <el-table-column align="center" label="ID" width="95">
             <template slot-scope="scope">
               {{ scope.row.id }}
             </template>
+          </el-table-column> -->
+          <el-table-column label="会员卡号" width="300" align="center">
+            <template slot-scope="scope">
+              <el-tag>{{ scope.row.cardNumber }}</el-tag>
+            </template>
           </el-table-column>
-          <el-table-column label="书名" width="100" align="center">
+          <el-table-column label="会员名" width="100" align="center">
             <template slot-scope="scope">
               {{ scope.row.name }}
-            </template>
-          </el-table-column>
-          <el-table-column label="图片" width="150">
-            <template slot-scope="scope">
-              <el-image :src="scope.row.image">
-                <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline"></i>
-                </div>
-              </el-image>
-            </template>
-          </el-table-column>
-          <el-table-column label="作者" width="150">
-            <template slot-scope="scope">
-              <span>{{ scope.row.author }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="种类" width="150">
-            <template slot-scope="scope">
-              <span>{{ scope.row.type }}</span>
             </template>
           </el-table-column>
           <el-table-column label="信息">
@@ -55,10 +41,11 @@
           </el-table-column>
           <el-table-column label="操作" width="150" fixed="right">
             <template slot-scope="scope">
-              <el-popconfirm title="确定删除吗?" icon="el-icon-info" icon-color="red">
+              <el-popconfirm title="确定删除吗?" @onConfirm="deleteRow(scope.row.id)" icon="el-icon-info" icon-color="red">
                 <el-button slot="reference" type="danger" icon="el-icon-delete" circle></el-button>
               </el-popconfirm>
-              <el-button type="primary" icon="el-icon-edit" circle></el-button>
+              <el-button type="primary" icon="el-icon-edit"
+                @click="openEditDialog(scope.row.id,scope.row.name,scope.row.info)" circle></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -70,6 +57,37 @@
         </el-pagination>
       </el-footer>
     </el-container>
+    <el-dialog title="添加会员" :visible.sync="addDialogVisible" width="500px">
+      <el-form :model="addForm" ref="addForm" label-width="90px" @submit.native.prevent>
+        <el-form-item label="会员名">
+          <el-input placeholder="请输入会员名" v-model="addForm.name" clearable>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="会员信息">
+          <el-input placeholder="请输入会员信息" v-model="addForm.info" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitAddForm">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="编辑会员" :visible.sync="editDialogVisible" width="500px">
+      <el-form :model="editForm" ref="editForm" label-width="90px" @submit.native.prevent>
+        <el-form-item label="会员名">
+          <el-input placeholder="请输入会员名" v-model="editForm.name" clearable>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="会员信息">
+        <el-input placeholder="请输入会员信息" v-model="editForm.info" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitEditForm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -78,19 +96,33 @@
     mapActions
   } from 'vuex'
   import {
-    getBooks
-  } from '@/api/booktable'
+    getVips,
+    deleteVip,
+    addVip,
+    editVip
+  } from '@/api/viptable'
 
   export default {
     data() {
       return {
-        searchAuthorInput:'',
-        searchNameInput:'',
+        searchCardNumberInput: '',
+        searchNameInput: '',
         list: null,
         listLoading: true,
         page: 1,
         limit: 10,
         total: 0,
+        addDialogVisible: false,
+        addForm: {
+          name: "",
+          info: ""
+        },
+        editDialogVisible: false,
+        editForm: {
+          id: 0,
+          name: "",
+          info: ""
+        }
       }
     },
     created() {
@@ -107,12 +139,12 @@
         } catch (error) {
           location.reload()
         }
-        let res = await getBooks(params)
+        let res = await getVips(params)
         let {
-          books,
+          vips,
           total
         } = res.data
-        this.list = books
+        this.list = vips
         this.total = total
         this.listLoading = false
       },
@@ -120,8 +152,8 @@
         this.fetchData({
           "page": this.page,
           "limit": limit,
-          "name": this.searchNameInput,
-          "author": this.searchAuthorInput
+          "cardNumber": this.searchCardNumberInput,
+          "name": this.searchNameInput
         })
         this.limit = limit
       },
@@ -129,19 +161,90 @@
         this.fetchData({
           "page": page,
           "limit": this.limit,
-          "name": this.searchNameInput,
-          "author": this.searchAuthorInput
+          "cardNumber": this.searchCardNumberInput,
+          "name": this.searchNameInput
         })
         this.page = page
       },
-      search(){
+      search() {
         this.fetchData({
           "page": 1,
           "limit": this.limit,
-          "name": this.searchNameInput,
-          "author": this.searchAuthorInput
+          "cardNumber": this.searchCardNumberInput,
+          "name": this.searchNameInput
         })
         this.page = 1
+      },
+      async deleteRow(id) {
+        let res = await deleteVip(id)
+        this.$message({
+          message: res.msg,
+          type: 'success'
+        });
+        this.fetchData({
+          "page": this.page,
+          "limit": this.limit,
+          "cardNumber": this.searchCardNumberInput,
+          "name": this.searchNameInput
+        })
+      },
+      clearAddForm() {
+        this.addForm.name = ""
+        this.addForm.info = ""
+      },
+      clearEditForm() {
+        this.editForm.id = 0
+        this.editForm.name = ""
+        this.editForm.info = ""
+      },
+      openAddDialog() {
+        this.clearAddForm()
+        this.addDialogVisible = true
+      },
+      openEditDialog(id, name, info) {
+        this.clearEditForm()
+        this.editForm.name = name
+        this.editForm.id = id
+        this.editForm.info = info
+        this.editDialogVisible = true
+      },
+      submitAddForm() {
+        this.$refs["addForm"].validate(async (valid) => {
+          if (valid) {
+            let res = await addVip(this.addForm)
+            if (res != undefined)
+              this.$message({
+                message: res.msg,
+                type: 'success'
+              });
+            this.addDialogVisible = false
+            this.fetchData({
+              "page": this.page,
+              "limit": this.limit,
+              "cardNumber": this.searchCardNumberInput,
+              "name": this.searchNameInput
+            })
+          }
+        })
+      },
+      submitEditForm() {
+        this.$refs["editForm"].validate(async (valid) => {
+          if (valid) {
+            let res = await editVip(this.editForm.id, this.editForm)
+            if (res != undefined)
+              this.$message({
+                message: res.msg,
+                type: 'success'
+              });
+            this.editDialogVisible = false
+            this.fetchData({
+              "page": this.page,
+              "limit": this.limit,
+              "cardNumber": this.searchCardNumberInput,
+              "name": this.searchNameInput
+            })
+          }
+        })
       },
       ...mapActions({
         refreshToken: 'user/refreshToken'

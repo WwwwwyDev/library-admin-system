@@ -4,7 +4,6 @@ import (
 	"context"
 	"go-zero-admin-server/common/code"
 	"go-zero-admin-server/common/errorx"
-	"go-zero-admin-server/service/user/rpc/userclient"
 	"go-zero-admin-server/service/vip/rpc/vipclient"
 
 	"go-zero-admin-server/api/internal/svc"
@@ -33,13 +32,9 @@ func (l *GetVipsLogic) GetVips(req types.GetVipsReq) (*types.Reply, error) {
 	if page <=0 || limit <=0{
 		return nil, errorx.NewCodeError(code.ParameterError,"参数非法")
 	}
-	vipsResp, err := l.svcCtx.VipRpc.GetVips(l.ctx, &vipclient.VipsReq{Page: int64(req.Page), Limit: int64(req.Limit), })
+	vipsResp, err := l.svcCtx.VipRpc.GetVips(l.ctx, &vipclient.VipsReq{Page: int64(req.Page), Limit: int64(req.Limit), CardNumber: req.CardNumber,Name: req.Name})
 	if err != nil {
 		return nil, err
 	}
-	for i,_ := range usersResp.UsersInfo{
-		usersResp.UsersInfo[i].Password = "禁止访问该数据"
-		usersResp.UsersInfo[i].Salt = "禁止访问该数据"
-	}
-	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"users": usersResp.UsersInfo, "total": usersResp.Total}, Msg: "查询用户成功"}, nil
+	return &types.Reply{Code: code.Success, Data: map[string]interface{}{"vips": vipsResp.VipsInfo, "total": vipsResp.Total}, Msg: "查询用户成功"}, nil
 }
