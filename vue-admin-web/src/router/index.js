@@ -90,11 +90,11 @@ export const permissionRoutes = [{
         icon: 'user'
       }
     }, {
-      path: 'log',
-      name: '操作日志',
-      component: () => import('@/views/system/log/index'),
+      path: 'loginlog',
+      name: '登录日志',
+      component: () => import('@/views/system/loginlog/index'),
       meta: {
-        title: '操作日志',
+        title: '登录日志',
         icon: 'log'
       }
     }, ]

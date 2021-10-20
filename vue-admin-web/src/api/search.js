@@ -20,3 +20,18 @@ export function getTypeById(id) {
     method: 'get'
   })
 }
+
+
+export function getVipByCardNumberLike(cardNumber) {
+  return request({
+    url:"/search/vip/"+String(cardNumber),
+    method: 'get'
+  })
+}
+
+export function getBookByNameLike(name){
+  return request({
+    url:"/search/book/"+String(name),
+    method: 'get'
+  })
+}

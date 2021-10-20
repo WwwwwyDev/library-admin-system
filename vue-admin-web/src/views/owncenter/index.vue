@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-container>
       <el-aside width="500px">
-        <el-card style="background-color: #F2F6FC;">
+        <el-card style="background-color: #fcfcfc;">
           <el-row :gutter="20">
             <el-col :span="6" :offset="8">
               <el-avatar :size="100" :src="avatar"></el-avatar>

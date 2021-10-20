@@ -42,7 +42,7 @@ func NewLendModel(conn *gorm.DB) LendModel {
 func (d defaultLendModel) GetLends(page int, limit int, lendS *Lend) ([]Lend, int64, error) {
 	var lends []Lend
 	var total int64
-	temp := d.conn.Model(&Lend{}).Order("id ASC")
+	temp := d.conn.Model(&Lend{}).Order("id DESC")
 	if lendS.VipCardNumber != "" {
 		temp = temp.Where("vip_card_number like ?", "%"+lendS.VipCardNumber+"%")
 	}
