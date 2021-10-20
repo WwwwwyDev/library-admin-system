@@ -1,0 +1,17 @@
+syntax = "v1"
+
+info(
+    title: "systemlog"
+    desc: "show systemlog service"
+    author: "wuwenyi"
+    email: "773323518@qq.com"
+    version: "dev"
+)
+
+type (
+    GetSystemlogsReq {
+        Page int `form:"page,default=1"`
+        Limit int `form:"limit,default=10"`
+        Username string `form:"username,optional"`
+    }
+)

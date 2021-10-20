@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package systemlog;
+
+
+message EmptyReq {
+
+}
+
+message LoginLogsReq {
+    int64 page = 1;
+    int64 limit = 2;
+    string username = 3;
+}
+
+
+message LoginLogAddReq {
+    string username = 1;
+    string info = 2;
+}
+
+message LoginLogInfoReply {
+    uint64 id = 1;
+    string username = 2;
+    string info = 3;
+}
+
+message LoginLogsInfoReply {
+    int64 total = 1;
+    repeated LoginLogInfoReply loginLogsInfo = 2;
+}
+
+message isSuccessReply {
+    bool isSuccess = 1;
+}
+
+service systemlog {
+    rpc getLoginLogs(LoginLogsReq) returns(LoginLogsInfoReply);
+    rpc AddLoginLog(LoginLogAddReq) returns(isSuccessReply);
+    rpc DelLoginLog(EmptyReq) returns(isSuccessReply);
+}

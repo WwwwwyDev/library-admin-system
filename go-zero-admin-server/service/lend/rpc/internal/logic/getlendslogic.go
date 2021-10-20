@@ -32,7 +32,7 @@ func (l *GetLendsLogic) GetLends(in *lend.LendsReq) (*lend.LendsInfoReply, error
 	}
 	lendsHandle := make([]*lend.LendInfoReply, 0)
 	for _, e := range lends {
-		lendsHandle = append(lendsHandle, &lend.LendInfoReply{BookName: e.BookName,BookId: uint64(e.BookId),VipId: uint64(e.VipId),VipCardNumber: e.VipCardNumber,LendTime: &timestamppb.Timestamp{Seconds: e.LendTime.Unix(),Nanos: int32(e.LendTime.UnixNano())}})
+		lendsHandle = append(lendsHandle, &lend.LendInfoReply{Id:uint64(e.ID),BookName: e.BookName,BookId: uint64(e.BookId),VipId: uint64(e.VipId),VipCardNumber: e.VipCardNumber,LendTime: &timestamppb.Timestamp{Seconds: e.LendTime.Unix(),Nanos: int32(e.LendTime.UnixNano())}})
 	}
 	return &lend.LendsInfoReply{LendsInfo: lendsHandle,Total: total}, nil
 }

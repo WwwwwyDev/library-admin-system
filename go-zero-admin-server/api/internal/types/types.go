@@ -156,3 +156,9 @@ type AddLendReq struct {
 type DeleteLendReq struct {
 	Id uint `path:"id"`
 }
+
+type GetSystemlogsReq struct {
+	Page     int    `form:"page,default=1"`
+	Limit    int    `form:"limit,default=10"`
+	Username string `form:"username,optional"`
+}

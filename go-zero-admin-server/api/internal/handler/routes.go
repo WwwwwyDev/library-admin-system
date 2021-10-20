@@ -9,6 +9,7 @@ import (
 	jwt "go-zero-admin-server/api/internal/handler/jwt"
 	lend "go-zero-admin-server/api/internal/handler/lend"
 	search "go-zero-admin-server/api/internal/handler/search"
+	systemlog "go-zero-admin-server/api/internal/handler/systemlog"
 	user "go-zero-admin-server/api/internal/handler/user"
 	verify "go-zero-admin-server/api/internal/handler/verify"
 	vip "go-zero-admin-server/api/internal/handler/vip"
@@ -238,6 +239,22 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodDelete,
 				Path:    "/admin/api/lend/:id",
 				Handler: lend.DeleteLendHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	engine.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/admin/api/systemlog",
+				Handler: systemlog.GetSystemlogsHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodDelete,
+				Path:    "/admin/api/systemlog",
+				Handler: systemlog.DeleteAllSystemlogsHandler(serverCtx),
 			},
 		},
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),

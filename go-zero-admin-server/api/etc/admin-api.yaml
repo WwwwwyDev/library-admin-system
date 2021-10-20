@@ -46,4 +46,10 @@ LendRpc:
     Hosts:
       - 81.70.8.101:2379
     Key: lend.rpc
+SystemlogRpc:
+  Etcd:
+    Hosts:
+      - 81.70.8.101:2379
+    Key: systemlog.rpc
+
 

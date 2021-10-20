@@ -1,0 +1,21 @@
+Name: systemlog.rpc
+ListenOn: 0.0.0.0:8084
+Service:
+  Name: systemlog-rpc
+  Mode: pro
+Log:
+  ServiceName: systemlog-rpc
+  Mode: file
+  Path: logs
+  Level: severe
+  KeepDay: 7
+Postgresql:
+  User: postgres
+  Password: wwy123456
+  Host: 81.70.8.101
+  Port: 5432
+  Name: admin_systemlog
+Etcd:
+  Hosts:
+  - 81.70.8.101:2379
+  Key: systemlog.rpc

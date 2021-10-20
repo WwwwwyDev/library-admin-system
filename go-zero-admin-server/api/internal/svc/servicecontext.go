@@ -7,6 +7,7 @@ import (
 	"go-zero-admin-server/common/core"
 	"go-zero-admin-server/service/book/rpc/bookclient"
 	"go-zero-admin-server/service/lend/rpc/lendclient"
+	"go-zero-admin-server/service/systemlog/rpc/systemlogclient"
 	"go-zero-admin-server/service/user/rpc/userclient"
 	"go-zero-admin-server/service/vip/rpc/vipclient"
 )
@@ -17,6 +18,7 @@ type ServiceContext struct {
 	BookRpc bookclient.Book
 	VipRpc  vipclient.Vip
 	LendRpc  lendclient.Lend
+	SystemlogRpc systemlogclient.Systemlog
 	Redis   *redis.Client
 }
 
@@ -28,6 +30,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		BookRpc: bookclient.NewBook(zrpc.MustNewClient(c.BookRpc)),
 		VipRpc:  vipclient.NewVip(zrpc.MustNewClient(c.VipRpc)),
 		LendRpc: lendclient.NewLend(zrpc.MustNewClient(c.LendRpc)),
+		SystemlogRpc: systemlogclient.NewSystemlog(zrpc.MustNewClient(c.SystemlogRpc)),
 		Redis:   redis,
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"doc/book.api"
 	"doc/vip.api"
 	"doc/lend.api"
+	"doc/systemlog.api"
 )
 
 info(
@@ -142,4 +143,15 @@ service admin-api {
 	post /admin/api/lend (AddLendReq) returns (Reply)
 	@handler deleteLend
 	delete /admin/api/lend/:id (DeleteLendReq) returns (Reply)
+}
+
+@server(
+	jwt: Auth
+	group: systemlog
+)
+service admin-api {
+	@handler getSystemlogs
+	get /admin/api/systemlog (GetSystemlogsReq) returns (Reply)
+	@handler deleteAllSystemlogs
+	delete /admin/api/systemlog () returns (Reply)
 }

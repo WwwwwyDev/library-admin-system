@@ -12,6 +12,7 @@ type Config struct {
 	BookRpc zrpc.RpcClientConf
 	VipRpc zrpc.RpcClientConf
 	LendRpc zrpc.RpcClientConf
+	SystemlogRpc zrpc.RpcClientConf
 	CacheRedis cache.CacheConf
 	Auth  struct {
 		AccessSecret string
