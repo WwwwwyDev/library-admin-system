@@ -39,7 +39,7 @@ module.exports = {
     },
     proxy:{
         "/admin/api":{
-            target:"http://127.0.0.1:8888",
+            target:"http://81.70.8.101:8888",
             changeOrigin:true,//支持跨域
         }
     }

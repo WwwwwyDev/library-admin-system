@@ -5,9 +5,8 @@
 
       <div class="title-container">
         <h3 class="title">用户登录 <el-popover placement="right" width="150" trigger="click">
-            <el-image
-                :src='require("@/assets/gitee.png")'>
-              </el-image>
+            <el-image :src='require("@/assets/gitee.png")'>
+            </el-image>
             <i slot="reference" class="el-icon-info"></i>
           </el-popover>
         </h3>
@@ -32,7 +31,7 @@
         </span>
       </el-form-item>
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleLogin">登录</el-button>
+        @click.native.prevent="verify">登录</el-button>
 
     </el-form>
   </div>
@@ -92,6 +91,26 @@
       }
     },
     methods: {
+      verify(){
+        this.captch(this)
+      },
+      captch(that) {
+        let appid = '2074448262'; // 腾讯云控制台中对应这个项目的 appid
+        //生成一个滑块验证码对象
+        let captcha = new TencentCaptcha(appid, function(res) {
+          // 用户滑动结束或者关闭弹窗，腾讯返回的内容
+          //console.log(res.ret)
+          if (res.ret === 0) {
+            //成功，传递数据给后台进行验证
+            that.handleLogin()
+          } else {
+            // 提示用户完成验证
+            that.$message.error("请完成验证");
+          }
+        });
+        // 滑块显示
+        captcha.show();
+      },
       showPwd() {
         if (this.passwordType === 'password') {
           this.passwordType = ''

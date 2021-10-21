@@ -176,6 +176,11 @@
         this.page = 1
       },
       async deleteRow(id) {
+        this.$message({
+          message: "演示版本，拒绝对数据进行操作",
+          type: 'error'
+        });
+        return
         let res = await deleteVip(id)
         this.$message({
           message: res.msg,
@@ -209,6 +214,11 @@
         this.editDialogVisible = true
       },
       submitAddForm() {
+        this.$message({
+          message: "演示版本，拒绝对数据进行操作",
+          type: 'error'
+        });
+        return
         this.$refs["addForm"].validate(async (valid) => {
           if (valid) {
             let res = await addVip(this.addForm)
@@ -228,6 +238,11 @@
         })
       },
       submitEditForm() {
+        this.$message({
+          message: "演示版本，拒绝对数据进行操作",
+          type: 'error'
+        });
+        return
         this.$refs["editForm"].validate(async (valid) => {
           if (valid) {
             let res = await editVip(this.editForm.id, this.editForm)

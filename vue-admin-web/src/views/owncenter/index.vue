@@ -175,6 +175,11 @@
         this.editForm.info = ""
       },
       async submitEditForm() {
+        this.$message({
+          message: "演示版本，拒绝对数据进行操作",
+          type: 'error'
+        });
+        return
         if (this.avatarFile != null) {
           let res = await getQiniuToken()
           let {
@@ -217,6 +222,11 @@
           this.changePwdForm.newPasswordAgain = ""
       },
       submitChangePwdForm() {
+        this.$message({
+          message: "演示版本，拒绝对数据进行操作",
+          type: 'error'
+        });
+        return
         this.$refs["changePwdForm"].validate(async (valid) => {
           if (valid) {
             if (this.changePwdForm.newPassword != this.changePwdForm.newPasswordAgain) {
