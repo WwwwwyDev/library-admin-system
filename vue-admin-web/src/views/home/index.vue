@@ -109,7 +109,7 @@
         systemOptions:{
           title: {
             text: '系统概括',
-            subtext: 'Lend Summary',
+            subtext: 'System Summary',
             left: 'center'
           },
           tooltip: {
