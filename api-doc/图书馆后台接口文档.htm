@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图书馆后台</title>
+    <link rel="stylesheet" type="text/css" href="https://img.cdn.apipost.cn/docs/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="https://img.cdn.apipost.cn/docs/css/style.css">
+    <link rel="stylesheet" type="text/css"
+          href="https://img.cdn.apipost.cn/docs/css/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://img.cdn.apipost.cn/docs/css/content.css">
+    <link rel="stylesheet" href="https://img.cdn.apipost.cn/docs/css/github.css">
+    <script src="https://img.cdn.apipost.cn/docs/js/jquery-3.4.1.min.js"></script>
+    <script src="https://img.cdn.apipost.cn/docs/js/marked.min.js"></script>
+    <script src="https://img.cdn.apipost.cn/docs/js/template-web.js"></script>
+    <script src="https://img.cdn.apipost.cn/docs/js/highlight.js"></script>
+    <script src="https://img.cdn.apipost.cn/statics/libs/crypto-js/crypto-js.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://docs.apipost.cn/statics/enc.min.js"></script>
+    <script src="https://img.cdn.apipost.cn/docs/js/clipboard.min.js"></script>
+</head>
+
+<body>
+<!-- <body> -->
+<div class="body">
+    <div class="doc-head">
+        <div class="left">
+            <img src="https://img.cdn.apipost.cn/docs/images/logo.svg">
+        </div>
+        <div class="container">
+            <div class="container-left">
+                <input type="text" class="search" placeholder="搜索目录接口">
+                <button><i class="fa fa-search" aria-hidden="true"></i></button>
+            </div>
+            <!--            <div class="export" style="position: relative;-->
+            <!--                float: right;-->
+            <!--                margin: -16px 50px;">-->
+            <!--                <div class="container-right">-->
+            <!--                    <a href="javascript:;">导出文档</a>-->
+            <!--                </div>-->
+            <!--                <div class="export_panel">-->
+            <!--                    <ul>-->
+            <!--                        <li><a href="javascript:;">导出HTML</a></li>-->
+            <!--                        <li><a href="javascript:;">导出MarkDown</a></li>-->
+            <!--                        <li><a href="javascript:;">导出Word</a></li>-->
+            <!--                    </ul>-->
+            <!--                </div>-->
+            <!--            </div>-->
+        </div>
+    </div>
+    <div class="box">
+        <div class="box-first">
+            <div class="title">
+                图书馆后台            </div>
+            <div class="top target" data-target_id="001">全局参数</div>
+            <div class="new" style="height:calc(100% - 60px) !important;">
+
+            </div>
+            <div class="bar"></div>
+            <script type="text/html" id="template-target-sidebar-list-tpl">
+                {{each list value}}
+                <div>
+                    <div class="target {{value.target_type == 'folder' ? 'folder':'api'}}"
+                         data-type="{{value.target_type}}" data-id="{{value.target_id}}"
+                         data-target_id="{{value.local_target_id}}">
+                        {{if value.target_type == 'folder'}}
+                        <span>
+                       <span class="control">
+                           {{if value.children}}
+                           <i class="fa fa-angle-down"></i>
+                           {{/if}}
+                        </span>
+                       <span>{{value.name}}</span> 
+                       </span>
+                        {{else}}
+                        <span>
+                            <em class="{{((target_type == 'doc') || (target_type == 'example' && is_doc == 1)) ? 'DOC' : target_type == 'example' ? method : ''}}">{{(target_type == 'doc' || (target_type == 'example' && is_doc == '1')) ? '文本' :  method == 'OPTIONS' ? 'OPT' : method == 'DELETE' ? 'DEL' : method == 'UNLINK' ? 'UNLNK' : method == 'UNLOCK' ? 'UNLCK' : method == 'PROPFIND' ? 'PROP' : method}}</em>
+                       <span>{{value.name}}</span>  
+                       </span>
+                        <span></span>
+                        {{/if}}
+                    </div>
+                    {{if value.children!=null}}
+                    {{each value.children data}}
+                    {{set a=data["index"]=3}}
+                    {{include 'list1' data}}
+                    {{/each}}
+                    {{/if}}
+                </div>
+                {{/each}}
+            </script>
+            <script type="text/html" id="list1">
+                <div>
+                    <div class="target {{target_type == 'folder' ? 'folder':'api'}}" data-type="{{target_type}}"
+                         data-id="{{target_id}}" data-target_id="{{local_target_id}}"
+                         style="padding-left:{{index * 15}}px">
+                        {{if target_type == 'folder'}}
+                        <span>
+                                    <span class="control">
+                                        {{if children}}
+                                        <i class="fa fa-angle-down"></i>
+                                        {{/if}}
+                                    </span>
+                                    <span>{{name}}</span> 
+                                </span>
+
+                        {{else}}
+                        <span>
+                            <em class="{{((target_type == 'doc') || (target_type == 'example' && is_doc == 1)) ? 'DOC' : target_type == 'example' ? method : ''}}">{{(target_type == 'doc' || (target_type == 'example' && is_doc == '1')) ? '文本' :  method == 'OPTIONS' ? 'OPT' : method == 'DELETE' ? 'DEL' : method == 'UNLINK' ? 'UNLNK' : method == 'UNLOCK' ? 'UNLCK' : method == 'PROPFIND' ? 'PROP' : method}}</em>
+                           <span>{{name}}</span> 
+                           </span>
+
+                        <span></span>
+                        {{/if}}
+                    </div>
+                    {{if children!=null}}
+                    {{each children data}}
+                    {{if index}}
+                    {{set b=data.index=index+1}}
+                    {{else}}
+                    {{set c=data["index"] = 3}}
+                    {{/if}}
+                    {{include 'list1' data}}
+                    {{/each}}
+                    {{/if}}
+                </div>
+            </script>
+
+        </div>
+        <div class="box-third">
+            <div class="preview-markdown">
+
+            </div>
+            <div class="box-nav" style="background: #fff">
+                <ul class="api template-nav-menu">
+                    <script type="text/html" id="template-nav-menu-tpl">
+                        {{if target_type == "api" || target_type == "folder" || (target_type == "example" && is_doc == 0) }}
+                        <li class="cur nav-btn" data-id="0"><a href="javascript:;">基本信息</a></li>
+                        {{/if}}
+                        {{if request.header.parameter.length > 0 || request.query.parameter.length > 0 || request.resful.parameter.length > 0 || request.body.parameter.length>0 ||request.body.raw !=''}}
+                        <li class="nav-btn" data-id="1" style="display: block"><a href="javascript:;">请求参数</a></li>
+                        {{else}}
+                        <li class="nav-btn" data-id="1" style="display: none"><a href="javascript:;">请求参数</a></li>
+                        {{/if}}
+                        <ul>
+                            {{if request.header.parameter.length > 0}}
+                            <li class="nav-btn" data-id="2" style="display: block"><a
+                                        href="javascript:;">header参数及说明</a></li>
+                            {{else}}
+                            <li class="nav-btn" data-id="2" style="display: none"><a href="javascript:;">header参数及说明</a>
+                            </li>
+                            {{/if}}
+                            {{if request.query.parameter.length > 0}}
+                            <li class="nav-btn" data-id="3" style="display: block"><a href="javascript:;">query参数及说明</a>
+                            </li>
+                            {{else}}
+                            <li class="nav-btn" data-id="3" style="display: none"><a href="javascript:;">query参数及说明</a>
+                            </li>
+                            {{/if}}
+                            {{if request.resful.parameter.length > 0}}
+                            <li class="nav-btn" data-id="4" style="display: block"><a href="javascript:;">路径参数及说明</a>
+                            </li>
+                            {{else}}
+                            <li class="nav-btn" data-id="4" style="display: none"><a href="javascript:;">路径参数及说明</a>
+                            </li>
+                            {{/if}}
+                            {{if request.body.parameter.length>0 ||request.body.raw !='' }}
+                            <li class="nav-btn" data-id="5" style="display: block"><a href="javascript:;">body参数及说明</a>
+                            </li>
+                            {{else}}
+                            <li class="nav-btn" data-id="5" style="display: none"><a href="javascript:;">body参数及说明</a>
+                            </li>
+                            {{/if}}
+                            <!--                        <li class="nav-btn" data-id="6"><a href="javascript:;">预执行脚本</a></li>-->
+                            <!--                        <li class="nav-btn" data-id="7"><a href="javascript:;">后执行脚本</a></li>-->
+
+                        </ul>
+                        {{if response.success.raw || response.success.parameter.length > 0 || response.error.raw || response.error.parameter.length > 0}}
+                        <li class="nav-btn" data-id="6" style="display: block"><a href="javascript:;">响应示例</a></li>
+                        {{else}}
+                        <li class="nav-btn" data-id="6" style="display: none"><a href="javascript:;">响应示例</a></li>
+                        <!--                        <ul>-->
+                        <!--                            {{if response.success.raw || response.success.parameter.length > 0}}-->
+                        <!--                            <li class="nav-btn" data-id="9"><a href="javascript:;">成功响应示例</a></li>-->
+                        <!--                            {{/if}}-->
+                        <!---->
+                        <!--                            {{if response.error.raw || response.error.parameter.length > 0}}-->
+                        <!--                            <li class="nav-btn" data-id="10"><a href="javascript:;">失败响应示例</a></li>-->
+                        <!--                            {{/if}}-->
+                        <!--                        </ul>-->
+                        {{/if}}
+                    </script>
+                </ul>
+                </ul>
+                <ul class="folder">
+                    <li class="cur nav-folder-btn" data-id="0"><a href="javascript:;">公共参数</a></li>
+                    <ul>
+                        <li class="nav-folder-btn" data-id="1"><a href="javascript:;">header参数及说明</a></li>
+                        <li class="nav-folder-btn" data-id="2"><a href="javascript:;">query参数及说明</a></li>
+                        <li class="nav-folder-btn" data-id="3"><a href="javascript:;">body参数及说明</a></li>
+                        <!--                        <li class="nav-folder-btn" data-id="4"><a href="javascript:;">预执行脚本</a></li>-->
+                        <!--                        <li class="nav-folder-btn" data-id="5"><a href="javascript:;">后执行脚本</a></li>-->
+                    </ul>
+                </ul>
+            </div>
+            <script type="text/html" id="template-example-doc-tpl">
+                <h2>
+                    <span>{{name}}</span>
+                    {{if target_type != 'folder'}}
+                    <button title="复制当前文档/接口数据到剪贴板" class="CopyCurrentData" data-clipboard-action="copy" data-clipboard-text="" data-target_id="{{target_id}}">复制接口</button>
+                    <a href="https://mp.apipost.cn/a/8c7b0ac975443421" title="什么是复制接口？" target="_blank"><i class="fa fa-question-circle-o" aria-hidden="true"></i></a>
+                    {{/if}}
+                    <span class="metadata">更新时间：{{update_dtime}}</span>
+                </h2>
+                {{if request.description}}
+                <div class="editor-preview desc markdown-section">
+                    {{@marked(request.description)}}
+                </div>
+                {{/if}}
+                {{if (target_type == 'example' && is_doc == '0') || target_type == 'api'}}
+                <h3 class="title"><a href="javascript:;" class="maodian"></a> 基本信息 <i class="fa fa-angle-down"></i></h3>
+                <ul class="editor-preview-info">
+                    <li><strong>接口状态:</strong> <code class="span {{mark}}">{{mark == 'developing' ? '开发中' : mark ==
+                            'complated' ?
+                            '已完成' : mark == 'modifying' ? '修改中' : '开发中'}}</code></li>
+                    {{if request.url}}
+                    <li><strong>接口URL：</strong> <code class="span">{{request.url}}</code></li>
+                    {{/if}}
+                    <li><strong>请求方式：</strong> <code class="span">{{method}}</code></li>
+                    <li><strong>Content-Type：</strong><code class="span">{{request.body.mode}}</code></li>
+                </ul>
+
+                <h3 class="title"
+                    style="{{request.header.parameter.length > 0 || request.query.parameter.length > 0 || request.resful.parameter.length > 0 || request.body.parameter.length>0 ||request.body.raw !='' ? 'display:block':'display:none'}}">
+                    <a href="javascript:;" class="maodian"></a> 请求参数 <i class="fa fa-angle-down"></i></h3>
+                {{if request.header.parameter.length > 0 || request.query.parameter.length > 0 || request.resful.parameter.length > 0 || request.body.parameter.length>0 ||request.body.raw !=''}}
+                <div class="markdown-request">
+                    <h4 class="title" style="{{request.header.parameter.length ? 'display:block':'display:none'}}"><a
+                                href="javascript:;" class="maodian"></a> Header参数及说明</h4>
+                    {{if request.header.parameter.length > 0}}
+                    <div>
+                        <table>
+                            <tr>
+                                <th>参数名</th>
+                                <th>示例值</th>
+                                <th>参数类型</th>
+                                <th>是否必填</th>
+                                <th>参数描述</th>
+                            </tr>
+                            {{each request.header.parameter item}}
+                            {{if item.key}}
+                            <tr>
+                                <td>{{item.key}}</td>
+                                <td>{{item.value}}</td>
+                                <td>{{item.field_type == "" || item.field_type == "[]"? (typeof item.value) :
+                                    item.field_type}}
+                                </td>
+                                <td>{{item.not_null == "1" ? '是' : '否'}}</td>
+                                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                            </tr>
+                            {{/if}}
+                            {{/each}}
+                        </table>
+                    </div>
+                    {{/if}}
+
+                    <h4 class="title" style="{{request.query.parameter.length > 0 ? 'display:block':'display:none'}}"><a
+                                href="javascript:;" class="maodian"></a> Query参数及说明</h4>
+                    {{if request.query.parameter.length > 0}}
+                    <div>
+                        <table>
+                            <tr>
+                                <th>参数名</th>
+                                <th>示例值</th>
+                                <th>参数类型</th>
+                                <th>是否必填</th>
+                                <th>参数描述</th>
+                            </tr>
+
+                            {{each request.query.parameter item}}
+                            {{if item.key}}
+                            <tr>
+                                <td>{{item.key}}</td>
+                                <td>{{item.value}}</td>
+                                <td>{{item.field_type == "" || item.field_type == "[]"? (typeof item.value) :
+                                    item.field_type}}
+                                </td>
+                                <td>{{item.not_null == "1" ? '是' : '否'}}</td>
+                                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                            </tr>
+                            {{/if}}
+                            {{/each}}
+                        </table>
+
+                    </div>
+                    {{/if}}
+
+                    <h4 class="title" style="{{request.resful.parameter.length ? 'display:block':'display:none'}}"><a
+                                href="javascript:;" class="maodian"></a> 路径参数及说明</h4>
+                    {{if request.resful.parameter.length > 0}}
+                    <div>
+                        <table>
+                            <tr>
+                                <th>参数名</th>
+                                <th>示例值</th>
+                                <th>参数类型</th>
+                                <th>是否必填</th>
+                                <th>参数描述</th>
+                            </tr>
+
+                            {{each request.resful.parameter item}}
+                            {{if item.key}}
+                            <tr>
+                                <td>{{item.key}}</td>
+                                <td>{{item.value}}</td>
+                                <td>{{item.field_type == "" || item.field_type == "[]"? (typeof item.value) :
+                                    item.field_type}}
+                                </td>
+                                <td>{{item.not_null == "1" ? '是' : '否'}}</td>
+                                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                            </tr>
+                            {{/if}}
+                            {{/each}}
+                        </table>
+
+                    </div>
+                    {{/if}}
+
+                    <h4 class="title"
+                        style="{{request.body.parameter.length > 0 || request.body.raw !='' ? 'display:block' : 'display:none'}}">
+                        <a href="javascript:;" class="maodian"></a> body参数及说明</h4>
+                    {{if request.body.parameter.length>0 ||request.body.raw !='' }}
+                    {{if request.body.mode == 'form-data' || request.body.mode == 'multipart/form-data' ||
+                    request.body.mode =='application/x-www-form-urlencoded' || request.body.mode=="urlencoded"}}
+                    <div>
+                        <table>
+                            <tr>
+                                <th>参数名</th>
+                                <th>示例值</th>
+                                <th>参数类型</th>
+                                <th>是否必填</th>
+                                <th>参数描述</th>
+                            </tr>
+                            {{if request.body.parameter.length > 0}}
+                            {{each request.body.parameter item}}
+                            {{if item.key}}
+                            <tr>
+                                <td>{{item.key}}</td>
+                                <td>{{item.value}}</td>
+                                <td>{{item.field_type == "" || item.field_type == "[]"? (typeof item.value) :
+                                    item.field_type}}
+                                </td>
+                                <td>{{item.not_null == "1" ? '是' : '否'}}</td>
+                                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                            </tr>
+                            {{/if}}
+                            {{/each}}
+                            {{else}}
+                            <tr>
+                                <td colspan="5" style="text-align:center">暂无数据</td>
+                            </tr>
+                            {{/if}}
+                        </table>
+                    </div>
+                    {{else}}
+                    <div class="editor-preview">
+                        <pre><code class="hljs json">{{request.body.raw}}</code></pre>
+                    </div>
+                    {{if request.body.raw_para.length > 0}}
+                    <h4><a href="javascript:;" class="maodian"></a> 字段描述</h4>
+                    <table>
+                        <tr>
+                            <th>参数名</th>
+                            <th>示例值</th>
+                            <th>参数类型</th>
+                            <th>是否必填</th>
+                            <th>参数描述</th>
+                        </tr>
+                        {{each request.body.raw_para item}}
+                        {{if item.key}}
+                        <tr>
+                            <td>{{item.key}}</td>
+                            <td>{{item.value}}</td>
+                            <td>{{item.field_type}}</td>
+                            <td>{{item.not_null == "1" ? '是' : '否'}}</td>
+                            <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                        </tr>
+                        {{/if}}
+                        {{/each}}
+                    </table>
+                    {{/if}}
+                    {{/if}}
+                    <!--                    {{if request.event.pre_script != ''}}-->
+                    <!--                    <h4 class="title"><a href="javascript:;" class="maodian"></a> 预执行脚本</h4>-->
+                    <!--                    <div class="editor-preview">-->
+                    <!--                        <pre><code class="hljs">{{request.event.pre_script}}</code></pre>-->
+                    <!--                    </div>-->
+                    <!--    {{/if}}-->
+                    <!--                    {{if request.event.test != ''}}-->
+                    <!--                    <h4 class="title"><a href="javascript:;" class="maodian"></a> 后执行脚本</h4>-->
+                    <!--                    <div class="editor-preview">-->
+                    <!--                        <pre><code class="hljs">{{request.event.test}}</code></pre>-->
+                    <!--                    </div>-->
+                    <!--                    {{/if}}-->
+                </div>
+
+                {{/if}}
+                {{/if}}
+                <!--respond-->
+
+                <h3 class="title"
+                    style="{{response.success.raw || response.success.parameter.length > 0 || response.error.raw || response.error.parameter.length > 0 ? 'display:block':'display:none'}}"">
+                <a href="javascript:;" class="maodian"></a> 响应示例<i class="fa fa-angle-down"></i></h3>
+                {{if response.success.raw || response.success.parameter.length > 0 || response.error.raw || response.error.parameter.length > 0}}
+                <div class="markdown-response">
+                    {{if response.success.raw || response.success.parameter.length > 0}}
+                    <h4 class="title"><a href="javascript:;" class="maodian"></a> 成功响应示例</h4>
+                    <div class="editor-preview">
+                        <pre><code class="hljs json">{{response.success.raw}}</code></pre>
+                    </div>
+                    {{if response.success.parameter.length > 0}}
+                    <h4><a href="javascript:;" class="maodian"></a> 字段描述</h4>
+                    <table>
+                        <tr>
+                            <th>参数名</th>
+                            <th>示例值</th>
+                            <th>参数类型</th>
+                            <th>参数描述</th>
+                        </tr>
+                        {{each response.success.parameter item}}
+                        <tr>
+                            <td>{{item.key}}</td>
+                            <td>{{item.value}}</td>
+                            <td>{{item.field_type}}</td>
+                            <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                        </tr>
+                        {{/each}}
+                    </table>
+                    {{/if}}
+                    {{/if}}
+                    {{if response.error.raw || response.error.parameter.length > 0}}
+                    <h4 class="title"><a href="javascript:;" class="maodian"></a> 失败响应示例</h4>
+                    <div class="editor-preview">
+                        <pre><code class="hljs json">{{response.error.raw}}</code></pre>
+                    </div>
+                    {{if response.error.parameter.length > 0}}
+                    <h4><a href="javascript:;" class="maodian"></a> 字段描述</h4>
+                    <table>
+                        <tr>
+                            <th>参数名</th>
+                            <th>示例值</th>
+                            <th>参数类型</th>
+                            <th>参数描述</th>
+                        </tr>
+                        {{each response.error.parameter item}}
+                        <tr>
+                            <td>{{item.key}}</td>
+                            <td>{{item.value}}</td>
+                            <td>{{item.field_type}}</td>
+                            <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                        </tr>
+                        {{/each}}
+                    </table>
+                    {{/if}}
+                    {{/if}}
+                </div>
+                {{/if}}
+                {{else if target_type == 'folder'}}
+                <h3 class="title"><a href="javascript:;" class="maodian"></a> 公共参数<i class="fa fa-angle-down"></i></h3>
+                <div class="markdown-request">
+                    <h4 class="title"><a href="javascript:;" class="maodian"></a> Header参数及说明</h4>
+                    <div>
+                        <table class="header">
+                            <tr>
+                                <th>参数名</th>
+                                <th>示例值</th>
+                                <th>参数类型</th>
+                                <th>参数描述</th>
+                            </tr>
+                            {{if request.header.length > 0}}
+                            {{each request.header item}}
+                            {{if item.key}}
+                            <tr>
+                                <td>{{item.key}}</td>
+                                <td>{{item.value}}</td>
+                                <td>{{item.field_type == "" || item.field_type == "[]"? (typeof item.value) :
+                                    item.field_type}}
+                                </td>
+                                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                            </tr>
+                            {{/if}}
+                            {{/each}}
+                            {{/if}}
+                        </table>
+                    </div>
+                    <h4 class="title"><a href="javascript:;" class="maodian"></a> Query参数及说明</h4>
+                    <div>
+                        <table class="query">
+                            <tr>
+                                <th>参数名</th>
+                                <th>示例值</th>
+                                <th>参数类型</th>
+                                <th>参数描述</th>
+                            </tr>
+                            {{each request.query item}}
+                            {{if item.key}}
+                            <tr>
+                                <td>{{item.key}}</td>
+                                <td>{{item.value}}</td>
+                                <td>{{item.field_type == "" || item.field_type == "[]"? (typeof item.value) :
+                                    item.field_type}}
+                                </td>
+                                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                            </tr>
+                            {{/if}}
+                            {{/each}}
+                        </table>
+                    </div>
+                    <h4 class="title"><a href="javascript:;" class="maodian"></a> Body参数及说明</h4>
+                    <div>
+                        <table class="body">
+                            <tr>
+                                <th>参数名</th>
+                                <th>示例值</th>
+                                <th>参数类型</th>
+                                <th>参数描述</th>
+                            </tr>
+                            {{each request.body item}}
+                            {{if item.key}}
+                            <tr>
+                                <td>{{item.key}}</td>
+                                <td>{{item.value}}</td>
+                                <td>{{item.field_type == "" || item.field_type == "[]"? (typeof item.value) :
+                                    item.field_type}}
+                                </td>
+                                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+                            </tr>
+                            {{/if}}
+                            {{/each}}
+                        </table>
+                    </div>
+                    <!--                    {{if script.pre_script != ''}}-->
+                    <!--                    <h4 class="title"><a href="javascript:;" class="maodian"></a> 预执行脚本</h4>-->
+                    <!--                    <div class="editor-preview">-->
+                    <!--                        <pre><code class="hljs">{{script.pre_script}}</code></pre>-->
+                    <!--                    </div>-->
+                    <!--                    {{/if}}-->
+                    <!--                    {{if script.test !=''}}-->
+                    <!--                    <h4 class="title"><a href="javascript:;" class="maodian"></a> 后执行脚本</h4>-->
+                    <!--                    <div class="editor-preview">-->
+                    <!--                        <pre><code class="hljs">{{script.test}}</code></pre>-->
+                    <!--                    </div>-->
+                    <!--                    {{/if}}-->
+                </div>
+                <!--respond-->
+                {{/if}}
+                <div class="footer" style="text-align: center;margin: 35px 24px;height: 50px">本文档由 <a
+                            href="https://docs.apipost.cn/" target="_blank" style="color:#378eef">APIPOST接口调试与管理工具</a>
+                    生成
+                </div>
+            </script>
+
+        </div>
+
+    </div>
+
+</div>
+<script type="text/html" id="golbal-env-tpl">
+    <h2 class="top">
+        {{project_name}}
+        <span class="metadata">创建时间： {{create_time}}
+        {{if expire_day_time}}
+        <span style="color: #f44336; margin-left: 15px; font-weight: bold;">过期时间： {{expire_day_time}}</span>
+        {{/if}}
+        </span>
+
+    </h2>
+    <div class="editor-preview desc">
+        <p>本文档是{{project_name}}的接口文档，以下为当前项目下的公共参数。</p>
+    </div>
+    <!-- <blockquote></blockquote> -->
+    <h3 class="title"><a href="javascript:;" class="maodian"></a> 环境变量
+        {{if envs.length > 0}}
+        <i class="fa fa-angle-down"></i>
+        {{/if}}
+    </h3>
+    {{if envs.length > 0}}
+    <div>
+        {{each envs item}}
+        <h4>{{item.name}}</h4>
+        <table>
+            <tr>
+                <th>变量名</th>
+                <th>变量初始值</th>
+                <th>变量当前值</th>
+            </tr>
+            {{each item.list value key}}
+            <tr>
+                <td>{{key}}</td>
+                <td>{{value.value}}</td>
+                <td>{{value.current_value}}</td>
+            </tr>
+            {{/each}}
+        </table>
+        {{/each}}
+    </div>
+    {{else}}
+    <div style="text-align: center;"><img src="https://img.cdn.apipost.cn/docs/images/empty.svg"
+                                          style="width: 100px;margin:20px auto 20px;">暂无环境
+    </div>
+    {{/if}}
+    <h3 class="title"><a href="javascript:;" class="maodian"></a> 全局参数
+        {{if vars.request.header.length > 0 || vars.request.query.length > 0 || vars.request.body.length > 0}}
+        <i class="fa fa-angle-down"></i>
+        {{/if}}
+    </h3>
+    {{if vars.request.header.length > 0 || vars.request.query.length > 0 || vars.request.body.length > 0}}
+    <div>
+        {{if vars.request.header.length > 0}}
+        <h4>全局Header</h4>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>参数值</th>
+                <th>参数描述</th>
+            </tr>
+            {{each vars.request.header item}}
+            <tr>
+                <td>{{item.key}}</td>
+                <td>{{item.value}}</td>
+                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+            </tr>
+            {{/each}}
+        </table>
+        {{/if}}
+
+        {{if vars.request.query.length > 0}}
+        <h4>全局Query</h4>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>参数值</th>
+                <th>参数描述</th>
+            </tr>
+
+            {{each vars.request.query item}}
+            <tr>
+                <td>{{item.key}}</td>
+                <td>{{item.value}}</td>
+                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+            </tr>
+            {{/each}}
+        </table>
+        {{/if}}
+
+        {{if vars.request.body.length > 0}}
+        <h4>全局Body</h4>
+        <table>
+            <tr>
+                <th>参数名</th>
+                <th>参数值</th>
+                <th>参数描述</th>
+            </tr>
+            {{each vars.request.body item}}
+            <tr>
+                <td>{{item.key}}</td>
+                <td>{{item.value}}</td>
+                <td>{{item.description == '' ? '暂无描述' : item.description }}</td>
+            </tr>
+            {{/each}}
+        </table>
+        {{/if}}
+        <!--        {{if vars.script.pre_script != ""}}-->
+        <!--        <h4 class="title"><a href="javascript:;" class="maodian"></a> 预执行脚本</h4>-->
+        <!--        <div class="editor-preview">-->
+        <!--            <pre><code class="hljs">{{vars.script.pre_script}}</code></pre>-->
+        <!--        </div>-->
+        <!--        {{/if}}-->
+        <!--        {{if vars.script.test != ''}}-->
+        <!--        <h4 class="title"><a href="javascript:;" class="maodian"></a> 后执行脚本</h4>-->
+        <!--        <div class="editor-preview">-->
+        <!--            <pre><code class="hljs">{{vars.script.test}}</code></pre>-->
+        <!--        </div>-->
+        <!--        {{/if}}-->
+    </div>
+    {{else}}
+    <div style="text-align: center;"><img src="https://img.cdn.apipost.cn/docs/images/empty.svg"
+                                          style="width: 100px;margin:20px auto 20px;">暂无参数
+    </div>
+    {{/if}}
+    <div class="footer" style="text-align: center;margin: 35px 24px;height: 50px">本文档由 <a
+                href="https://docs.apipost.cn/" target="_blank" style="color:#378eef">APIPOST接口调试与管理工具</a> 生成
+    </div>
+</script>
+<script>
+    template.defaults.imports.marked = function (md) {
+        return marked(md);
+    }
+
+    function dragControllerDiv(resize, left, mid, box) {
+        for (let i = 0; i < resize.length; i++) {
+            // 鼠标按下事件
+            resize[i].onmousedown = function (e) {
+                //颜色改变提醒
+                resize[i].style.borderColor = "#9d9d9d";
+                var startX = e.clientX;
+                resize[i].left = resize[i].offsetLeft;
+                // 鼠标拖动事件
+                document.onmousemove = function (e) {
+                    var endX = e.clientX;
+                    var moveLen = resize[i].left + (endX - startX); // （endx-startx）=移动的距离。resize[i].left+移动的距离=左边区域最后的宽度
+                    var maxT = box[i].clientWidth - resize[i].offsetWidth; // 容器宽度 - 左边区域的宽度 = 右边区域的宽度
+
+                    if (moveLen < 300) moveLen = 300; // 左边区域的最小宽度为32px
+                    if (moveLen > maxT - 150) moveLen = maxT - 150; //右边区域最小宽度为150px
+
+                    resize[i].style.left = moveLen; // 设置左侧区域的宽度
+                    $('.target.title').css({maxWidth: moveLen + 'px'})
+                    for (let j = 0; j < left.length; j++) {
+                        left[j].style.width = moveLen + "px";
+                        mid[j].style.width = box[i].clientWidth - moveLen - 10 + "px";
+                    }
+                };
+                // 鼠标松开事件
+                document.onmouseup = function (evt) {
+                    //颜色恢复
+                    resize[i].style.borderColor = "#d6d6d6";
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                    resize[i].releaseCapture && resize[i].releaseCapture(); //当你不在需要继续获得鼠标消息就要应该调用ReleaseCapture()释放掉
+                };
+                resize[i].setCapture && resize[i].setCapture(); //该函数在属于当前线程的指定窗口里设置鼠标捕获
+                return false;
+            };
+        }
+    }
+
+    let timer = null
+    let arr = parseEnc('eyJpZC`6MTAyND`wLCJwcm9qZWN0X$lk`joxOTc$NDUwLCJuYW1l`joiXHU1NmZlXHU0ZTY$XHU5OTg$XHU1NDBlXHU1M$Yw`iwicHVibGlzaGVy`joid3d5d3d5`iwicGFzc3dvcmQiOi`iLCJjcmVhdGVfdGltZS`6`j`wMjEtMTAtMTEgMTk6MTk6NDgiLCJ0YXJnZXRfaWQiOi`xOTc$NDUw`iwidGFyZ$V0X3R5cGUiOiJwcm9qZWN0`iwicHJvamVjdF9uYW1l`joiXHU1NmZlXHU0ZTY$XHU5OTg$XHU1NDBlXHU1M$Yw`iwicHJvamVjdF9sb$dv`joi`iwicHJvamVjdC`6eyJ$YXJz`jp7`nJlcXVlc3QiOnsiaGVhZGVy`jpbeyJpc19jaGVja$Vk`joiMS`s`nR5cGUiOiJUZXh0`iwia$V5`joi`iwidmFsdWUiOi`iLCJkZXNjcmlwdGlvbi`6`iJ9XSwicXVlcnkiOlt7`mlzX$NoZWNrZWQiOi`x`iwidHlwZS`6`lRleHQiLCJrZXkiOi`iLCJ$YWx1ZS`6`i`s`mRlc$NyaXB0aW9u`joi`n1dLCJjb$9raWUiOlt7`mlzX$NoZWNrZWQiOi`x`iwidHlwZS`6`lRleHQiLCJrZXkiOi`iLCJ$YWx1ZS`6`i`s`mRlc$NyaXB0aW9u`joi`n1dLCJib$R5`jpbeyJpc19jaGVja$Vk`joiMS`s`nR5cGUiOiJUZXh0`iwia$V5`joi`iwidmFsdWUiOi`iLCJkZXNjcmlwdGlvbi`6`iJ9XX0s`nNjcmlwdC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJ$YXJpYWJsZS`6W10s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwibWV0aG9kcy`6WyJQT1NU`iwiR0VU`iwiUFVU`iwiUEFUQ0giLCJERUxFVEUiLCJDT1BZ`iwiSEVBRC`s`k9QVElPTlMiLCJMSU5L`iwiVU5MSU5L`iwiUFVSR0UiLCJMT0NL`iwiVU5MT0NL`iwiUFJPUEZJTkQiLCJWSUVX`l0s`m1hcmsiOlt7`mtleS`6`mRldmVsb3BpbmciLCJuYW1l`joiXHU1ZjAwXHU1M$QxXHU0ZTJk`n0seyJrZXkiOiJjb$1wbGF0ZWQiLCJuYW1l`joiXHU1ZGYyXHU1YjhjXHU$MjEw`n0seyJrZXkiOiJtb$RpZnlpbmciLCJuYW1l`joiXHU5NzAwXHU0ZmVlXHU$NTM5`n1dfSwiZW5$cy`6W3siZW5$X$lk`joiLTEiLCJuYW1l`joiXHU5ZWQ4XHU4YmE0XHU3M$FmXHU1ODgz`iwibGlzdC`6e319XX0s`nRhcmdldHMiOlt7`nRhcmdldF9pZC`6MjAwOTQyMzQs`mxvY$FsX3RhcmdldF9pZC`6`mUyODJmZTY3LT`zNGEtNDU$Yy05ZGY$LTlkODY5NDBiNjY3ZC`s`mxvY$FsX3BhcmVudF9pZC`6`jAiLCJuYW1l`joiand0XHU5Mjc0XHU$NzQz`iwibWV0aG9k`joiUE9TVC`s`m1hcmsiOiJkZXZlbG9waW5n`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZm9sZGVy`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTEx`DE4OjU3OjA0`iwicmVxdWVzdC`6eyJkZXNjcmlwdGlvbi`6`lx1OTcwMFx1ODk4MWp3dFx1OT`3NFx1Njc0M1x1ZmYwY1x1NTQyNlx1NT`xOVx1NjVlMFx1NmNkNVx1OGJiZlx1OTVlZS`s`mhlYWRlci`6W3siaXNfY$hlY$tlZC`6`jEiLCJrZXkiOiJhdXRob3JpemF0aW9u`iwidmFsdWUiOiJleUpoYkdjaU9pSklVekkxTmlJc0luUjVjQ0k$SWtwWFZDSjkuZXlKbGV`QWlPakUyTXpRM016UXlPVEVzSW1saGRDSTZNVFl6TkRjek1EWTVNU3dpY$05c1pYTWlPaUp6ZFhCbGNtRmtiV$x1SWl3aWRYTmxja$xrSWpveGZRLjN`SzRpUmlDbzZwMGZtQkZCNFgtUlhMdS00akpfSEt0cXBmck5MUFFPYmciLCJkZXNjcmlwdGlvbi`6`iJ9XSwicXVlcnkiOltdLCJib$R5`jpbXX0s`nNjcmlwdC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJjaGlsZHJlbi`6W3sidGFyZ$V0X$lk`joyMDA5ND`$MSwibG9jYWxfdGFyZ$V0X$lk`joiNDUzNjJmMTYtNzcxYS00ZmZhLThhOTEtNGNkOThjNzRhYzcw`iwibG9jYWxfcGFyZW50X$lk`joiZT`4MmZlNjctMjM0YS00NTZjLTlkZjYtOWQ4Njk0MG`$Njdk`iwibmFtZS`6`lx1NzUyOFx1Nj`zN1x1N$JhMVx1NzQwNi`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiZGV$ZWxvcGluZy`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mZvbGRlci`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xMSAxODo1NjoxMS`s`nJlcXVlc3QiOnsiZGVzY3JpcHRpb$4iOi`iLCJoZWFkZX`iOltdLCJxdWVyeS`6W10s`mJvZHkiOltdfSwic$NyaXB0`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mNoaWxkcmVu`jpbeyJ0YXJnZXRfaWQiOj`wMDk0Mzg$LCJsb$NhbF90YXJnZXRfaWQiOiJiZjNkNzUyZC1iYTg5LTQxN$EtOTUzYy1iOG`yODlhZGY5YW`iLCJsb$NhbF9wYXJlbnRfaWQiOi`3MzVkNGNlZS1jNWRlLTRiZWUtYTBhNC00MTk1OGE1MzFmMzUiLCJuYW1l`joiXHU$ZGZiXHU1MmEwXHU3NT`4XHU$MjM3`iwibWV0aG9k`joiUE9TVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTEx`DE5OjE4OjQw`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvdXNlci`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJqc$9u`iwicGFyYW1ldGVy`jpbXSwicmF3`joie1xu`CAg`FwidXNlcm5hbWVc`jogXCJ3d3lkMT`zNDU$MzJc`ixcbiAg`CBc`nBhc3N3b3JkXC`6`Fwid3d5MT`zNDU$XC`sXG4g`CAgXCJpbmZvXC`6`FwiXHU4ZDg1XHU3ZWE3XHU3YmExXHU3NDA$XHU1NDU4XHU4ZD`$XHU1M$Y3XCJcbn0iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOltdfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1xuXHRc`mNvZGVc`jogMjAwMDAsXG5cdFwiZGF0YVwiOiBudWxsLFxuXHRc`m1zZ1wiOiBc`lx1NmRmYlx1NTJhMFx1Nj`xMFx1NT`5ZlwiXG59`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`ntcblx0XCJjb$RlXC`6`DEwMDAyLFxuXHRc`m1zZ1wiOiBc`lx1NzUyOFx1Nj`zN1x1NTQwZFx1OTFjZFx1NTkwZFwiXG59`iwicGFyYW1ldGVy`jpbXX19fSx7`nRhcmdldF9pZC`6MjAwOTQ0NTEs`mxvY$FsX3RhcmdldF9pZC`6`jZhOTJlM$`5LTU4Y$MtNDAzMi04YzEwLWE4YWQzM$NlYTQzZS`s`mxvY$FsX3BhcmVudF9pZC`6`jU4OWZmY$ZiLWNiNWMtNDdhZi1hMj`3LTE1MT`3YjllMjYyNi`s`m5hbWUiOiJcdTgzYjdcdTUzZDZcdTc1MjhcdTYyMzciLCJtZXRob$QiOiJHRVQiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xMiAxOToyMToxNy`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3VzZX`-cGFnZT0xJmxpbWl0PTEw`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`nVybGVuY$9kZWQiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJwYWdl`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`x`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mxpbWl0`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`xMCJ9LHsiZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`jowLCJrZXkiOiJ1c$VybmFtZS`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiMjM0`n1dfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbXX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`ntcblx0XCJjb$RlXC`6`D`wMDAwLFxuXHRc`mRhdGFc`joge1xuXHRcdFwidG90YWxc`jogNCxcblx0XHRc`nVzZXJzXC`6`Ftcblx0XHRcdHtcblx0XHRcdFx0XCJpZFwiOiA3LFxuXHRcdFx0XHRc`nVzZXJuYW1lXC`6`Fwid3d5ZDEyMzQ1Nj`xXC`sXG5cdFx0XHRcdFwicGFzc3dvcmRc`jogXCJcdTc5ODFcdTZiNjJcdThiYmZcdTk1ZWVcdThiZTVcdTY1NzBcdTYzNmVc`ixcblx0XHRcdFx0XCJzYWx0XC`6`FwiXHU3OTgxXHU$YjYyXHU4YmJmXHU5NWVlXHU4YmU1XHU$NTcwXHU$MzZlXC`sXG5cdFx0XHRcdFwiaW5mb1wiOiBc`lx1OGQ4NVx1N$VhN1x1N$JhMVx1NzQwNlx1NTQ1OFx1OGQyNlx1NTNmNzQ1MzVc`lxuXHRcdFx0fSxcblx0XHRcdHtcblx0XHRcdFx0XCJpZFwiOiA4LFxuXHRcdFx0XHRc`nVzZXJuYW1lXC`6`Fwid3d5ZDEyMzQ1NjJc`ixcblx0XHRcdFx0XCJwYXNzd$9yZFwiOiBc`lx1Nzk4MVx1Nm`$Mlx1OGJiZlx1OTVlZVx1OGJlNVx1NjU3MFx1NjM$ZVwiLFxuXHRcdFx0XHRc`nNhbHRc`jogXCJcdTc5ODFcdTZiNjJcdThiYmZcdTk1ZWVcdThiZTVcdTY1NzBcdTYzNmVc`ixcblx0XHRcdFx0XCJpbmZvXC`6`FwiXHU4ZDg1XHU3ZWE3XHU3YmExXHU3NDA$XHU1NDU4XHU4ZD`$XHU1M$Y3XCJcblx0XHRcdH0sXG5cdFx0XHR7XG5cdFx0XHRcdFwiaWRc`jogOSxcblx0XHRcdFx0XCJ1c$VybmFtZVwiOiBc`nd3eWQxMjM0NTY0MlwiLFxuXHRcdFx0XHRc`nBhc3N3b3JkXC`6`FwiXHU3OTgxXHU$YjYyXHU4YmJmXHU5NWVlXHU4YmU1XHU$NTcwXHU$MzZlXC`sXG5cdFx0XHRcdFwic$FsdFwiOiBc`lx1Nzk4MVx1Nm`$Mlx1OGJiZlx1OTVlZVx1OGJlNVx1NjU3MFx1NjM$ZVwiLFxuXHRcdFx0XHRc`mluZm9c`jogXCJcdThkODVcdTdlYTdcdTdiYTFcdTc0MDZcdTU0NThcdThkMjZcdTUzZjdc`lxuXHRcdFx0fSxcblx0XHRcdHtcblx0XHRcdFx0XCJpZFwiOiAxMCxcblx0XHRcdFx0XCJ1c$VybmFtZVwiOiBc`nd3eWQxMjM0NTYyM1wiLFxuXHRcdFx0XHRc`nBhc3N3b3JkXC`6`FwiXHU3OTgxXHU$YjYyXHU4YmJmXHU5NWVlXHU4YmU1XHU$NTcwXHU$MzZlXC`sXG5cdFx0XHRcdFwic$FsdFwiOiBc`lx1Nzk4MVx1Nm`$Mlx1OGJiZlx1OTVlZVx1OGJlNVx1NjU3MFx1NjM$ZVwiLFxuXHRcdFx0XHRc`mluZm9c`jogXCJcdThkODVcdTdlYTdcdTdiYTFcdTc0MDZcdTU0NThcdThkMjZcdTUzZjc0NTM1XCJcblx0XHRcdH1cblx0XHRdXG5cdH0sXG5cdFwibXNnXC`6`FwiXHU$N$U1XHU4YmUyXHU3NT`4XHU$MjM3XHU$MjEwXHU1MjlmXCJcbn0iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joie1wiY$9kZVwiOjEwMDAxLFwibXNnXC`6XCJcdTUzYzJcdTY1NzBcdTk3NWVcdTZjZDVc`n0iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDE4ODkxMiwibG9jYWxfdGFyZ$V0X$lk`joiMzY3MDVhOTEtYjNiOS00M$RkLThjM$QtMWMzZTk1MGU5NDZl`iwibG9jYWxfcGFyZW50X$lk`joiNjMwYzA3OTEtZjk5Yy00MTdkLTgxOTUtYTY0N$YzN$Y5ODM$`iwibmFtZS`6`lx1NT`yMFx1OTY$NFx1NzUyOFx1Nj`zNy`s`m1ldGhvZC`6`kRFTEVURS`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE3`DEyOjM$OjAz`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvdXNlclwvOmlk`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`m5vbmUiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOlt7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joiaWQiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`jcifV19fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XG5cdFwiY$9kZVwiOiAyMDAwMCxcblx0XCJkYXRhXC`6`G51bGwsXG5cdFwibXNnXC`6`FwiXHU1Mj`wXHU5NjY0XHU3NT`4XHU$MjM3XHU$MjEwXHU1MjlmXCJcbn0iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joie1wiY$9kZVwiOjEwMDAzLFwibXNnXC`6XCJcdTc1MjhcdTYyMzdcdTRlMGRcdTViNThcdTU3Mjhc`n0iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDExNDM1MSwibG9jYWxfdGFyZ$V0X$lk`joiNWY1YTVjOW`tZTg0YS00ZjdmLTlhODQtNTljY$MwYzY0NGE5`iwibG9jYWxfcGFyZW50X$lk`joiY$E$OTExNzctMGUzZi00ZTg5LTkyNTgtZGYyMTBmZTUzYzgz`iwibmFtZS`6`lx1NjZmNFx1NjViMFx1NzUyOFx1Nj`zNy`s`m1ldGhvZC`6`lBVVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTEy`D`wOjAxOjA1`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvdXNlclwvOmlk`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`mpzb$4iLCJwYXJhbWV0ZX`iOltdLCJyYXciOiJ7XG4g`CAgXCJwYXNzd$9yZFwiOiBc`nd3eTEyMzQ1NjQyXC`sXG4g`CAgXCJhdmF0YXJc`jpc`mRhd$RhYXdkd$Fc`ixcbiAg`CBc`mluZm9c`jogXCJcdThkODVcdTdlYTdcdTdiYTFcdTc0MDZcdTU0NThcdThkMjZcdTUzZjc0NTM1XCJcbn0iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOlt7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joiaWQiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`jEx`n1dfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1xuXHRc`mNvZGVc`jogMjAwMDAsXG5cdFwiZGF0YVwiOiBudWxsLFxuXHRc`m1zZ1wiOiBc`lx1NGZlZVx1NjUzOVx1NzUyOFx1Nj`zN1x1Nj`xMFx1NT`5ZlwiXG59`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`ntc`mNvZGVc`joxMDAwMyxc`m1zZ1wiOlwiXHU3NT`4XHU$MjM3XHU0ZTBkXHU1YjU4XHU1Nz`4XCJ9`iwicGFyYW1ldGVy`jpbXX19fSx7`nRhcmdldF9pZC`6MjAxMTE5MTYs`mxvY$FsX3RhcmdldF9pZC`6`jg5ZDljM$E0LT`4N$YtNG`4Yy04YmZkLTk0MDZkNDUzMzYwMy`s`mxvY$FsX3BhcmVudF9pZC`6`mQ0Y$M4ODYzLTAyNDQtNGU5OS1iZTlhLWU$YTZkNGNjMzYwMS`s`m5hbWUiOiJcdTdmMTZcdThmOTFcdTc1MjhcdTYyMzdcdTY3NDNcdTk$NTAiLCJtZXRob$QiOiJQVVQiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xMiAxNzozNTozMi`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3VzZXJSb$xlc1wvOmlk`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`mpzb$4iLCJwYXJhbWV0ZX`iOltdLCJyYXciOiJ7XG4g`CAgXCJyb$xlSWRzXC`6Wz`xMywyXVxufS`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJpZC`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiMTAifV19fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX19fV19LHsidGFyZ$V0X$lk`joyMDA5NDM0MywibG9jYWxfdGFyZ$V0X$lk`joiMDk0MWFjOWYtMjEzYy00NW`1LThjZjktY$M0YzU5MDJlZWRi`iwibG9jYWxfcGFyZW50X$lk`joiZT`4MmZlNjctMjM0YS00NTZjLTlkZjYtOWQ4Njk0MG`$Njdk`iwibmFtZS`6`mp3dC`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiZGV$ZWxvcGluZy`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mZvbGRlci`s`nN0YXR1cy`6MSwic$9ydC`6MiwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xMSAxOTowNTo1MS`s`nJlcXVlc3QiOnsiZGVzY3JpcHRpb$4iOi`iLCJoZWFkZX`iOltdLCJxdWVyeS`6W10s`mJvZHkiOltdfSwic$NyaXB0`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mNoaWxkcmVu`jpbeyJ0YXJnZXRfaWQiOj`wMDk0MzcxLCJsb$NhbF90YXJnZXRfaWQiOiJiZDE1NWE4NC04OWQxLTQ4ZWQtODFiNi1mMjRkMjdmMz`4ODciLCJsb$NhbF9wYXJlbnRfaWQiOi`zNWVkMWU5MS03Zjc$LTQxYWEtYWMzZi0$ZjJhNTQ4ZDA3NTgiLCJuYW1l`joiand0XHU1MjM3XHU$NW`w`iwibWV0aG9k`joiR0VU`iwibWFyay`6`mNvbXBsYXRlZC`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMT`gMjA6Mj`6MjAiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9yand0`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`m5vbmUiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOltdfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1xuXHRc`mNvZGVc`jogMjAwMDAsXG5cdFwiZGF0YVwiOiB7XG5cdFx0XCJhY$Nlc3NFeHBpcmVc`jogMTYzMzk1NDA5MSxcblx0XHRc`mFjY$Vzc1Rva$VuXC`6`FwiZXlKaGJHY$lPaUpJVXpJMU5pSXNJbl`1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT$pFMk16TTVOVFF3T1RFc0ltbGhkQ0k$TVRZek16azFNRFE1TVN3aWRYTmxja$xrSWpveE1`MC44Tm5$dDNaQ$ZEWVNQay1WOTdURFNkU1ZZa3NxYT`yQTlpX1BnaVR1NDFNXC`sXG5cdFx0XCJyZWZyZXNoQWZ0ZXJc`jogMTYzMzk1Mj`5MVxuXHR9LFxuXHRc`m1zZ1wiOiBc`lx1NT`zN1x1NjViMFx1Nj`xMFx1NT`5ZlwiXG59`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMDk0MzY5LCJsb$NhbF90YXJnZXRfaWQiOi`xOTM5YWQ1OS05Mzc4LTRiNj`tYmE5Zi00OGQxNTY3Mz`5Y$QiLCJsb$NhbF9wYXJlbnRfaWQiOi`4ZDkyZD`yYi04NmFmLTQzODMtYjEwMy0yNDQzYzNhZT`$ZDQiLCJuYW1l`joiand0XHU4OWUzXHU$Nzkw`iwibWV0aG9k`joiR0VU`iwibWFyay`6`mNvbXBsYXRlZC`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMT`gMjA6Mj`6MjUiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9kand0`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`m5vbmUiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOltdfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1xuXHRc`mNvZGVc`jogMjAwMDAsXG5cdFwiZGF0YVwiOiB7XG5cdFx0XCJ1c$VyXC`6`Htcblx0XHRcdFwiaWRc`jogMTAsXG5cdFx0XHRc`nVzZXJuYW1lXC`6`Fwid3d5ZDEyMzQ1Nj`zXC`sXG5cdFx0XHRc`nBhc3N3b3JkXC`6`FwiXHU3OTgxXHU$YjYyXHU4YmJmXHU5NWVlXHU4YmU1XHU$NTcwXHU$MzZlXC`sXG5cdFx0XHRc`nNhbHRc`jogXCJcdTc5ODFcdTZiNjJcdThiYmZcdTk1ZWVcdThiZTVcdTY1NzBcdTYzNmVc`ixcblx0XHRcdFwiaW5mb1wiOiBc`lx1OGQ4NVx1N$VhN1x1N$JhMVx1NzQwNlx1NTQ1OFx1OGQyNlx1NTNmNzQ1MzVc`ixcblx0XHRcdFwicm9sZXNc`jogW1xuXHRcdFx0XHR7XG5cdFx0XHRcdFx0XCJpZFwiOiAxLFxuXHRcdFx0XHRcdFwibmFtZVwiOiBc`nN1cGVyYWRtaW5c`ixcblx0XHRcdFx0XHRc`mluZm9c`jogXCJcdThkODVcdTdlYTdcdTdiYTFcdTc0MDZcdTU0NThc`lxuXHRcdFx0XHR9XG5cdFx0XHRdXG5cdFx0fVxuXHR9LFxuXHRc`m1zZ1wiOiBc`lx1ODllM1x1Njc5MFx1Nj`xMFx1NT`5ZlwiXG59`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMTE4NzczLCJsb$NhbF90YXJnZXRfaWQiOi`4YmFjNDg5Mi01NTljLTQxYTUtOTA$Mi0$MTBkMTRhNzBkMWMiLCJsb$NhbF9wYXJlbnRfaWQiOiJhMWExYmU3MS1lMzRjLTQzYjMtYWE3OC0wOTU4NmFmNjM$MDgiLCJuYW1l`joiXHU3NT`4XHU$MjM3XHU3NjdiXHU1MWZh`iwibWV0aG9k`joiUE9TVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTEz`DEwOjUyOjE0`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvdmVyaWZ5XC9sb$dpbk91dC`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJub$5l`iwicGFyYW1ldGVy`jpbXSwicmF3`joi`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbXX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMD`yMDEzNCwibG9jYWxfdGFyZ$V0X$lk`joiYzU3NTc5NzktYz`4MS00NmYxLTg0MWEtOW`4MGFkMDYzMDk4`iwibG9jYWxfcGFyZW50X$lk`joiYzQ5NDQ1NzEtNjhiMC00ZWQxLThkNjQtYzc0ZD`1ZG`$OWU5`iwibmFtZS`6`lx1NGZlZVx1NjUzOVx1NWJjNlx1NzgwMS`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xOSAxMDo0NDo1Ni`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3ZlcmlmeVwvY$hhbmdlUGFzc3dvcmQiLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joianNvbi`s`nBhcmFtZXRlci`6W10s`nJhdy`6`ntcbiAg`CBc`m9sZFBhc3N3b3JkXC`6XC`xMjM0NTZc`ixcbiAg`CBc`m5ld1Bhc3N3b3JkXC`6XC`xMjM0NTZc`ixcbiAg`CBc`m5ld1Bhc3N3b3JkQWdhaW5c`jpc`jEyMzQ1NlwiXG59`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbXX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`ntcblx0XCJjb$RlXC`6`D`wMDAwLFxuXHRc`mRhdGFc`jogbnVsbCxcblx0XCJtc$dc`jogXCJcdTRmZWVcdTY1MzlcdTViYzZcdTc4MDFcdTYyMTBcdTUyOWZc`lxufS`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMD`yMDEzMSwibG9jYWxfdGFyZ$V0X$lk`joiMGM4M$U4ODUtYTQxNy00NGVjLTk0MWEtNzViYjRmYjU5YjYz`iwibG9jYWxfcGFyZW50X$lk`joiNzczYTQ3OW`tNzVhNy00ZDViLWE0Nj`tYWU3OGEwMDFjMWY4`iwibmFtZS`6`lx1N$YxNlx1OGY5MVx1NGZlMVx1NjA$Zi`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xOSAxMDo0NDo1NC`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3ZlcmlmeVwvZWRpdFVzZX`iLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joianNvbi`s`nBhcmFtZXRlci`6W10s`nJhdy`6`ntcbiAg`CBc`mF$YXRhclwiOiBc`mh0dHBzOlwvXC9wLnFxYW4uY$9tXC91cFwvMjAyMS0$XC8xNj`zMjkxMTk0MTA5MDc0MS5qcGdc`ixcbiAg`CBc`mluZm9c`jogXCJcdThkODVcdTdlYTdcdTdiYTFcdTc0MDZcdTU0NThcdWZmMGNcdTYyZTVcdTY3MDlcdTgxZjNcdTlhZDhcdTY1ZTBcdTRlMGFcdTc$ODRcdTY3NDNcdTk$NTBc`lxufS`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W119fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XCJjb$RlXC`6MjAwMDAsXCJkYXRhXC`6bnVsbCxc`m1zZ1wiOlwiXHU0ZmVlXHU$NTM5XHU$MjEwXHU1MjlmXCJ9`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX1dfSx7`nRhcmdldF9pZC`6MjAxODgzODAs`mxvY$FsX3RhcmdldF9pZC`6`mQzMmMxOW`0LWUzYj`tNGUzZS1iMWRhLWY5ZTU5NzM1M$M1Yi`s`mxvY$FsX3BhcmVudF9pZC`6`mUyODJmZTY3LT`zNGEtNDU$Yy05ZGY$LTlkODY5NDBiNjY3ZC`s`m5hbWUiOiJcdTU$ZmVcdTRlNjZcdTdiYTFcdTc0MDYiLCJtZXRob$QiOiJQT1NU`iwibWFyay`6`mRldmVsb3BpbmciLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJmb$xkZX`iLCJzdGF0dXMiOjEs`nNvcnQiOjMs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTcgMTA6MTE6MDkiLCJyZXF1ZXN0`jp7`mRlc$NyaXB0aW9u`joi`iwiaGVhZGVy`jpbXSwicXVlcnkiOltdLCJib$R5`jpbXX0s`nNjcmlwdC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJjaGlsZHJlbi`6W3sidGFyZ$V0X$lk`joyMDE4ODkwOCwibG9jYWxfdGFyZ$V0X$lk`joiODBlZTdlMWEtMDhkMS00NDQ3LTk$MTMtYTgxODcyMDJiNjJm`iwibG9jYWxfcGFyZW50X$lk`joiMDMzOTQ$YTctNzc1Yi00ZDE4LWJmNGYtMjkzODMyMW`yMTVl`iwibmFtZS`6`lx1NjViMFx1NTg5ZVx1NTZmZVx1NGU$Ni`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xNyAxMjozNTo0Ni`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL$Jvb$siLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joianNvbi`s`nBhcmFtZXRlci`6W10s`nJhdy`6`ntcbiAg`CBc`m5hbWVc`jpc`mhlbGwxb1wiLFxu`CAg`FwiaW1hZ$Vc`jogXCJ3d3d3XC`sXG4g`CAgXCJhdXRob3Jc`jogXCJ0c$Vc`ixcbiAg`CBc`mluZm9c`iA6`FwiZWF3ZFwiLFxu`CAg`FwidHlwZUlkXC`6`DFcbn0iLCJyYXdfcGFyYS`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJuYW1l`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joiU3RyaW5n`iwidmFsdWUiOiJoZWxsMW8ifSx7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joiaW1hZ$UiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiLTEiLCJmaWVsZF90eXBl`joiU3RyaW5n`iwidmFsdWUiOiJ3d3d3`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mF1dGhvci`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`tMS`s`mZpZWxkX3R5cGUiOiJTdHJpbmciLCJ$YWx1ZS`6`nRzZSJ9LHsiZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJpbmZv`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`i0x`iwiZmllbGRfdHlwZS`6`lN0cmluZy`s`nZhbHVl`joiZWF3ZCJ9LHsiZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJ0eXBlSWQiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOiJOdW1iZX`iLCJ$YWx1ZS`6`jEifV19LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOltdfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1wiY$9kZVwiOj`wMDAwLFwiZGF0YVwiOm51bGwsXCJtc$dc`jpc`lx1NmRmYlx1NTJhMFx1Nj`xMFx1NT`5ZlwifS`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOiJ7XCJjb$RlXC`6NTAwMD`sXCJtc$dc`jpc`lx1NTZmZVx1NGU$Nlx1NTQwZFx1OTFjZFx1NTkwZFwifS`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMTg4OTA5LCJsb$NhbF90YXJnZXRfaWQiOi`4MGY4Mm`zNy1mNjY0LTRhOTgtODlhNy1hYzdjZDZkMzNiYjMiLCJsb$NhbF9wYXJlbnRfaWQiOi`5ZTU5ZWU4ZC0xZTEyLTRmY$EtYmQ$ZC1jOGE$ZWU1Yzg4YT`iLCJuYW1l`joiXHU4M$`3XHU1M$Q$XHU1NmZlXHU0ZTY$`iwibWV0aG9k`joiR0VU`iwibWFyay`6`mNvbXBsYXRlZC`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTcgMT`6MzU6NTAiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9ib$9rP3BhZ$U9MSZsaW1pdD0xMC`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJ1cmxlbmNvZGVk`iwicGFyYW1ldGVy`jpbXSwicmF3`joi`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOlt7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joicGFnZS`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiMSJ9LHsiZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJsaW1pdC`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiMTAifSx7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MCwia$V5`joibmFtZS`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiMj`y`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjAs`mtleS`6`mF1dGhvci`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiMj`y`n1dfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbXX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDE4OTExMiwibG9jYWxfdGFyZ$V0X$lk`joiYzQxMWNlMj`tNmRhMC00N$Q$LTk4ZWEtMzdmYjUwZmZjOWUz`iwibG9jYWxfcGFyZW50X$lk`joiZDRiMjRkNGUtMTc5NC00OGQ$LTg1ZmEtNmZjOTZlMWE5YTAy`iwibmFtZS`6`lx1NT`yMFx1OTY$NFx1NTZmZVx1NGU$Ni`s`m1ldGhvZC`6`kRFTEVURS`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE3`DE0OjExOjMy`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvYm9va1wvOmlk`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`m5vbmUiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOlt7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joiaWQiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`jQifV19fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XCJjb$RlXC`6MjAwMDAsXCJkYXRhXC`6bnVsbCxc`m1zZ1wiOlwiXHU1Mj`wXHU5NjY0XHU$MjEwXHU1MjlmXCJ9`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMTg5MjY3LCJsb$NhbF90YXJnZXRfaWQiOi`zNm`wMDdhNy1lMWEwLTQzNWYtYjE3ZS1mMGZiZj`3N$EzNTkiLCJsb$NhbF9wYXJlbnRfaWQiOi`0MTBjYTMwNy1iZTRiLTQ0NjctYWM1OC1kZmVlZDhiNzgxYWYiLCJuYW1l`joiXHU$NmY0XHU$NW`wXHU1NmZlXHU0ZTY$`iwibWV0aG9k`joiUFVU`iwibWFyay`6`mRldmVsb3BpbmciLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE3`DE0OjMwOjQ0`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvYm9va1wvOmlk`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`mpzb$4iLCJwYXJhbWV0ZX`iOltdLCJyYXciOiJ7XG4g`CAgXCJuYW1lXC`6XCJoZT`yMjJc`ixcbiAg`CBc`mltYWdlXC`6`Fwid3d3d1wiLFxu`CAg`FwiYXV0aG9yXC`6`FwidHNlMzMzMzNc`ixcbiAg`CBc`mluZm9c`iA6`FwiZWF3ZD`yMj`yMjJc`ixcbiAg`CBc`nR5cGVJZFwiOiAxXG59`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbeyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mlk`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`xMSJ9XX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`ntc`mNvZGVc`joyMDAwMCxc`mRhdGFc`jpudWxsLFwibXNnXC`6XCJcdTRmZWVcdTY1MzlcdTU$ZmVcdTRlNjZcdTYyMTBcdTUyOWZc`n0iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX19fSx7`nRhcmdldF9pZC`6MjAxODk3MDgs`mxvY$FsX3RhcmdldF9pZC`6`jRkZjY0M$JhLTY0OWUtNGQ3Mi05ZjcwLTU3NWZmNzE3NzQzYi`s`mxvY$FsX3BhcmVudF9pZC`6`mQzMmMxOW`0LWUzYj`tNGUzZS1iMWRhLWY5ZTU5NzM1M$M1Yi`s`m5hbWUiOiJcdTc5Y$RcdTdjN$JcdTdiYTFcdTc0MDYiLCJtZXRob$QiOiJQT1NU`iwibWFyay`6`mRldmVsb3BpbmciLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJmb$xkZX`iLCJzdGF0dXMiOjEs`nNvcnQiOjUs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTcgMTU6NT`6NDQiLCJyZXF1ZXN0`jp7`mRlc$NyaXB0aW9u`joi`iwiaGVhZGVy`jpbXSwicXVlcnkiOltdLCJib$R5`jpbXX0s`nNjcmlwdC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJjaGlsZHJlbi`6W3sidGFyZ$V0X$lk`joyMDE4OTcyMiwibG9jYWxfdGFyZ$V0X$lk`joiNjU4ZWJjZmMtMTc1Mi00YmJlLWFiMWYtYTYzZjViNDA$ODUw`iwibG9jYWxfcGFyZW50X$lk`joiZDM0ODE1ODctNjNkMy00MGQxLThjNzQtZGQwZDM3ZWQ5Y$`w`iwibmFtZS`6`lx1NjViMFx1NTg5ZVx1NzljZFx1N$M3Yi`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiZGV$ZWxvcGluZy`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTcgMTU6NTU6MDEiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9ib$9rXC90eXBl`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`mpzb$4iLCJwYXJhbWV0ZX`iOltdLCJyYXciOiJ7XG4g`CAgXCJuYW1lXC`6`FwidGVzdDJc`ixcbiAg`CBc`mludHJvXC`6`FwiZHdkd$Fkd1wiXG59`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbXX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`ntc`mNvZGVc`joyMDAwMCxc`mRhdGFc`jpudWxsLFwibXNnXC`6XCJcdTZkZmJcdTUyYTBcdTYyMTBcdTUyOWZc`n0iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joie1wiY$9kZVwiOjUwMDAyLFwibXNnXC`6XCJcdTc5Y$RcdTdjN$JcdTU0MGRcdTc5ZjBcdTkxY$RcdTU5MGRc`n0iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDE4OTcxOSwibG9jYWxfdGFyZ$V0X$lk`joiODdhOWNhZjktMjhhYi00ZDgwLWE0ZDMtYzNkMDlkMDZiMm`0`iwibG9jYWxfcGFyZW50X$lk`joiOTE4YjhkNG`tY$ZmOS00MzE3LTg$OG`tNjA0OGE$MDdkOG`5`iwibmFtZS`6`lx1ODNiN1x1NTNkNlx1NzljZFx1N$M3Yi`s`m1ldGhvZC`6`kdFVC`s`m1hcmsiOiJkZXZlbG9waW5n`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xNyAxNTo1NDowMS`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL$Jvb$tcL3R5cGU-cGFnZT0xJmxpbWl0PTEw`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`nVybGVuY$9kZWQiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJwYWdl`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`x`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mxpbWl0`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`xMCJ9LHsiZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`jowLCJrZXkiOiJuYW1l`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`x`n1dfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbXX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`ntc`mNvZGVc`joyMDAwMCxc`mRhdGFc`jp7XCJib$9rc1wiOm51bGwsXCJ0b3RhbFwiOjB9LFwibXNnXC`6XCJcdTY3ZTVcdThiZTJcdTc1MjhcdTYyMzdcdTYyMTBcdTUyOWZc`n0iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX19fSx7`nRhcmdldF9pZC`6MjAxODk5ND`s`mxvY$FsX3RhcmdldF9pZC`6`jdmYzhlN$E0LTYxZDMtNGUwMC1hNDEyLTJlNTAxMDYyMDJkMC`s`mxvY$FsX3BhcmVudF9pZC`6`jBmZTVjNDkwLTJjMWMtNGY3MS1iOWZmLWQxNzBkZDgyZGQxOS`s`m5hbWUiOiJcdTUyMjBcdTk$NjRcdTc5Y$RcdTdjN$`iLCJtZXRob$QiOiJERUxFVEUiLCJtYXJr`joiZGV$ZWxvcGluZy`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTcgMTY6Mz`6MDQiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9ib$9rXC90eXBlXC86aWQiLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joibm9uZS`s`nBhcmFtZXRlci`6W10s`nJhdy`6`i`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJpZC`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiMiJ9XX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`ntc`mNvZGVc`joyMDAwMCxc`mRhdGFc`jpudWxsLFwibXNnXC`6XCJcdTUyMjBcdTk$NjRcdTYyMTBcdTUyOWZc`n0iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX19fSx7`nRhcmdldF9pZC`6MjAxODk5NDks`mxvY$FsX3RhcmdldF9pZC`6`jg$NjJmODAzLW`yZDktNDEzNS1hNmQxLTk5ZjFkYjc0ZGMzYi`s`mxvY$FsX3BhcmVudF9pZC`6`j`wNTYxMj`3LTg3MDktNGU$YS05MzA0LWE5YzM$YTBjMD`0Mi`s`m5hbWUiOiJcdTRmZWVcdTY1MzlcdTc5Y$RcdTdjN$`iLCJtZXRob$QiOiJQVVQiLCJtYXJr`joiZGV$ZWxvcGluZy`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTcgMTY6MzQ6MTYiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9ib$9rXC90eXBlXC86aWQiLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joianNvbi`s`nBhcmFtZXRlci`6W10s`nJhdy`6`ntcbiAg`CBc`m5hbWVc`jogXCJ0ZXN0MjJc`ixcbiAg`CBc`mludHJvXC`6`FwiZHdkMj`yXCJcbn0iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOlt7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joiaWQiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`jMifV19fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XCJjb$RlXC`6MjAwMDAsXCJkYXRhXC`6bnVsbCxc`m1zZ1wiOlwiXHU0ZmVlXHU$NTM5XHU3OWNkXHU3YzdiXHU$MjEwXHU1MjlmXCJ9`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`ntc`mNvZGVc`jo1MDAwMixc`m1zZ1wiOlwiXHU3OWNkXHU3YzdiXHU1NDBkXHU5MWNkXHU1OTBkXCJ9`iwicGFyYW1ldGVy`jpbXX19fV19XX0seyJ0YXJnZXRfaWQiOj`wMjE3MjQ$LCJsb$NhbF90YXJnZXRfaWQiOi`5NTY5NmQ$MC1jYmUyLTRjNDUtODQzNS0$MWUxNmQyM$E4YjQiLCJsb$NhbF9wYXJlbnRfaWQiOiJlMjgyZmU$Ny0yMzRhLTQ1NmMtOWRmNi05ZDg$OTQwYjY$N$QiLCJuYW1l`joiXHU0ZjFhXHU1NDU4XHU3YmExXHU3NDA$`iwibWV0aG9k`joiUE9TVC`s`m1hcmsiOiJkZXZlbG9waW5n`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZm9sZGVy`iwic3RhdHVz`joxLCJzb3J0`jo0LCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE5`DA5OjU4OjE$`iwicmVxdWVzdC`6eyJkZXNjcmlwdGlvbi`6`i`s`mhlYWRlci`6W10s`nF1ZXJ5`jpbXSwiYm9keS`6W119LCJzY3JpcHQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiY$hpbGRyZW4iOlt7`nRhcmdldF9pZC`6MjAyMjAwNDcs`mxvY$FsX3RhcmdldF9pZC`6`jg$ZWYzODBlLTY1MTktNGY0Ny1iYmE$LWJlZTlmZW`1YWE5NC`s`mxvY$FsX3BhcmVudF9pZC`6`jQ1YzEwMj`zLTgyNjAtNDcwNy1hZDg3LTViODVhNmRhMT`0Yi`s`m5hbWUiOiJcdTgzYjdcdTUzZDZcdTRmMWFcdTU0NTgiLCJtZXRob$QiOiJHRVQiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xOSAxMDo0Mzo1My`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3ZpcD9wYWdlPTEmbGltaXQ9MTAiLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joibm9uZS`s`nBhcmFtZXRlci`6W10s`nJhdy`6`i`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbeyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`nBhZ$UiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`jEifSx7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joibGltaXQiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`jEw`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjAs`mtleS`6`m5hbWUiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`iJ9LHsiZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`jowLCJrZXkiOiJjYXJkTnVtYmVy`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`ifV19LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOltdfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1wiY$9kZVwiOj`wMDAwLFwiZGF0YVwiOntc`nRvdGFsXC`6NCxc`nZpcHNc`jpbe1wiaWRc`joxLFwiY$FyZE51bWJlclwiOlwiN$`1MTQzM$MtZmU3OC00Ym`zLWE3NDAtYTg5YzgzM$NmNmMxXC`sXCJuYW1lXC`6XCJcdTVmMjBcdTRlMDlc`ixc`mluZm9c`jpc`nRlc3Rc`n0se1wiaWRc`joyLFwiY$FyZE51bWJlclwiOlwiMTU4YTlkMDUtOGE3NC00MTk3LW`zODEtYzcxOGY5YTM0OWQxXC`sXCJuYW1lXC`6XCJcdTVmMjBcdTRlMDlc`ixc`mluZm9c`jpc`nRlc3Rc`n0se1wiaWRc`jozLFwiY$FyZE51bWJlclwiOlwiNTQxMGFhNmUtYmRkMy00NzRlLThkYTctNm`xYTkxZTk4M$ZiXC`sXCJuYW1lXC`6XCJcdTVmMjBcdTRlMDlc`ixc`mluZm9c`jpc`nRlc3Rc`n0se1wiaWRc`jo0LFwiY$FyZE51bWJlclwiOlwiYjEzZmM3MzAtNjQwMi00YjY0LTgxNzUtZWE5MzA1ZGQyZjdiXC`sXCJuYW1lXC`6XCJcdTVmMjBcdTRlMDlc`ixc`mluZm9c`jpc`nRlc3Rc`n1dfSxc`m1zZ1wiOlwiXHU$N$U1XHU4YmUyXHU3NT`4XHU$MjM3XHU$MjEwXHU1MjlmXCJ9`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMj`wMDQ4LCJsb$NhbF90YXJnZXRfaWQiOi`0YjQ5YWYyZS1lY$UyLTQ5MjktYjVhNi1jZWQ4YjBjMT`3ZTEiLCJsb$NhbF9wYXJlbnRfaWQiOi`wMjA4YTg5OS0wNGFlLTRjYmMtYWEzOC1jNjBkZj`4ZTQ3YzUiLCJuYW1l`joiXHU$NW`wXHU1ODllXHU0ZjFhXHU1NDU4`iwibWV0aG9k`joiUE9TVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE5`DEwOjQzOjU4`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvdmlw`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`mpzb$4iLCJwYXJhbWV0ZX`iOltdLCJyYXciOiJ7XG4g`CAgXCJuYW1lXC`6XCJcdTVmMjBcdTRlMDlc`ixcbiAg`CBc`mluZm9c`jpc`nRlc3Rc`lxufS`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W119fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XCJjb$RlXC`6MjAwMDAsXCJkYXRhXC`6bnVsbCxc`m1zZ1wiOlwiXHU$ZGZiXHU1MmEwXHU$MjEwXHU1MjlmXCJ9`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMj`wMDUxLCJsb$NhbF90YXJnZXRfaWQiOi`1OT`yZTM$My1kZDkzLTRkYWQtYjg5Yy0wNTAwNmZkNGNhNjYiLCJsb$NhbF9wYXJlbnRfaWQiOiJhOTAxMTAzMC04YjdjLTQ3ZWEtOWNkNC1jM$`zMzNiZmJkYmUiLCJuYW1l`joiXHU3ZjE$XHU4ZjkxXHU0ZjFhXHU1NDU4`iwibWV0aG9k`joiUFVU`iwibWFyay`6`mNvbXBsYXRlZC`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTkgMTA6NDQ6MD`iLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9$aXBcLzppZC`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJqc$9u`iwicGFyYW1ldGVy`jpbXSwicmF3`joie1xu`CAg`FwibmFtZVwiOlwiZHdkd1wiLFxu`CAg`FwiaW5mb1wiOlwiZGF3ZFwiXG59`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbeyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mlk`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`x`n1dfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMj`wMDU4LCJsb$NhbF90YXJnZXRfaWQiOi`5NjRkODMzZS00OTQwLTRiMjktODA4MC03YjA0NjEwMzliZWEiLCJsb$NhbF9wYXJlbnRfaWQiOi`yMDMxMzY1NC0zN$MxLTRjNm`tOWJiZi0yMzQ5YjQ$MDYwY$YiLCJuYW1l`joiXHU1Mj`wXHU5NjY0XHU0ZjFhXHU1NDU4`iwibWV0aG9k`joiREVMRVRF`iwibWFyay`6`mNvbXBsYXRlZC`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTkgMTA6NDQ6MTgiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9$aXBcLzppZC`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJub$5l`iwicGFyYW1ldGVy`jpbXSwicmF3`joi`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbeyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mlk`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`x`n1dfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1wiY$9kZVwiOj`wMDAwLFwiZGF0YVwiOm51bGwsXCJtc$dc`jpc`lx1NT`yMFx1OTY$NFx1Nj`xMFx1NT`5ZlwifS`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19XX0seyJ0YXJnZXRfaWQiOj`wMjM4NTcxLCJsb$NhbF90YXJnZXRfaWQiOi`xODUxZDk3ZC01MDhiLTQyODgtOGU3Mi1lNmMyYj`4NGU0MzYiLCJsb$NhbF9wYXJlbnRfaWQiOiJlMjgyZmU$Ny0yMzRhLTQ1NmMtOWRmNi05ZDg$OTQwYjY$N$QiLCJuYW1l`joiXHU1MDFmXHU5NjA1XHU3YmExXHU3NDA$`iwibWV0aG9k`joiUE9TVC`s`m1hcmsiOiJkZXZlbG9waW5n`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZm9sZGVy`iwic3RhdHVz`joxLCJzb3J0`jo1LCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE5`D`wOjAyOjE5`iwicmVxdWVzdC`6eyJkZXNjcmlwdGlvbi`6`i`s`mhlYWRlci`6W10s`nF1ZXJ5`jpbXSwiYm9keS`6W119LCJzY3JpcHQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiY$hpbGRyZW4iOlt7`nRhcmdldF9pZC`6MjAyMzkzODEs`mxvY$FsX3RhcmdldF9pZC`6`mY1Mzg1Zm`4LTRlMWEtNG`5NC1iNWYzLWFlZDQ5Yjk3YWM5YS`s`mxvY$FsX3BhcmVudF9pZC`6`jZmNjZhNWM5LTY5NTUtNDQ$Ny1hMWFmLWY$YjYyYTcyZDRmYy`s`m5hbWUiOiJcdTY3ZTVcdThiZTJcdTUwMWZcdTk$MDUiLCJtZXRob$QiOiJHRVQiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xOSAyMTozODowNS`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL$xlbmQ-cGFnZT0xJmxpbWl0PTEw`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`nVybGVuY$9kZWQiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJwYWdl`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`x`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mxpbWl0`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`xMCJ9LHsiZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`jowLCJrZXkiOiJib$9rTmFtZS`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`tMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`j`yMj`ifSx7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MCwia$V5`joidmlwQ$FyZE51bWJlci`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`tMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`j`yMiJ9XX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W119fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XCJjb$RlXC`6MjAwMDAsXCJkYXRhXC`6e1wibGVuZHNc`jpudWxsLFwidG90YWxc`jowfSxc`m1zZ1wiOlwiXCJ9`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMjM5MzM5LCJsb$NhbF90YXJnZXRfaWQiOiJiZmRmNTY1Yy0xYjZlLTRhMTQtYm`0Yi0zMjQyMmQwMThiMWMiLCJsb$NhbF9wYXJlbnRfaWQiOi`4Y$`3ZjNmZi1hMG`3LTQzZjQtOGY3MS1iNjU4MT`5ZGJhN$QiLCJuYW1l`joiXHU$ZGZiXHU1MmEwXHU1MDFmXHU5NjA1`iwibWV0aG9k`joiUE9TVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE5`D`xOjM4OjEz`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvbGVuZC`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJqc$9u`iwicGFyYW1ldGVy`jpbXSwicmF3`joie1xu`CAg`FwidmlwSWRc`jogNixcbiAg`CBc`mJvb$tJZFwiOiAyNCxcbiAg`CBc`nZpcENhcmROdW1iZXJc`jogXCJkd3dkXC`sXG4g`CAgXCJib$9rTmFtZVwiOlwid3d3d1wiXG59`iwicmF3X3BhcmEiOlt7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joidmlwSWQiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOiJOdW1iZX`iLCJ$YWx1ZS`6`jEifSx7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joiYm9va0lk`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joiTnVtYmVy`iwidmFsdWUiOi`y`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`nZpcENhcmROdW1iZX`iLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiLTEiLCJmaWVsZF90eXBl`joiU3RyaW5n`iwidmFsdWUiOiJkd3dk`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mJvb$tOYW1l`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`i0x`iwiZmllbGRfdHlwZS`6`lN0cmluZy`s`nZhbHVl`joid3d3dyJ9XX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W119fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XCJjb$RlXC`6MjAwMDAsXCJkYXRhXC`6bnVsbCxc`m1zZ1wiOlwiXHU1MDFmXHU5NjA1XHU$MjEwXHU1MjlmXCJ9`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMjM5MzM3LCJsb$NhbF90YXJnZXRfaWQiOiJhMTMwMjU4Yy1iZDFmLTRmMmYtOTBhMi01ZmM3NzBhOGYwNDkiLCJsb$NhbF9wYXJlbnRfaWQiOiJlMGQ0ZGJkNC0xODBhLTQ4MGUtOWMyYS03Mz`5NjM0Yj`$ZTUiLCJuYW1l`joiXHU1Mj`wXHU5NjY0XHU1MDFmXHU5NjA1`iwibWV0aG9k`joiREVMRVRF`iwibWFyay`6`mNvbXBsYXRlZC`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTkgMjE6Mzg6MTciLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9sZW5kXC86aWQiLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joibm9uZS`s`nBhcmFtZXRlci`6W10s`nJhdy`6`i`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJpZC`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiNiJ9XX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`ntc`mNvZGVc`joyMDAwMCxc`mRhdGFc`jpudWxsLFwibXNnXC`6XCJcdTUyMjBcdTk$NjRcdTYyMTBcdTUyOWZc`n0iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX19fV19LHsidGFyZ$V0X$lk`joyMD`0NTE0NywibG9jYWxfdGFyZ$V0X$lk`joiMWMzOWUzZjUtYzE4NS00MzExLW`zOGUtOT`wOGZkNWVjYWE0`iwibG9jYWxfcGFyZW50X$lk`joiZT`4MmZlNjctMjM0YS00NTZjLTlkZjYtOWQ4Njk0MG`$Njdk`iwibmFtZS`6`lx1NjVlNVx1NWZkN1x1N$JhMVx1NzQwNi`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiZGV$ZWxvcGluZy`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mZvbGRlci`s`nN0YXR1cy`6MSwic$9ydC`6NiwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0yMCAxMToyMzoxNC`s`nJlcXVlc3QiOnsiZGVzY3JpcHRpb$4iOi`iLCJoZWFkZX`iOltdLCJxdWVyeS`6W10s`mJvZHkiOltdfSwic$NyaXB0`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mNoaWxkcmVu`jpbeyJ0YXJnZXRfaWQiOj`wMjQ1NzYyLCJsb$NhbF90YXJnZXRfaWQiOi`0NG`1YTViNi1hYzFjLTQxYmUtOTFiOS1mNz`wZWQ0Zjc$Nm`iLCJsb$NhbF9wYXJlbnRfaWQiOiJkYjNlMDQ4Yi05YTExLTRiND`tYTg3NS1kOTkyOWFhYzU3NTEiLCJuYW1l`joiXHU$NWU1XHU1ZmQ3XHU$N$U1XHU4YmUy`iwibWV0aG9k`joiR0VU`iwibWFyay`6`mNvbXBsYXRlZC`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMjAgMTE6MjQ6NTQiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9zeXN0ZW1sb$c-cGFnZT0xJmxpbWl0PTEwJnVzZXJuYW1l`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`nVybGVuY$9kZWQiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJwYWdl`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`x`n0seyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mxpbWl0`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`xMCJ9LHsiZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJ1c$VybmFtZS`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`tMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`iJ9XX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W119fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XG5cdFwiY$9kZVwiOiAyMDAwMCxcblx0XCJkYXRhXC`6`Htcblx0XHRc`mxvZ3Nc`jogW1xuXHRcdFx0e1xuXHRcdFx0XHRc`mlkXC`6`DEsXG5cdFx0XHRcdFwidXNlcm5hbWVc`jogXCJzdXBlcmFkbWluXC`sXG5cdFx0XHRcdFwiaW5mb1wiOiBc`lx1NzY3Ylx1NWY1NVx1NjVmNlx1OTVmNDoyMD`xLTEwLT`w`DExOjE5OjM5LjUwNDYyMjUgKzA4MDAgQ1NU`G09KzE5LjM0NTgzNTkwMVwiXG5cdFx0XHR9LFxuXHRcdFx0e1xuXHRcdFx0XHRc`mlkXC`6`D`sXG5cdFx0XHRcdFwidXNlcm5hbWVc`jogXCJzdXBlcmFkbWluXC`sXG5cdFx0XHRcdFwiaW5mb1wiOiBc`lx1NzY3Ylx1NWY1NVx1NjVmNlx1OTVmNDoyMD`xLTEwLT`w`DExOj`xOjQyLjc0OTAyMDggKzA4MDAgQ1NU`G09KzEwLjEzMjYwMzQwMVwiXG5cdFx0XHR9XG5cdFx0XSxcblx0XHRc`nRvdGFsXC`6`DJcblx0fSxcblx0XCJtc$dc`jogXCJcdTgzYjdcdTUzZDZcdTYyMTBcdTUyOWZc`lxufS`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMD`0NTc4MSwibG9jYWxfdGFyZ$V0X$lk`joiZmNmYWUwNmMtZDYzNy00MzhhLWE0ZjQtMmRiNWJjMj`0NGQ3`iwibG9jYWxfcGFyZW50X$lk`joiOG`5ZTExMm`tODFmNy00YjA$LW`0MzUtMWM1ZmU$MWEyZDFh`iwibmFtZS`6`lx1NmUwNVx1N$E3YVx1NjVlNVx1NWZkNy`s`m1ldGhvZC`6`kRFTEVURS`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLT`w`DExOj`1Oj`5`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvc3lzdGVtbG9n`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`mZvcm0tZGF0YS`s`nBhcmFtZXRlci`6W10s`nJhdy`6`i`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W119fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX19fV19XX0seyJ0YXJnZXRfaWQiOj`wMDk0MjM4LCJsb$NhbF90YXJnZXRfaWQiOiJhMzVjOWQwOC05Y$YyLTRiNz`tOGRjZi1hOGJjNGUwODdhOTYiLCJsb$NhbF9wYXJlbnRfaWQiOi`w`iwibmFtZS`6`lx1OTc1ZWp3dFx1OT`3NFx1Njc0My`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiZGV$ZWxvcGluZy`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mZvbGRlci`s`nN0YXR1cy`6MSwic$9ydC`6MiwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xMSAxODo1NDoxNC`s`nJlcXVlc3QiOnsiZGVzY3JpcHRpb$4iOiJcdTUzZWZcdTRlZTVcdTc$ZjRcdTYzYTVcdThiYmZcdTk1ZWUiLCJoZWFkZX`iOltdLCJxdWVyeS`6W10s`mJvZHkiOltdfSwic$NyaXB0`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mNoaWxkcmVu`jpbeyJ0YXJnZXRfaWQiOj`wMDk0NDUzLCJsb$NhbF90YXJnZXRfaWQiOiJhMDBkZTU3Yi1lYWFiLTRmYzEtOWZmNS1iOWY0NGQ5ZDczMWYiLCJsb$NhbF9wYXJlbnRfaWQiOi`4NWUxYzU5OS0zNDE$LTQ$YzMtODhhZC1iZmFjZmEyOWZiZjciLCJuYW1l`joiXHU3NT`4XHU$MjM3XHU3NjdiXHU1ZjU1`iwibWV0aG9k`joiUE9TVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTEy`DE5Oj`yOjEz`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvdmVyaWZ5XC9sb$dpbi`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJqc$9u`iwicGFyYW1ldGVy`jpbXSwicmF3`joie1xu`CAg`FwidXNlcm5hbWVc`jpc`nN1cGVyYWRtaW5c`ixcbiAg`CBc`nBhc3N3b3JkXC`6XCJzdXBlcmFkbWluXCJcbn0iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOltdfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1xuXHRc`mNvZGVc`jogMjAwMDAsXG5cdFwiZGF0YVwiOiB7XG5cdFx0XCJhY$Nlc3NFeHBpcmVc`jogMTYzMzk1Mzk5NSxcblx0XHRc`mFjY$Vzc1Rva$VuXC`6`FwiZXlKaGJHY$lPaUpJVXpJMU5pSXNJbl`1Y0NJNklrcFhWQ0o5LmV5SmxlSEFpT$pFMk16TTVOVE01T1RVc0ltbGhkQ0k$TVRZek16azFNRE01TlN3aWRYTmxja$xrSWpveE1`MC5oNlRfSUV0VEN5a0xNRDA0NFBTTndXajFfVF9MclQxaUJZdG1`Umw4Ukg4XC`sXG5cdFx0XCJyZWZyZXNoQWZ0ZXJc`jogMTYzMzk1MjE5NSxcblx0XHRc`nVzZXJJZFwiOiAxMFxuXHR9LFxuXHRc`m1zZ1wiOiBc`lx1NzY3Ylx1NWY1NVx1Nj`xMFx1NT`5ZlwiXG59`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`ntc`mNvZGVc`joxMDAwOCxc`m1zZ1wiOlwiXHU3NT`4XHU$MjM3XHU1YmM$XHU3ODAxXHU5NTE5XHU4YmVmXCJ9`iwicGFyYW1ldGVy`jpbXX19fSx7`nRhcmdldF9pZC`6MjAwOTQ0Njgs`mxvY$FsX3RhcmdldF9pZC`6`jkyOWMzODNkLWZlYTQtNDUwOS1iOGVjLT`xMGVkMWEwZjhhNy`s`mxvY$FsX3BhcmVudF9pZC`6`mEzNWM5ZDA4LTljZj`tNG`3Mi04ZGNmLWE4YmM0ZTA4N$E5Ni`s`m5hbWUiOiJcdTY0MWNcdTdkMj`iLCJtZXRob$QiOiJQT1NU`iwibWFyay`6`mRldmVsb3BpbmciLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJmb$xkZX`iLCJzdGF0dXMiOjEs`nNvcnQiOj`s`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMTEgMTk6MjA6NDMiLCJyZXF1ZXN0`jp7`mRlc$NyaXB0aW9u`joi`iwiaGVhZGVy`jpbXSwicXVlcnkiOltdLCJib$R5`jpbXX0s`nNjcmlwdC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJjaGlsZHJlbi`6W3sidGFyZ$V0X$lk`joyMDA5NDUyOCwibG9jYWxfdGFyZ$V0X$lk`joiZWZkZWQzNzctZmZhMC00YjliLThhYWUtODk3ZGQ5NGU4ZDAx`iwibG9jYWxfcGFyZW50X$lk`joiZDY5ZGRhNDAtMWYyNS00MWY$LWFjNW`tZTY1NDRiY$QyYWFh`iwibmFtZS`6`lx1OTAxYVx1OGZjN$lkXHU$N$U1XHU$MjdlXHU3NT`4XHU$MjM3`iwibWV0aG9k`joiR0VU`iwibWFyay`6`mNvbXBsYXRlZC`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mV4YW1wbGUiLCJzdGF0dXMiOjEs`nNvcnQiOjEs`nVwZGF0ZV9kdGltZS`6`j`wMjEtMTAtMT`gMTk6Mj`6MTEiLCJyZXF1ZXN0`jp7`nVybC`6`jEyNy4wLjAuMTo4ODg4XC9hZG1pblwvYXBpXC9zZWFyY$hcL3VzZXJJZFwvOmlk`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`m5vbmUiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOlt7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joiaWQiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`jEw`n1dfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1xuXHRc`mNvZGVc`jogMjAwMDAsXG5cdFwiZGF0YVwiOiB7XG5cdFx0XCJ1c$VyXC`6`Htcblx0XHRcdFwiaWRc`jogMTAsXG5cdFx0XHRc`nVzZXJuYW1lXC`6`Fwid3d5ZDEyMzQ1Nj`zXC`sXG5cdFx0XHRc`nBhc3N3b3JkXC`6`FwiXHU3OTgxXHU$YjYyXHU4YmJmXHU5NWVlXHU4YmU1XHU$NTcwXHU$MzZlXC`sXG5cdFx0XHRc`nNhbHRc`jogXCJcdTc5ODFcdTZiNjJcdThiYmZcdTk1ZWVcdThiZTVcdTY1NzBcdTYzNmVc`ixcblx0XHRcdFwiaW5mb1wiOiBc`lx1OGQ4NVx1N$VhN1x1N$JhMVx1NzQwNlx1NTQ1OFx1OGQyNlx1NTNmNzQ1MzVc`ixcblx0XHRcdFwicm9sZXNc`jogW1xuXHRcdFx0XHR7XG5cdFx0XHRcdFx0XCJpZFwiOiAxLFxuXHRcdFx0XHRcdFwibmFtZVwiOiBc`nN1cGVyYWRtaW5c`ixcblx0XHRcdFx0XHRc`mluZm9c`jogXCJcdThkODVcdTdlYTdcdTdiYTFcdTc0MDZcdTU0NThc`lxuXHRcdFx0XHR9XG5cdFx0XHRdXG5cdFx0fVxuXHR9LFxuXHRc`m1zZ1wiOiBc`lx1NjdlNVx1OGJlMlx1NzUyOFx1Nj`zN1x1Nj`xMFx1NT`5ZlwiXG59`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`ntc`mNvZGVc`joxMDAwMyxc`m1zZ1wiOlwiXHU3NT`4XHU$MjM3XHU0ZTBkXHU1YjU4XHU1Nz`4XCJ9`iwicGFyYW1ldGVy`jpbXX19fSx7`nRhcmdldF9pZC`6MjAwOTQ1MjYs`mxvY$FsX3RhcmdldF9pZC`6`j`3NjkwMzEyLT`1OWUtNGVkZi1hMzQzLTJmYWVjZjQ5MzdhNC`s`mxvY$FsX3BhcmVudF9pZC`6`jM0ZDJiYm`1LTA4MTctNDE$MS1hYzRmLTBkMTRiYTMyNTZiMi`s`m5hbWUiOiJcdTkwMWFcdThmYzd1c$VybmFtZVx1NmEyMVx1N$NjYVx1NjdlNVx1Nj`3ZVx1NzUyOFx1Nj`zNy`s`m1ldGhvZC`6`kdFVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTEy`DE5Oj`yOjAx`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvc$VhcmNoXC91c$VybmFtZVwvOnVzZXJuYW1l`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`m5vbmUiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOlt7`mRlc$NyaXB0aW9u`joi`iwiaXNfY$hlY$tlZC`6MSwia$V5`joidXNlcm5hbWUiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`nd3eSJ9XX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDExNDExOCwibG9jYWxfdGFyZ$V0X$lk`joiMzVmNzE4MDAtMzUyYi00MTA$LThmZWYtNGY5ZGM5MzFlZW`4`iwibG9jYWxfcGFyZW50X$lk`joiNThjNmZmZGUtZDE$NC00NTcyLWExZGYtMjYyMDdiNjQ4NGQw`iwibmFtZS`6`lx1ODNiN1x1NTNkNlx1ODlkMlx1OD`3Mlx1NGZlMVx1NjA$Zi`s`m1ldGhvZC`6`kdFVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTEy`DE5Oj`yOjA$`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvc$VhcmNoXC9yb$xlcy`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJub$5l`iwicGFyYW1ldGVy`jpbXSwicmF3`joi`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbXX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDE4ODkxMSwibG9jYWxfdGFyZ$V0X$lk`joiYzcxZjVlYz`tNzNmNS00OT`0LWE3NjEtNWFkZTQ5N$FlMDE$`iwibG9jYWxfcGFyZW50X$lk`joiMTk$OGQ3M$`tMjJiYS00ZmM4LW`1NjEtY$VmZGUxYWM4ZmJl`iwibmFtZS`6`lx1NjdlNVx1OGJlMlx1NTcyOFx1N$ViZlx1NzUyOFx1Nj`zNy`s`m1ldGhvZC`6`kdFVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE3`DEyOjM1OjU5`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvc$VhcmNoXC9sb$dpblN0YXR1cy`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJmb3JtLWRhdGEiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOltdfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joie1wiY$9kZVwiOj`wMDAwLFwiZGF0YVwiOntc`mxvZ$luU3RhdHVzXC`6W1wiMVwiXX0sXCJtc$dc`jpc`lx1NjdlNVx1OGJlMlx1NzY3Ylx1NWY1NVx1NzJiNlx1NjAwMVwifS`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDE4OTk4NywibG9jYWxfdGFyZ$V0X$lk`joiOWYxN$FmNDEtNmQ1ZC00NTM3LW`xNjQtMDM$OGZmNjQ0Y$Ni`iwibG9jYWxfcGFyZW50X$lk`joiNjQ$YTU5NWMtY$U0Zi00ZTdhLWEwNTUtMTE$MzE5NzVkMWRm`iwibmFtZS`6`lx1OTAxYVx1OGZjN1x1NTZmZVx1NGU$Nlx1NTQwZFx1NmEyMVx1N$NjYVx1NjdlNVx1Nj`3ZVx1NTZmZVx1NGU$Ni`s`m1ldGhvZC`6`kdFVC`s`m1hcmsiOiJkZXZlbG9waW5n`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xNyAxNjo1MjowMS`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3NlYXJjaFwvYm9va1wvOm5hbWUiLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joidXJsZW5jb$RlZC`s`nBhcmFtZXRlci`6W10s`nJhdy`6`i`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJuYW1l`iwidHlwZS`6`lRleHQiLCJub3RfbnVsbC`6`jEiLCJmaWVsZF90eXBl`joi`iwidmFsdWUiOi`yMj`ifV19fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XCJjb$RlXC`6MjAwMDAsXCJkYXRhXC`6e1wiYm9va3Nc`jp7XCJib$9rc0luZm9c`jpbe1wiaWRc`jozLFwibmFtZVwiOlwiZGF3ZD`yMlwiLFwiYXV0aG9yXC`6XCJ3d3dc`ixc`nR5cGVc`jpc`lx1NjcyYVx1NT`wNlx1N$M3YlwifSx7XCJpZFwiOjExLFwibmFtZVwiOlwiaGUyMj`yXC`sXCJpbWFnZVwiOlwid3d3dzExMTFc`ixc`mF1dGhvclwiOlwidHNlMzMzMzNc`ixc`mluZm9c`jpc`mVhd$QyMj`yMj`yXC`sXCJ0eXBlXC`6XCJcdTY3MmFcdTUyMDZcdTdjN$Jc`n1dfX0sXCJtc$dc`jpc`lx1ODNiN1x1NTNkNlx1Nj`xMFx1NT`5ZlwifS`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDE5Nzg4NiwibG9jYWxfdGFyZ$V0X$lk`joiMzJiOTQ5NDUtN$Q1OS00NDk4LTkzMGQtMmE3Ym`3MWM1ODJi`iwibG9jYWxfcGFyZW50X$lk`joiM$UyZjE3NDEtNmNmNy00MTg3LTg$MTMtNz`yYjViMDk0ZmUw`iwibmFtZS`6`lx1OTAxYVx1OGZjN1x1NzljZFx1N$M3Ylx1NTQwZFx1NmEyMVx1N$NjYVx1NjdlNVx1OGJlMlx1NzljZFx1N$M3Yi`s`m1ldGhvZC`6`kdFVC`s`m1hcmsiOiJjb$1wbGF0ZWQiLCJpc19kb$MiOi`w`iwidGFyZ$V0X3R5cGUiOiJleGFtcGxl`iwic3RhdHVz`joxLCJzb3J0`joxLCJ1cGRhdGVfZHRpbWUiOi`yMD`xLTEwLTE4`DEyOjM1Oj`0`iwicmVxdWVzdC`6eyJ1cmwiOi`xMjcuMC4wLjE6ODg4OFwvYWRtaW5cL$FwaVwvc$VhcmNoXC9ib$9rXC90eXBlXC86bmFtZS`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJub$5l`iwicGFyYW1ldGVy`jpbXSwicmF3`joi`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbeyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`m5hbWUiLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`nd3dyJ9XX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`ntc`mNvZGVc`joyMDAwMCxc`mRhdGFc`jp7XCJ0eXBlc1wiOlt7XCJpZFwiOjQsXCJuYW1lXC`6XCJ0ZXN0MlwiLFwiaW50cm9c`jpc`mR3ZHdhZHdc`n0se1wiaWRc`jozLFwibmFtZVwiOlwidGVzdD`yXC`sXCJpbnRyb1wiOlwiZHdkMj`yXCJ9XX0sXCJtc$dc`jpc`lx1ODNiN1x1NTNkNlx1Nj`xMFx1NT`5ZlwifS`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMDE5Nzg4NSwibG9jYWxfdGFyZ$V0X$lk`joiMzQ1MTYyMTgtNzQwMS00OTdkLTk$MDUtZmU4YTk3NWE$MTMx`iwibG9jYWxfcGFyZW50X$lk`joiNDNlMTRmNTUtZWNmZi00MTdiLWJjMTEtYzZkOWQ3OGQ1ZWY1`iwibmFtZS`6`lx1NjdlNVx1OGJlMlx1Nj`0MFx1NjcwOVx1NzljZFx1N$M3Ylx1NGZlMVx1NjA$Zi`s`m1ldGhvZC`6`kdFVC`s`m1hcmsiOiJkZXZlbG9waW5n`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xOCAxMjozNToyMS`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3NlYXJjaFwvYm9va1wvdHlwZVwv`iwiZGVzY3JpcHRpb$4iOi`iLCJhdXRo`jp7`nR5cGUiOiJub$F1dGgiLCJrdi`6eyJrZXkiOi`iLCJ$YWx1ZS`6`iJ9LCJiZWFyZX`iOnsia$V5`joi`n0s`mJhc$lj`jp7`nVzZXJuYW1l`joi`iwicGFzc3dvcmQiOi`ifX0s`mJvZHkiOnsibW9kZS`6`m5vbmUiLCJwYXJhbWV0ZX`iOltdLCJyYXciOi`iLCJyYXdfcGFyYS`6W119LCJldmVudC`6eyJwcmVfc$NyaXB0`joi`iwidGVzdC`6`iJ9LCJoZWFkZX`iOnsicGFyYW1ldGVy`jpbXX0s`nF1ZXJ5`jp7`nBhcmFtZXRlci`6W119LCJjb$9raWUiOnsicGFyYW1ldGVy`jpbXX0s`nJlc$Z1bC`6eyJwYXJhbWV0ZX`iOltdfX0s`nJlc3BvbnNl`jp7`nN1Y$Nlc3MiOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX0seyJ0YXJnZXRfaWQiOj`wMj`wMT`5LCJsb$NhbF90YXJnZXRfaWQiOi`1ZTA4ZmQ0MC03NGQ5LTRhNWEtYWE4Yy0zN$FjYWU1MDBmYmUiLCJsb$NhbF9wYXJlbnRfaWQiOi`4YzJkM$U1OS0$OTA$LTQzZmEtYmEyNS1iOThhYjY0OGFlOD`iLCJuYW1l`joiXHU5MDFhXHU4ZmM3aWRcdTY3ZTVcdTYyN$VcdTU$ZmVcdTRlNjZcdTc5Y$RcdTdjN$`iLCJtZXRob$QiOiJHRVQiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xOSAxMDo0NDo0Ni`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3NlYXJjaFwvYm9va1wvdHlwZUlkXC86aWQiLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joibm9uZS`s`nBhcmFtZXRlci`6W10s`nJhdy`6`i`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W3siZGVzY3JpcHRpb$4iOi`iLCJpc19jaGVja$Vk`joxLCJrZXkiOiJpZC`s`nR5cGUiOiJUZXh0`iwibm90X$51bGwiOi`x`iwiZmllbGRfdHlwZS`6`i`s`nZhbHVl`joiNiJ9XX19LCJyZXNwb$5zZS`6eyJzdWNjZXNz`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119LCJlcnJvci`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfX19LHsidGFyZ$V0X$lk`joyMD`zODcwOSwibG9jYWxfdGFyZ$V0X$lk`joiZjEwZm`3MzQtNGQzYy00ZT`1LTkyNGYtOWMwNj`3OTNiOThk`iwibG9jYWxfcGFyZW50X$lk`joiMTVmNGZmMzAtMTFkZS00MWRjLTkwMjMtODQxYjMxOGM0MmEz`iwibmFtZS`6`lx1OTAxYVx1OGZjN$NhcmRudW1cdTZhMjFcdTdjY$FcdTY3ZTVcdTYyN$V$aXAiLCJtZXRob$QiOiJHRVQiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xOSAyMDoyNzo0OC`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3NlYXJjaFwvdmlwXC86Y$FyZE51bWJlci`s`mRlc$NyaXB0aW9u`joi`iwiYXV0aC`6eyJ0eXBl`joibm9hdXRo`iwia3YiOnsia$V5`joi`iwidmFsdWUiOi`ifSwiYmVhcmVy`jp7`mtleS`6`iJ9LCJiYXNpYy`6eyJ1c$VybmFtZS`6`i`s`nBhc3N3b3Jk`joi`n19LCJib$R5`jp7`m1vZGUiOiJub$5l`iwicGFyYW1ldGVy`jpbXSwicmF3`joi`iwicmF3X3BhcmEiOltdfSwiZXZlbnQiOnsicHJlX3NjcmlwdC`6`i`s`nRlc3QiOi`ifSwiaGVhZGVy`jp7`nBhcmFtZXRlci`6W119LCJxdWVyeS`6eyJwYXJhbWV0ZX`iOltdfSwiY$9va$ll`jp7`nBhcmFtZXRlci`6W119LCJyZXNmdWwiOnsicGFyYW1ldGVy`jpbeyJkZXNjcmlwdGlvbi`6`i`s`mlzX$NoZWNrZWQiOjEs`mtleS`6`mNhcmROdW1iZX`iLCJ0eXBl`joiVGV4dC`s`m5vdF9udWxs`joiMS`s`mZpZWxkX3R5cGUiOi`iLCJ$YWx1ZS`6`mUifV19fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOi`iLCJwYXJhbWV0ZX`iOltdfSwiZXJyb3`iOnsicmF3`joi`iwicGFyYW1ldGVy`jpbXX19fV19LHsidGFyZ$V0X$lk`joyMDE$Mz`1NCwibG9jYWxfdGFyZ$V0X$lk`joiNjJiMTBkMGMtNzdmNy00MjcyLW`3NjktMW`0YmM3YmUxNTM3`iwibG9jYWxfcGFyZW50X$lk`joiYTM1YzlkMDgtOWNmMi00YjcyLThkY$YtYThiYzRlMDg3YTk$`iwibmFtZS`6`lx1NTkxNlx1OTBlOFx1NjcwZFx1NTJhMS`s`m1ldGhvZC`6`lBPU1QiLCJtYXJr`joiZGV$ZWxvcGluZy`s`mlzX$RvYy`6`jAiLCJ0YXJnZXRfdHlwZS`6`mZvbGRlci`s`nN0YXR1cy`6MSwic$9ydC`6MywidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xNCAxOToyNzo1Mi`s`nJlcXVlc3QiOnsiZGVzY3JpcHRpb$4iOi`iLCJoZWFkZX`iOltdLCJxdWVyeS`6W10s`mJvZHkiOltdfSwic$NyaXB0`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mNoaWxkcmVu`jpbeyJ0YXJnZXRfaWQiOj`wMTg4OTEwLCJsb$NhbF90YXJnZXRfaWQiOiJkZmM0OTRhMy01MDhhLTRkNzctOWM$Mi0zYT`3ZDMzMDQzMmEiLCJsb$NhbF9wYXJlbnRfaWQiOi`xMmUxZDQ$Yi1iYWY0LTQ5ZDMtYTNjOS0yNTdkMTFhMTdiZDQiLCJuYW1l`joiXHU4M$`3XHU1M$Q$XHU0ZTAzXHU3MjViXHU0ZTkxdG9rZW4iLCJtZXRob$QiOiJHRVQiLCJtYXJr`joiY$9tcGxhdGVk`iwiaXNfZG9j`joiMC`s`nRhcmdldF90eXBl`joiZXhhbXBsZS`s`nN0YXR1cy`6MSwic$9ydC`6MSwidXBkYXRlX$R0aW1l`joiMjAyMS0xMC0xNyAxMjozNTo1NS`s`nJlcXVlc3QiOnsidXJs`joiMT`3LjAuMC4xOjg4ODhcL$FkbWluXC9hcGlcL3Fpbml1VG9rZW4iLCJkZXNjcmlwdGlvbi`6`i`s`mF1dGgiOnsidHlwZS`6`m5vYXV0aC`s`mt$`jp7`mtleS`6`i`s`nZhbHVl`joi`n0s`mJlYXJlci`6eyJrZXkiOi`ifSwiYmFzaWMiOnsidXNlcm5hbWUiOi`iLCJwYXNzd$9yZC`6`iJ9fSwiYm9keS`6eyJtb$Rl`joibm9uZS`s`nBhcmFtZXRlci`6W10s`nJhdy`6`i`s`nJhd19wYXJh`jpbXX0s`mV$ZW50`jp7`nByZV9zY3JpcHQiOi`iLCJ0ZXN0`joi`n0s`mhlYWRlci`6eyJwYXJhbWV0ZX`iOltdfSwicXVlcnkiOnsicGFyYW1ldGVy`jpbXX0s`mNvb$tpZS`6eyJwYXJhbWV0ZX`iOltdfSwicmVzZnVs`jp7`nBhcmFtZXRlci`6W119fSwicmVzcG9uc$UiOnsic3VjY$Vzcy`6eyJyYXciOiJ7XCJjb$RlXC`6MjAwMDAsXCJkYXRhXC`6e1widG9rZW5c`jpc`kxtaHNaOWpLb1ZiazktWS1ndW1OYzkzZVl0UjdObFR0QU80YXhjejk6RGp3NFQ1V$9xWldyNzVYVGMyQkVCb3Y$UTl3PTpleUp6WT`5d1pTSTZJbmQzZVdodmJXVWlMQ0prWldGa$JHbHVaU0k$TVRZek5ETTFNVEkzTVgwPVwifSxc`m1zZ1wiOlwiXHU4M$`3XHU1M$Q$XHU$MjEwXHU1MjlmXCJ9`iwicGFyYW1ldGVy`jpbXX0s`mVycm9y`jp7`nJhdy`6`i`s`nBhcmFtZXRlci`6W119fX1dfV19XX0=') ;
+
+    let _html = template('template-target-sidebar-list-tpl', {
+        list: arr.targets
+    });
+    if (arr.project_logo) {
+        $('.doc-head .left img').attr('src', arr.project_logo)
+    }
+    $('.new').html(_html)
+    $('.target.folder').find('i.fa').removeClass('fa-angle-down').addClass('fa-angle-right')
+    $('.target.folder').nextAll().hide()
+
+    function findFatherDom(el) {
+        if (el.parent().parent().children(":first").hasClass('folder')) {
+            el.parent().parent().show()
+            console.log(el.parent().parent());
+            el.parent().parent().children().show()
+            el.parent().parent().children(":first").find('i').removeClass('fa-angle-right').addClass('fa-angle-down')
+            el.parent().parent().children(":first").nextAll('.folder').find('i').removeClass('fa-angle-down').addClass('fa-angle-right')
+            findFatherDom(el.parent().prev())
+        } else {
+            el.parent().children().show()
+            return
+        }
+    }
+
+    window.onload = function () {
+        let url = window.location.href;
+        let id = url.split('#')[1] ? url.split('#')[1] : '001'
+        if ($(`.target[data-target_id="${id}"]`).length > 0) {
+            if (id != "001") {
+                findFatherDom($(`.target[data-target_id="${id}"]`))
+            }
+            $(`.target[data-target_id="${id}"]`).trigger('click')
+        } else {
+            location.href = './404.html'
+            return
+        }
+
+        var resize = document.getElementsByClassName("bar");
+        var left = document.getElementsByClassName("box-first");
+        var mid = document.getElementsByClassName("box-third");
+        var box = document.getElementsByClassName("box");
+        dragControllerDiv(resize, left, mid, box);
+    }
+    $('.body').show()
+    $(document).on('click', '.target', function () {
+        let target_id = $(this).attr('data-id')
+        let _local_target_id = $(this).attr('data-target_id')
+        let url = window.location.href.split('#')[0] + '#' + _local_target_id
+        history.replaceState(null, null, url)
+        $('.target').each((i, el) => {
+            $(el).removeClass('active')
+        })
+        if ($(this).attr('data-type') == 'folder') {
+            $('.box-nav').show()
+            $(this).nextAll().show()
+            $(this).find('i').removeClass('fa-angle-right').addClass('fa-angle-down')
+            $('.box-nav .folder').show()
+            $('.box-nav .api').hide()
+        } else if ($(this).attr('data-type') == 'example' || $(this).attr('data-type') == 'api') {
+            $('.box-nav').show()
+            $('.box-nav .api').show()
+            $('.box-nav .folder').hide()
+        } else {
+            $('.box-nav').hide()
+        }
+        $(this).addClass('active')
+        if (!target_id) {
+            $(this).removeClass('active')
+        }
+        let newdata = JSON.parse(JSON.stringify(arr))
+        let LevelArr = []
+
+        function levelTree(arr1, newarr) {
+            arr1.forEach(item => {
+                if (item.children && item.children.length > 0) {
+                    newarr.push(item)
+                    levelTree(item.children, newarr)
+                } else {
+                    newarr.push(item)
+                }
+            })
+        }
+
+        levelTree(newdata.targets, LevelArr)
+        LevelArr.forEach(item => {
+            if (item.target_id == target_id) {
+                if (item.target_type == 'example' || item.target_type == 'api') {
+                    switch (item.request.body.mode) {
+                        case "none":
+                            break;
+                        case "form-data":
+                            item.request.body.mode = "multipart/form-data";
+                            break;
+                        case "urlencoded":
+                            item.request.body.mode = "application/x-www-form-urlencoded";
+                            break;
+                        case "json":
+                            item.request.body.mode = "application/json";
+                            break;
+                        case "xml":
+                            item.request.body.mode = "application/xml";
+                            break;
+                        case "javascript":
+                            item.request.body.mode = "application/javascript";
+                            break;
+                        case "plain":
+                            item.request.body.mode = "text/plain";
+                            break;
+                        case "html":
+                            item.request.body.mode = "text/html";
+                            break;
+                    }
+                    $('.template-nav-menu').html(template('template-nav-menu-tpl', item));
+                    if (item.target_type != 'folder') {
+                        let _export_data = new ClipboardJS('.CopyCurrentData', {
+                            text: function (trigger) {
+                                return trigger.getAttribute('data-clipboard-text');
+                            }
+                        });
+                        console.log(_export_data );
+                        _export_data.on('success', function (e) {
+                            $('.CopyCurrentData').text('已复制').addClass('success');
+                            e.clearSelection();
+                        });
+                        _export_data.on('error', function (e) {
+                            console.log('失败');
+                        });
+                    }
+                }
+                let _html = template('template-example-doc-tpl', item);
+                $('.preview-markdown').html(_html)
+                if (item.target_type == 'folder') {
+                    if ($('table.header tr').length <= 1) {
+                        $('table.header').parent().hide()
+                        $('table.header').parent().prev().hide()
+                        $('.nav-folder-btn[data-id="1"]').hide()
+                        // $('table.header tr').after('<tr><td colspan="4" style="text-align:center">暂无数据</td></tr>')
+                    }
+                    if ($('table.query tr').length <= 1) {
+                        $('table.query').parent().hide()
+                        $('table.query').parent().prev().hide()
+                        $('.nav-folder-btn[data-id="2"]').hide()
+                        // $('table.query tr').after('<tr><td colspan="4" style="text-align:center">暂无数据</td></tr>')
+                    }
+                    if ($('table.body tr').length <= 1) {
+                        $('table.body').parent().hide()
+                        $('table.body').parent().prev().hide()
+                        $('.nav-folder-btn[data-id="3"]').hide()
+                        // $('table.body tr').after('<tr><td colspan="4" style="text-align:center">暂无数据</td></tr>')
+                    }
+                    if ($('table.header tr').length <= 1 && $('table.query tr').length <= 1 && $('table.body tr').length <= 1) {
+                        $('table.header').parents('.markdown-request').prev().hide()
+                        $('.box-nav .nav-folder-btn[data-id="0"]').hide()
+                        $('.preview-markdown .markdown-request').after('<div style="overflow: hidden;text-align: center;height: 100%;"><img src="https://img.cdn.apipost.cn/docs/images/empty.svg" style="width:100px;margin: 70px auto 20px;;">暂无参数</div>')
+
+                    }
+                    hljs.initHighlighting();
+                }
+            }
+        })
+    })
+        .on('click', '.control', function (e) {
+            e.stopPropagation()
+            let type = $(this).find('i').hasClass('fa-angle-down')
+            if (type) {
+                $(this).find('i').removeClass('fa-angle-down').addClass('fa-angle-right')
+            } else {
+                $(this).find('i').removeClass('fa-angle-right').addClass('fa-angle-down')
+            }
+
+            $(this).parents('.target').nextAll().toggle()
+        })
+        .on('input', '.search', function (e) {
+            if (timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(() => {
+                let searchVal = $(this).val()
+                let TreeData = JSON.parse(JSON.stringify(arr.targets))
+                let searchArr = []
+                let LevelArr = []
+                let fatherArr = []
+
+                function openTree(tree, parent_id) {
+                    tree.forEach((item) => {
+                        if (item.children && item.children.length > 0) {
+                            openTree(item.children, item.target_id)
+                        }
+                        item.parent_id = parent_id
+                    })
+                }
+
+                openTree(TreeData, 0);
+
+                function levelTree(arr, newarr) {
+                    arr.forEach(item => {
+                        if (item.children && item.children.length > 0) {
+                            newarr.push(item)
+                            levelTree(item.children, newarr)
+                        } else {
+                            newarr.push(item)
+                        }
+                    })
+                }
+
+                levelTree(TreeData, LevelArr)
+                if ($.trim(searchVal) != '') {
+                    LevelArr.forEach(item => {
+                        if (item.target_type == 'folder') {
+                            if (item.name.toString().indexOf(searchVal) > -1) {
+                                searchArr.push(item)
+                            }
+                        } else {
+                            if (item.name.toString().indexOf(searchVal) > -1 || item.method.toString().indexOf(searchVal) > -1) {
+                                searchArr.push(item)
+                            }
+                        }
+                    })
+                    searchArr.forEach(item => {
+                        findFather(fatherArr, LevelArr, item)
+                    })
+
+                    function findFather(tempArr, arr, self) {
+                        if (self.parent_id != 0) {
+                            arr.filter(item => {
+                                if (self.parent_id == item.target_id) {
+                                    findFather(tempArr, arr, item);
+                                    if (tempArr.indexOf(item) === -1) {
+                                        tempArr.push(item);
+                                    }
+                                }
+                            })
+                        }
+                    }
+
+                    let finnalArr = searchArr.concat(fatherArr)
+                    $('.target').hide()
+                    $('.target[data-target_id="001"]').show()
+                    finnalArr.forEach(item => {
+                        $(`.target[data-target_id="${item.local_target_id}"]`).parent().show()
+                        $(`.target[data-target_id="${item.local_target_id}"]`).show()
+                        $('.target.folder').find('i').removeClass('fa-angle-right').addClass('fa-angle-down')
+                    })
+                } else {
+                    $('.target').parent().show()
+                    $('.target').show()
+                }
+            }, 100)
+        })
+        .on('mouseover', '.target.api', function () {
+            $(this).find('em').css({visibility: 'visible'})
+
+        })
+        .on('mouseleave', '.target.api', function () {
+            $(this).find('em').css({visibility: 'hidden'})
+        })
+        .on('click', '.nav-btn', function () {
+            let index = parseInt($(this).attr('data-id'))
+            $('.nav-btn').removeClass('cur')
+            $(this).addClass('cur')
+            let top = $('.box-third .title').eq(index)[0].offsetTop
+            $('.box-third').scrollTop(top)
+        })
+        .on('click', '.nav-folder-btn', function () {
+            let index = parseInt($(this).attr('data-id'))
+            $('.nav-folder-btn').removeClass('cur')
+            $(this).addClass('cur')
+            let top = $('.box-third .title').eq(index)[0].offsetTop
+            $('.box-third').scrollTop(top)
+        })
+        .on('click', '.box-first .top', function () {
+            arr.project.project_name = arr.project_name
+            arr.project.create_time = arr.create_time
+            arr.project.expire_day_time = arr.expire_day_time
+            $(this).addClass('active')
+            let _html = template('golbal-env-tpl', arr.project);
+            $('.preview-markdown').html(_html)
+        })
+        .on('click', 'h3.title', function () {
+            let type = $(this).find('i').hasClass('fa-angle-down')
+            if (type) {
+                $(this).find('i').removeClass('fa-angle-down').addClass('fa-angle-left')
+            } else {
+                $(this).find('i').removeClass('fa-angle-left').addClass('fa-angle-down')
+            }
+            $(this).next().toggle()
+        })
+        .on('mouseover', '.export', function () {
+            $(this).find('.export_panel').show()
+        })
+        .on('mouseleave', '.export', function () {
+            $(this).find('.export_panel').hide()
+        })
+        .on('mouseover', '.CopyCurrentData', function () {
+            let local_target_id = $(this).attr('data-target_id')
+            let newdata = JSON.parse(JSON.stringify(arr))
+            let LevelArr = []
+            function levelTree(arr1, newarr) {
+                arr1.forEach(item => {
+                    if (item.children && item.children.length > 0) {
+                        newarr.push(item)
+                        levelTree(item.children, newarr)
+                    } else {
+                        newarr.push(item)
+                    }
+                })
+            }
+            levelTree(newdata.targets, LevelArr)
+            LevelArr.forEach((item) => {
+                if (item.target_id == local_target_id) {
+                    $(this).attr('data-clipboard-text', JSON.stringify(item));
+                }
+            })
+        })
+    $(".box-third").scroll(function () {
+        let arr = []
+        $('.box-third .title').each((i, el) => {
+            arr.push($(el)[0].offsetTop)
+        })
+        arr.push(arr[arr.length - 1] + 1000)
+        let topHeight = $(this).scrollTop()
+        if ($('.target.active').hasClass('api')) {
+            for (let index = 0; index < arr.length; index++) {
+                if (arr[index] < topHeight && topHeight < arr[index + 1]) {
+                    $('.nav-btn').removeClass('cur')
+                    $('.nav-btn').eq(index).addClass('cur')
+                }
+            }
+        } else {
+            for (let index = 0; index < arr.length; index++) {
+                if (arr[index] < topHeight && topHeight < arr[index + 1]) {
+                    $('.nav-folder-btn').removeClass('cur')
+                    $('.nav-folder-btn').eq(index).addClass('cur')
+                }
+            }
+        }
+    });
+
+
+</script>
+</body>
+
+</html>
