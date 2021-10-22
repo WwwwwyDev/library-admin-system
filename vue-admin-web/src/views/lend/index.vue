@@ -14,7 +14,7 @@
           <el-button icon="el-icon-search" circle @click="search"></el-button>
         </el-col>
         <el-col :span="1" :offset="1">
-          <el-button type="primary" @click="openAddDialog" round>添加图书</el-button>
+          <el-button type="primary" @click="openAddDialog" round>添加借阅</el-button>
         </el-col>
       </el-header>
       <el-main>
