@@ -3,7 +3,7 @@
 联系方式  🐧 :773323518
 
 #### 介绍
-vue2 + go-zero微服务的图书馆后台管理系统
+基于vue2 + go-zero微服务的图书馆后台管理系统
 
 [在线预览](http://adminl.wwywwy.top/)
 
