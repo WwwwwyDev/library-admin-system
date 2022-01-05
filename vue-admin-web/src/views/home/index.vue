@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-container">
-    <el-row type="flex"  justify="center":gutter="20">
+    <el-row   justify="center" :gutter="20">
       <el-col :span="10">
         <el-card style="background-color: #fcfcfc;">
           <div ref="bookChart"></div>
