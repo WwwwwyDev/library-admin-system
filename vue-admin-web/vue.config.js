@@ -37,11 +37,11 @@ module.exports = {
       warnings: false,
       errors: false
     },
-    proxy:{
-        "/admin/api":{
-            target:"http://81.70.8.101:8888",
-            changeOrigin:true,//支持跨域
-        }
+    proxy: {
+      "/admin/api": {
+        target: "http://81.70.8.101:8888",
+        changeOrigin: true,//支持跨域
+      }
     }
     // before: require('./mock/mock-server.js')
   },
@@ -53,8 +53,20 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
+    },
+    externals: {
+      // CDN 的 Element 依赖全局变量 Vue， 所以 Vue 也需要使用 CDN 引入
+      'vue': 'Vue',
+      // 属性名称 element-ui, 表示遇到 import xxx from 'element-ui' 这类引入 'element-ui'的，
+      // 不去 node_modules 中找，而是去找 全局变量 ELEMENT
+      'element-ui': 'ELEMENT',
+      'axios': 'axios',
+      'vue-router': 'VueRouter',
+      'nprogress': 'NProgress',
+      'vuex':'Vuex'
     }
   },
+
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload
     config.plugin('preload').tap(() => [
@@ -94,7 +106,7 @@ module.exports = {
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
             .use('script-ext-html-webpack-plugin', [{
-            // `runtime` must same as runtimeChunk name. default is `runtime`
+              // `runtime` must same as runtimeChunk name. default is `runtime`
               inline: /runtime\..*\.js$/
             }])
             .end()
