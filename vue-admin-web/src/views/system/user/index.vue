@@ -244,11 +244,11 @@
         }
       }
     },
-    created() {
+    async created() {
       this.listLoading = true
-      this.fetchRoles()
-      this.fetchLoginStatus()
-      this.fetchData({
+      await this.fetchRoles()
+      await this.fetchLoginStatus()
+      await this.fetchData({
         "page": this.page,
         "limit": this.limit
       })
