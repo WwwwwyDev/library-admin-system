@@ -5,7 +5,7 @@
 #### 介绍
 基于vue2 + go-zero微服务的图书馆后台管理系统
 
-[在线预览](http://adminl.wwywwy.top/)
+[在线预览(进不去就是bootcdn挂了)](http://adminl.wwywwy.top/)
 
 [api文档](https://docs.apipost.cn/preview/0749e966e2c5ae28/cd5fca1fc46f0b9e)
 
