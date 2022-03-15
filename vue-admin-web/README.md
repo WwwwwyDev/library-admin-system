@@ -14,4 +14,4 @@
 
 2. `yarn run build` 或 `npm run build`打包静态资源
 
-3. 使用nginx或者apache服务器映射静态资源，并配置接口'/api/v1'的反向代理到你的后端服务
+3. 使用nginx或者apache服务器映射静态资源，并配置接口'/admin/api'的反向代理到你的后端服务
