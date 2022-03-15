@@ -1,12 +1,12 @@
-# build step
+# 后端部署教程
 
-- 部署etcd集群
+1. 部署etcd注册中心
 
-- 部署postgresql
+2. 部署postgresql
 
-- 修改每个服务的配置文件
+3. 部署redis
 
-- 启动每个服务
+4. 修改service目录下的每个服务的配置文件，并启动每个服务
 
 注：启动后，数据库会自动建表，在user服务对应数据库执行sql
 ```
@@ -19,7 +19,4 @@ INSERT INTO "public"."roles" VALUES (1, NULL, NULL, NULL, 'superadmin', '超级�
 INSERT INTO "public"."user_role" VALUES (1, 1);
 ```
 
-- 修改api配置文件
-
-- 启动api网关
-
+5. 修改api目录下的配置文件，并启动网关
