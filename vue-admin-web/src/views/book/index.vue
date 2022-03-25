@@ -247,11 +247,6 @@
         this.options = res.data.types
       },
       async deleteRow(id) {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         let res = await deleteBook(id)
         this.$message({
           message: res.msg,
@@ -305,11 +300,6 @@
         this.addForm.typeId = 0
       },
       submitAddForm() {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         this.$refs["addForm"].validate(async (valid) => {
           if (valid) {
             if (this.imageFile != null) {
@@ -374,11 +364,6 @@
         this.editForm.typeId = 0
       },
       submitEditForm() {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         this.$refs["editForm"].validate(async (valid) => {
           if (valid) {
             if (this.imageFile != null) {

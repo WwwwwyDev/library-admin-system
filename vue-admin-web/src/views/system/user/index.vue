@@ -321,11 +321,6 @@
         this.page = 1
       },
       async deleteRow(id) {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         if (this.loginStatus.has(id)) {
           return this.$message({
             message: "无法删除在线用户",
@@ -390,11 +385,6 @@
         this.rolesForm.checkedRolesValues = []
       },
       submitAddForm() {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         this.$refs["addForm"].validate(async (valid) => {
           if (valid) {
             if (this.avatarFile != null) {
@@ -436,11 +426,6 @@
         });
       },
       submitEditForm() {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         this.$refs["editForm"].validate(async (valid) => {
           if (valid) {
             if (this.avatarFile != null) {
@@ -482,11 +467,6 @@
         });
       },
       async submitRolesForm() {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         let res = await editUserRoles(this.rolesForm.id, {
           "roleIds": this.rolesForm.checkedRolesValues
         })

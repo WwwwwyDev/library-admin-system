@@ -110,11 +110,6 @@
         this.page = 1
       },
       async clear(){
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         let res = await deleteLoginLogs()
         this.$message({
           message: res.msg,

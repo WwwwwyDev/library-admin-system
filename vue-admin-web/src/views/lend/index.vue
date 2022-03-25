@@ -187,11 +187,6 @@
         this.page = 1
       },
       async deleteRow(id) {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         let res = await deleteLend(id)
         this.$message({
           message: res.msg,
@@ -221,11 +216,6 @@
         this.addDialogVisible = true
       },
       submitAddForm() {
-        this.$message({
-          message: "演示版本，拒绝对数据进行操作",
-          type: 'error'
-        });
-        return
         this.$refs["addForm"].validate(async (valid) => {
           if (valid) {
             if (this.addForm.bookChecked !== null)
