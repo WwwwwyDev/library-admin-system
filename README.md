@@ -1,6 +1,6 @@
 # library-admin-system
 
-如果觉得对你有帮助点个:star: 吧！
+当前分支去除了演示保护代码，如果觉得对你有帮助点个:star: 吧！
 
 #### 介绍
 基于vue2 + go-zero微服务的图书馆后台管理系统
@@ -28,6 +28,7 @@
 
 - [vue.js](https://cn.vuejs.org/)
 - [element-ui](http://element-cn.eleme.io/)
+- [vue-admin-template](https://gitee.com/panjiachen/vue-admin-template)
 
 #### 相关支持
 
