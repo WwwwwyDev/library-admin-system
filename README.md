@@ -28,6 +28,7 @@
 
 - [vue.js](https://cn.vuejs.org/)
 - [element-ui](http://element-cn.eleme.io/)
+- [vue-admin-template](https://gitee.com/panjiachen/vue-admin-template)
 
 #### 相关支持
 
