@@ -60,9 +60,9 @@ module.exports = {
       // 属性名称 element-ui, 表示遇到 import xxx from 'element-ui' 这类引入 'element-ui'的，
       // 不去 node_modules 中找，而是去找 全局变量 ELEMENT
       'element-ui': 'ELEMENT',
-      'axios': 'axios',
-      'vue-router': 'VueRouter',
-      'nprogress': 'NProgress',
+      // 'axios': 'axios',
+      // 'vue-router': 'VueRouter',
+      // 'nprogress': 'NProgress',
       'vuex':'Vuex'
     }
   },
