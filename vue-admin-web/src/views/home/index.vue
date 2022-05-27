@@ -38,7 +38,7 @@
     getLoginStatus,
     getUsers
   } from '@/api/usertable'
-  // import * as echarts from 'echarts';
+  import * as echarts from 'echarts';
   export default {
     name: 'home',
     data() {
