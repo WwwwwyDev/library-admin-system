@@ -16,8 +16,8 @@ func main() {
 		5432,
 	)
 	conn := core.NewPostgresqlGorm(dsn)
-	bookModel:=model.NewBookModel(conn)
-	typeModel:=model.NewTypeModel(conn)
+	bookModel := model.NewBookModel(conn)
+	typeModel := model.NewTypeModel(conn)
 	id, _ := bookModel.GetBookByID(3)
 	fmt.Println(id)
 	fmt.Println(bookModel)

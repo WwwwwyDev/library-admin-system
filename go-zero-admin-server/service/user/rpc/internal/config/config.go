@@ -5,7 +5,7 @@ import "github.com/tal-tech/go-zero/zrpc"
 type Config struct {
 	zrpc.RpcServerConf
 
-	Postgresql struct {
+	Mysql struct {
 		User     string
 		Password string
 		Host     string

@@ -9,12 +9,12 @@ Log:
   Path: logs
   Level: severe
   KeepDay: 7
-Postgresql:
-  User: postgres
-  Password: wwy123456
-  Host: 81.70.8.101
-  Port: 5432
-  Name: library_book
+Mysql:
+  User: root
+  Password: test
+  Host: 127.0.0.1
+  Port: 3306
+  Name: book
 Etcd:
   Hosts:
   - 81.70.8.101:2379

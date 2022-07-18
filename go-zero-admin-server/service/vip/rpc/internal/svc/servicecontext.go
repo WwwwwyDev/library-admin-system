@@ -13,15 +13,15 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	psqlcfg := c.Postgresql
-	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%d sslmode=disable TimeZone=Asia/Shanghai",
-		psqlcfg.User,
-		psqlcfg.Password,
-		psqlcfg.Name,
-		psqlcfg.Host,
-		psqlcfg.Port,
+	mysqlcfg := c.Mysql
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
+		mysqlcfg.User,
+		mysqlcfg.Password,
+		mysqlcfg.Host,
+		mysqlcfg.Port,
+		mysqlcfg.Name,
 	)
-	conn := core.NewPostgresqlGorm(dsn)
+	conn := core.NewMysqlGorm(dsn)
 	return &ServiceContext{
 		Config: c,
 		VipModel: model.NewVipModel(conn),
