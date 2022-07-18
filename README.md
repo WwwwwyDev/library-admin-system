@@ -1,6 +1,6 @@
 # library-admin-system
 
-当前分支去除了演示保护代码，如果觉得对你有帮助点个:star: 吧！
+当前分支使用了mysql数据库，如果觉得对你有帮助点个:star: 吧！
 
 #### 介绍
 基于vue2 + go-zero微服务的图书馆后台管理系统
@@ -16,7 +16,7 @@
 
 ##### 持久化
 
-- [postgresql](https://www.postgresql.org/)
+- [mysql](https://www.mysql.com/)
 - [redis](https://redis.io/)
 
 ##### 后端
