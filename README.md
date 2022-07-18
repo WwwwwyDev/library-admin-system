@@ -2,6 +2,12 @@
 
 如果觉得对你有帮助点个:star: 吧！
 
+#### 分支
+
+- [master](https://gitee.com/wu_wen_yi/library-system-admin/tree/master)分支有cdn引入和演示保护，如果cdn挂了可能导致前端无法渲染
+- [no-protect](https://gitee.com/wu_wen_yi/library-system-admin/tree/no-protect/)分支去除了cdn和演示保护，适合本地运行
+- [mysql](https://gitee.com/wu_wen_yi/library-system-admin/tree/mysql/)分支将no-protect分支的pg数据库改为了mysql
+
 #### 介绍
 基于vue2 + go-zero微服务的图书馆后台管理系统
 
