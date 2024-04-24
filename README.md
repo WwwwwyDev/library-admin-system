@@ -1,7 +1,7 @@
-# library-admin-system
-
-如果觉得对你有帮助点个:star: 吧！
-
+<p align="center" >
+<img src="https://socialify.git.ci/WwwwwyDev/library-admin-system/image?language=1&name=1&owner=1&pattern=Plus&stargazers=1&theme=Light" alt="library-admin-system" width="640" height="320" />
+</p>
+  
 #### 分支
 
 - [master](https://gitee.com/wu_wen_yi/library-system-admin/tree/master)分支有cdn引入和演示保护，如果cdn挂了可能导致前端无法渲染
