@@ -1,6 +1,8 @@
-# library-admin-system
+<p align="center" >
+<img src="https://socialify.git.ci/WwwwwyDev/library-admin-system/image?language=1&name=1&owner=1&pattern=Plus&stargazers=1&theme=Light" alt="library-admin-system" width="640" height="320" />
+</p>
 
-当前分支去除了演示保护代码，如果觉得对你有帮助点个:star: 吧！
+当前分支去除了演示保护代码，如果觉得对你有帮助点个star吧！
 
 #### 介绍
 基于vue2 + go-zero微服务的图书馆后台管理系统
