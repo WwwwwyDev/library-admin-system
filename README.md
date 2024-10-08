@@ -1,11 +1,11 @@
-# library-admin-system
+<p align="center" >
+<img src="https://socialify.git.ci/WwwwwyDev/library-admin-system/image?language=1&name=1&owner=1&pattern=Plus&stargazers=1&theme=Light" alt="library-admin-system" width="640" height="320" />
+</p>
 
-当前分支使用了mysql数据库，如果觉得对你有帮助点个:star: 吧！
+当前分支使用了mysql数据库，如果觉得对你有帮助点个star吧！
 
 #### 介绍
 基于vue2 + go-zero微服务的图书馆后台管理系统
-
-[在线预览(进不去就是cdn挂了)](http://adminl.wwywwy.top/)
 
 [api文档](https://docs.apipost.cn/preview/0749e966e2c5ae28/cd5fca1fc46f0b9e)
 
