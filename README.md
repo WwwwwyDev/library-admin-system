@@ -4,14 +4,12 @@
   
 #### 分支
 
-- [master](https://gitee.com/wu_wen_yi/library-system-admin/tree/master)分支有cdn引入和演示保护，如果cdn挂了可能导致前端无法渲染
-- [no-protect](https://gitee.com/wu_wen_yi/library-system-admin/tree/no-protect/)分支去除了cdn和演示保护，适合本地运行
-- [mysql](https://gitee.com/wu_wen_yi/library-system-admin/tree/mysql/)分支将no-protect分支的pg数据库改为了mysql
+- [master](https://github.com/WwwwwyDev/library-admin-system/tree/master)分支有cdn引入和演示保护，如果cdn挂了可能导致前端无法渲染
+- [no-protect](https://github.com/WwwwwyDev/library-admin-system/tree/no-protect)分支去除了cdn和演示保护，适合本地运行
+- [mysql](https://github.com/WwwwwyDev/library-admin-system/tree/mysql)分支将no-protect分支的pg数据库改为了mysql
 
 #### 介绍
 基于vue2 + go-zero微服务的图书馆后台管理系统
-
-[在线预览(进不去就是cdn挂了)](http://adminl.wwywwy.top/)
 
 [api文档](https://docs.apipost.cn/preview/0749e966e2c5ae28/cd5fca1fc46f0b9e)
 
